@@ -42,8 +42,8 @@ jobs:
       run:
         working-directory: ${{ matrix.project }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
           cache: pip
@@ -79,7 +79,7 @@ jobs:
       - name: Analyst eval gate (triage and prompt injection, offline provider)
         if: matrix.project == '10-ai-analyst-mcp'
         run: PYTHONPATH=src python -m ai_analyst eval --min-pass-rate 1.0
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always() && matrix.python == '3.13'
         with:
           name: coverage-${{ matrix.project == 'watchfloor/backend' && 'watchfloor' || matrix.project }}
@@ -91,8 +91,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: python
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
           cache: pip
@@ -110,11 +110,11 @@ jobs:
     name: n8n playbooks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
       - name: Install 02 and 09 (their verifiers check the Code nodes' signatures)
@@ -128,8 +128,8 @@ jobs:
     name: console and design system
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: npm
@@ -149,8 +149,8 @@ jobs:
     name: lab playbooks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - name: Ansible (the full package bundles the collections in lab/ansible/requirements.yml)
@@ -173,7 +173,7 @@ jobs:
         shell: pwsh
         working-directory: 03-edr-canary-process-tree
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Install modules
         run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -197,7 +197,7 @@ jobs:
           $cfg.TestResult.Enabled = $true
           $cfg.TestResult.OutputPath = 'pester-results.xml'
           Invoke-Pester -Configuration $cfg
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: pester-${{ matrix.os }}
@@ -219,10 +219,10 @@ jobs:
           - 09-evidence-timeline
           - 10-ai-analyst-mcp
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
       - name: Build (not pushed)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: ${{ matrix.project }}
           push: false
@@ -239,7 +239,7 @@ jobs:
     name: compose config and hub image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Compose file is valid with every profile
         working-directory: deploy
         env:
@@ -254,9 +254,9 @@ jobs:
           cp .env.example .env
           docker compose --profile automation --profile detect --profile dfir --profile ai --profile batch config -q
           rm .env
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
       - name: Build the Watchfloor image (hub, console, ingest, adapters)
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           file: deploy/watchfloor/Dockerfile
@@ -270,7 +270,7 @@ jobs:
     name: secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: gitleaks
@@ -299,8 +299,8 @@ jobs:
           - 10-ai-analyst-mcp
           - watchfloor/backend
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.13"
       - run: pip install pip-audit
