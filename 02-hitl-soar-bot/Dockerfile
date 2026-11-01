@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1.7
 # ---- build stage: compile wheels so the runtime image carries no build tooling ----
-FROM python:3.12-slim AS build
+FROM python:3.15-slim AS build
 ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /build
 COPY requirements.txt .
 RUN pip wheel --wheel-dir /wheels -r requirements.txt
 
 # ---- runtime stage ----
-FROM python:3.12-slim
+FROM python:3.15-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 \
     PYTHONPATH=/app/src SOAR_DATA_DIR=/data LISTEN_HOST=0.0.0.0 LISTEN_PORT=8080
 WORKDIR /app

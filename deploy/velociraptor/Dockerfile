@@ -1,7 +1,7 @@
 # Velociraptor server for the lab. The release binary is pinned by URL *and* SHA-256 so a swapped
 # download fails the build. Pick a release at https://github.com/Velocidex/velociraptor/releases,
 # then: curl -sL "$URL" | sha256sum   and put both values in deploy/.env.
-FROM debian:12-slim
+FROM debian:13-slim
 ARG VELOCIRAPTOR_URL
 ARG VELOCIRAPTOR_SHA256
 RUN test -n "$VELOCIRAPTOR_URL" && test -n "$VELOCIRAPTOR_SHA256" \
