@@ -4,7 +4,7 @@
 #   docker build -f deploy/watchfloor/Dockerfile .
 
 # ---- UI build: the live dashboard the hub serves at / ----
-FROM node:22-alpine AS ui
+FROM node:26-alpine AS ui
 WORKDIR /src
 COPY packages/aegis-ui/ packages/aegis-ui/
 RUN cd packages/aegis-ui && npm ci --no-audit --no-fund --omit=dev
