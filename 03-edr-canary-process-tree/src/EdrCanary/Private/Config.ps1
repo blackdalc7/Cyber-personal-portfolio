@@ -37,7 +37,9 @@ function Import-EdrDotEnv {
         elseif ($value -match '^(.*?)\s+#') {
             $value = $Matches[1]
         }
-        if ($null -eq [Environment]::GetEnvironmentVariable($key)) {
+        # Empty counts as unset: PowerShell passes $null to .NET as '', which newer .NET on
+        # Windows stores as an empty variable instead of deleting it.
+        if ([string]::IsNullOrEmpty([Environment]::GetEnvironmentVariable($key))) {
             [Environment]::SetEnvironmentVariable($key, $value)
             $loaded[$key] = $value
         }
