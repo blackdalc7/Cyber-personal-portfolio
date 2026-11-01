@@ -1,0 +1,37 @@
+# docker compose up --build
+# Secrets come from .env (copy .env.example). Nothing sensitive is baked into the image.
+services:
+  soar-bot:
+    build: .
+    image: hitl-soar-bot:latest
+    env_file: .env
+    environment:
+      SOAR_DATA_DIR: /data
+      LISTEN_HOST: 0.0.0.0
+      LISTEN_PORT: "8080"
+    ports:
+      # Bind to localhost; expose publicly only through a TLS reverse proxy or tunnel
+      # (Slack and Discord require HTTPS callback URLs).
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - soar-data:/data          # SQLite DB, audit trail, outbox, isolation state survive restarts
+    read_only: true              # immutable root filesystem
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=2).status == 200 else 1)"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          memory: 256m
+          cpus: "0.5"
+
+volumes:
+  soar-data:

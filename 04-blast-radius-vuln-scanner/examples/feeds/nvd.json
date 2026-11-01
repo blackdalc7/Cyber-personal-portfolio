@@ -1,0 +1,506 @@
+{
+ "_comment": "Illustrative snapshot in NVD 2.0 response shape, keyed by virtualMatchString. Scores are approximate; refresh with `python -m vuln_scanner snapshot`.",
+ "cpe:2.3:a:apache:http_server:2.4.49:*:*:*:*:*:*:*": {
+  "resultsPerPage": 2,
+  "startIndex": 0,
+  "totalResults": 2,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2021-41773",
+     "published": "2021-10-05T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "Path traversal and file disclosure in Apache HTTP Server 2.4.49; can lead to remote code execution when CGI is enabled."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+         "baseScore": 7.5
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-22"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-41773",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   },
+   {
+    "cve": {
+     "id": "CVE-2021-42013",
+     "published": "2021-10-07T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "Incomplete fix for CVE-2021-41773 in Apache HTTP Server 2.4.49 and 2.4.50; path traversal and remote code execution."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "baseScore": 9.8
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-22"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2021-42013",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "cpe:2.3:a:openbsd:openssh:7.2p2:*:*:*:*:*:*:*": {
+  "resultsPerPage": 2,
+  "startIndex": 0,
+  "totalResults": 2,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2016-6210",
+     "published": "2017-02-13T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "OpenSSH before 7.3 allows user enumeration through a timing side channel."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+         "baseScore": 5.9
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-200"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-6210",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   },
+   {
+    "cve": {
+     "id": "CVE-2016-10009",
+     "published": "2017-01-05T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "Untrusted search path in ssh-agent in OpenSSH before 7.4 allows remote code execution via a forwarded agent socket."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+         "baseScore": 7.3
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-426"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2016-10009",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "cpe:2.3:a:apache:tomcat:9.0.30:*:*:*:*:*:*:*": {
+  "resultsPerPage": 1,
+  "startIndex": 0,
+  "totalResults": 1,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2020-1938",
+     "published": "2020-02-24T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "Ghostcat: the Apache Tomcat AJP connector trusts incoming connections, allowing file read and, with file upload, remote code execution."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "baseScore": 9.8
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-269"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2020-1938",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "cpe:2.3:a:redis:redis:5.0.7:*:*:*:*:*:*:*": {
+  "resultsPerPage": 1,
+  "startIndex": 0,
+  "totalResults": 1,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2022-0543",
+     "published": "2022-02-18T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "Lua sandbox escape in Debian-packaged Redis allows remote code execution."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+         "baseScore": 10.0
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-862"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2022-0543",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "cpe:2.3:a:postgresql:postgresql:9.6.0:*:*:*:*:*:*:*": {
+  "resultsPerPage": 2,
+  "startIndex": 0,
+  "totalResults": 2,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2019-9193",
+     "published": "2019-04-01T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "COPY TO/FROM PROGRAM in PostgreSQL 9.3 to 11.2 lets superusers run operating-system commands (disputed: documented feature)."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
+         "baseScore": 7.2
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-78"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-9193",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   },
+   {
+    "cve": {
+     "id": "CVE-2018-1058",
+     "published": "2018-03-02T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "Search-path handling in PostgreSQL lets a user with CREATE privilege run code as another user."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+         "baseScore": 8.8
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-94"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2018-1058",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "cpe:2.3:a:samba:samba:4.5.9:*:*:*:*:*:*:*": {
+  "resultsPerPage": 1,
+  "startIndex": 0,
+  "totalResults": 1,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2017-7494",
+     "published": "2017-05-30T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "SambaCry: Samba 3.5.0 to 4.6.4 lets a client with write access upload and load a shared library, giving remote code execution."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "baseScore": 9.8
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-94"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2017-7494",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ },
+ "cpe:2.3:a:beasts:vsftpd:2.3.4:*:*:*:*:*:*:*": {
+  "resultsPerPage": 1,
+  "startIndex": 0,
+  "totalResults": 1,
+  "format": "NVD_CVE",
+  "version": "2.0",
+  "vulnerabilities": [
+   {
+    "cve": {
+     "id": "CVE-2011-2523",
+     "published": "2019-11-27T00:00:00.000",
+     "vulnStatus": "Analyzed",
+     "descriptions": [
+      {
+       "lang": "en",
+       "value": "vsftpd 2.3.4 downloaded between 2011-06-30 and 2011-07-03 contains a backdoor that opens a shell on port 6200."
+      }
+     ],
+     "metrics": {
+      "cvssMetricV31": [
+       {
+        "source": "nvd@nist.gov",
+        "type": "Primary",
+        "cvssData": {
+         "version": "3.1",
+         "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+         "baseScore": 9.8
+        }
+       }
+      ]
+     },
+     "weaknesses": [
+      {
+       "source": "nvd@nist.gov",
+       "type": "Primary",
+       "description": [
+        {
+         "lang": "en",
+         "value": "CWE-78"
+        }
+       ]
+      }
+     ],
+     "references": [
+      {
+       "url": "https://nvd.nist.gov/vuln/detail/CVE-2011-2523",
+       "source": "nvd@nist.gov"
+      }
+     ]
+    }
+   }
+  ]
+ }
+}

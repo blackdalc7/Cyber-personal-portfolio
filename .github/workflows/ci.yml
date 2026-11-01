@@ -1,0 +1,307 @@
+# Portfolio-wide CI: runs when the whole GITHUB_PROJECT folder is pushed as one repository.
+# Each project folder also has its own .github/workflows/ci.yml for standalone use.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  RUFF_VERSION: "0.17.2"
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  python:
+    name: py ${{ matrix.python }} · ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - 01-realtime-ai-siem
+          - 02-hitl-soar-bot
+          - 04-blast-radius-vuln-scanner
+          - 05-sigma-attack-coverage
+          - 06-alert-clustering-fp-reducer
+          - 07-attack-emulator
+          - 08-detection-rules
+          - 09-evidence-timeline
+          - 10-ai-analyst-mcp
+          - watchfloor/backend
+        python: ["3.10", "3.13"]
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+          cache-dependency-path: ${{ matrix.project }}/requirements*.txt
+      - name: Install
+        run: pip install -r requirements-dev.txt "ruff==${RUFF_VERSION}"
+      - name: Lint (includes bandit-equivalent S rules)
+        run: ruff check .
+      - name: Lint shared test folder
+        if: matrix.project == 'watchfloor/backend'
+        run: ruff check ../tests/backend
+      - name: Unit tests with coverage gate
+        run: pytest --cov --cov-report=term-missing --cov-report=xml
+      - name: Detection content checks
+        if: matrix.project == '05-sigma-attack-coverage'
+        run: |
+          PYTHONPATH=src python -m attack_coverage lint --exercise examples/exercise.yml
+          PYTHONPATH=src python -m attack_coverage test-rules --require-all
+      - name: True-threat recall gate
+        if: matrix.project == '06-alert-clustering-fp-reducer'
+        env:
+          TRIAGE_DB_PATH: ${{ runner.temp }}/cmdb.sqlite
+          TRIAGE_LLM_PROVIDER: offline
+        run: |
+          PYTHONPATH=src python -m alert_triage init-cmdb
+          PYTHONPATH=src python -m alert_triage generate --count 5000 --seed 7 --out "$RUNNER_TEMP/alerts.json"
+          PYTHONPATH=src python -m alert_triage evaluate --alerts "$RUNNER_TEMP/alerts.json" --min-recall 1.0 --min-precision 0.99
+      - name: Sigma rule samples and committed build are current
+        if: matrix.project == '08-detection-rules'
+        run: |
+          PYTHONPATH=src python -m detection_rules build
+          git diff --exit-code -- build/
+      - name: Analyst eval gate (triage and prompt injection, offline provider)
+        if: matrix.project == '10-ai-analyst-mcp'
+        run: PYTHONPATH=src python -m ai_analyst eval --min-pass-rate 1.0
+      - uses: actions/upload-artifact@v4
+        if: always() && matrix.python == '3.13'
+        with:
+          name: coverage-${{ matrix.project == 'watchfloor/backend' && 'watchfloor' || matrix.project }}
+          path: ${{ matrix.project }}/coverage.xml
+          if-no-files-found: ignore
+
+  purple-loop:
+    name: purple loop (07 -> hub -> lake -> 08 -> 07)
+    runs-on: ubuntu-latest
+    needs: python
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install the three projects
+        run: |
+          pip install -r 07-attack-emulator/requirements-dev.txt -r watchfloor/backend/requirements.txt \
+                      -r 08-detection-rules/requirements.txt fakeredis
+      - name: Run the loop and check every verdict
+        working-directory: 07-attack-emulator
+        run: |
+          python -m pytest tests/test_purple_loop.py -v
+          python scripts/purple_loop.py --out "$RUNNER_TEMP/purple"
+
+  automation:
+    name: n8n playbooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install 02 and 09 (their verifiers check the Code nodes' signatures)
+        run: pip install -r 02-hitl-soar-bot/requirements.txt -r 09-evidence-timeline/requirements.txt pytest "ruff==${RUFF_VERSION}"
+      - run: ruff check automation
+      - name: Exports match the Code-node sources
+        run: python automation/n8n/build_workflows.py --check
+      - run: python -m pytest automation/n8n/tests -v
+
+  frontend:
+    name: console and design system
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: watchfloor/frontend/package-lock.json
+      - name: aegis-ui
+        working-directory: packages/aegis-ui
+        run: npm ci --no-audit --no-fund && npm test
+      - name: Console unit tests, types, replay build
+        working-directory: watchfloor/frontend
+        run: |
+          npm ci --no-audit --no-fund
+          npm test
+          npm run typecheck
+          npm run build:demo
+
+  lab:
+    name: lab playbooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Ansible (the full package bundles the collections in lab/ansible/requirements.yml)
+        run: pip install ansible yamllint
+      - name: Syntax and style
+        working-directory: lab
+        run: |
+          yamllint -d relaxed ansible
+          cd ansible && ansible-playbook site.yml --syntax-check
+
+  powershell:
+    name: pester · ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    defaults:
+      run:
+        shell: pwsh
+        working-directory: 03-edr-canary-process-tree
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install modules
+        run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Pester -RequiredVersion 5.7.1 -Force -SkipPublisherCheck -Scope CurrentUser
+          Install-Module PSScriptAnalyzer -RequiredVersion 1.23.0 -Force -Scope CurrentUser
+      - name: PSScriptAnalyzer
+        run: |
+          $findings = Invoke-ScriptAnalyzer -Path . -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
+          $findings | Format-Table -AutoSize | Out-String -Width 200 | Write-Host
+          foreach ($f in $findings | Where-Object Severity -eq 'Warning') {
+            $rel = [IO.Path]::GetRelativePath($env:GITHUB_WORKSPACE, $f.ScriptPath)
+            Write-Host "::warning file=$rel,line=$($f.Line)::$($f.RuleName): $($f.Message)"
+          }
+          if ($findings | Where-Object Severity -eq 'Error') { exit 1 }
+      - name: Pester
+        run: |
+          $cfg = New-PesterConfiguration
+          $cfg.Run.Path = './tests'
+          $cfg.Run.Exit = $true
+          $cfg.Output.Verbosity = 'Detailed'
+          $cfg.TestResult.Enabled = $true
+          $cfg.TestResult.OutputPath = 'pester-results.xml'
+          Invoke-Pester -Configuration $cfg
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pester-${{ matrix.os }}
+          path: 03-edr-canary-process-tree/pester-results.xml
+
+  docker:
+    name: docker · ${{ matrix.project }}
+    runs-on: ubuntu-latest
+    needs: python
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - 01-realtime-ai-siem
+          - 02-hitl-soar-bot
+          - 04-blast-radius-vuln-scanner
+          - 06-alert-clustering-fp-reducer
+          - 08-detection-rules
+          - 09-evidence-timeline
+          - 10-ai-analyst-mcp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build (not pushed)
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.project }}
+          push: false
+          load: true
+          tags: ${{ matrix.project }}:ci
+          cache-from: type=gha,scope=${{ matrix.project }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.project }}
+      - name: Smoke test
+        run: docker run --rm --entrypoint python ${{ matrix.project }}:ci -c "import sys; print(sys.version)"
+      - name: Image runs as non-root
+        run: test "$(docker inspect --format '{{.Config.User}}' ${{ matrix.project }}:ci)" != ""
+
+  platform:
+    name: compose config and hub image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose file is valid with every profile
+        working-directory: deploy
+        env:
+          REDIS_PASSWORD: ci
+          WF_INGEST_TOKEN: ci-ingest-token-0000
+          WEBHOOK_SHARED_SECRET: ci
+          EVIDENCE_SHARED_SECRET: ci
+          N8N_ENCRYPTION_KEY: ci
+          VELOCIRAPTOR_URL: https://example.invalid/velociraptor
+          VELOCIRAPTOR_SHA256: "0000"
+        run: |
+          cp .env.example .env
+          docker compose --profile automation --profile detect --profile dfir --profile ai --profile batch config -q
+          rm .env
+      - uses: docker/setup-buildx-action@v3
+      - name: Build the Watchfloor image (hub, console, ingest, adapters)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/watchfloor/Dockerfile
+          push: false
+          load: true
+          tags: watchfloor:ci
+      - name: Image runs as non-root
+        run: test "$(docker inspect --format '{{.Config.User}}' watchfloor:ci)" != ""
+
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: gitleaks
+        run: |
+          docker run --rm -v "$PWD:/repo" ghcr.io/gitleaks/gitleaks:v8.21.2 \
+            detect --source /repo --config /repo/.gitleaks.toml --redact --verbose
+      - name: No committed .env files
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$'; then echo "::error::.env file committed"; exit 1; fi
+
+  dependencies:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - 01-realtime-ai-siem
+          - 02-hitl-soar-bot
+          - 04-blast-radius-vuln-scanner
+          - 05-sigma-attack-coverage
+          - 06-alert-clustering-fp-reducer
+          - 07-attack-emulator
+          - 08-detection-rules
+          - 09-evidence-timeline
+          - 10-ai-analyst-mcp
+          - watchfloor/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install pip-audit
+      - run: pip-audit --requirement ${{ matrix.project }}/requirements.txt --strict

@@ -1,0 +1,38 @@
+title: Windows system process name running from the wrong folder
+id: 405b12ce-4eab-42ab-b884-2034c40f2317
+status: stable
+description: >
+  lsass.exe, svchost.exe, csrss.exe and friends only ever run from System32 (or SysWOW64). The same name anywhere
+  else is masquerading: a renamed tool hoping to blend into a process list.
+references:
+  - https://attack.mitre.org/techniques/T1036/003/
+  - https://attack.mitre.org/techniques/T1036/005/
+author: Watchfloor portfolio
+date: 2026-10-01
+tags:
+  - attack.defense-evasion
+  - attack.t1036.003
+  - attack.t1036.005
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    Image|endswith:
+      - \lsass.exe
+      - \svchost.exe
+      - \csrss.exe
+      - \smss.exe
+      - \wininit.exe
+      - \winlogon.exe
+      - \services.exe
+      - \lsm.exe
+  filter_system_folders:
+    Image|startswith:
+      - C:\Windows\System32\
+      - C:\Windows\SysWOW64\
+      - C:\Windows\WinSxS\
+  condition: selection and not filter_system_folders
+falsepositives:
+  - None expected
+level: critical

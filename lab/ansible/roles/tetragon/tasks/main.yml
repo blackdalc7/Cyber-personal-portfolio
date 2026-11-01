@@ -1,0 +1,45 @@
+- name: Cilium Helm repository
+  ansible.builtin.command: helm repo add cilium https://helm.cilium.io
+  register: repo
+  changed_when: "'has been added' in repo.stdout"
+  failed_when: repo.rc != 0 and 'already exists' not in repo.stderr
+
+- name: Working directory for lab manifests
+  ansible.builtin.file:
+    path: /opt/watchfloor
+    state: directory
+    mode: "0755"
+
+- name: Helm values for Tetragon (JSON export to a host file Fluent Bit tails)
+  ansible.builtin.copy:
+    dest: /opt/watchfloor/tetragon-values.yaml
+    mode: "0644"
+    content: |
+      tetragon:
+        exportFilename: tetragon.log
+        exportDirectory: /var/run/cilium/tetragon
+        # Keep the export small: process lifecycle plus our kprobe policies.
+        exportAllowList: |-
+          {"event_set":["PROCESS_EXEC","PROCESS_EXIT","PROCESS_KPROBE"]}
+        enableProcessCred: true
+        enableProcessNs: true
+      export:
+        stdout:
+          enabledEvents: []
+
+- name: Install or upgrade Tetragon
+  ansible.builtin.command: >
+    helm upgrade --install tetragon cilium/tetragon --namespace kube-system
+    --version {{ tetragon_chart_version }} -f /opt/watchfloor/tetragon-values.yaml --wait --timeout 10m
+  changed_when: true
+
+- name: Copy TracingPolicies
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/../k8s/tetragon-policies/"
+    dest: /opt/watchfloor/tetragon-policies/
+    mode: "0644"
+
+- name: Apply TracingPolicies (shadow reads, setuid(0), outbound TCP)
+  ansible.builtin.command: kubectl apply -f /opt/watchfloor/tetragon-policies/
+  register: tp
+  changed_when: "'created' in tp.stdout or 'configured' in tp.stdout"

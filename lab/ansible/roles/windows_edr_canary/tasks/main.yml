@@ -1,0 +1,48 @@
+# Deploys the existing 03 project unchanged and runs it as a startup task.
+- name: Install folder
+  ansible.windows.win_file:
+    path: "{{ edr_install_dir }}"
+    state: directory
+
+- name: Copy 03-edr-canary-process-tree
+  ansible.windows.win_copy:
+    src: "{{ edr_repo_src }}/{{ item }}"
+    dest: '{{ edr_install_dir }}\'
+  loop: [src, scripts, config, requirements.psd1]
+
+- name: Lab watch folder for the canary decoys
+  ansible.windows.win_file:
+    path: "{{ edr_watch_paths }}"
+    state: directory
+
+- name: Configuration (.env; 03 needs no secrets)
+  ansible.windows.win_template:
+    src: edr.env.j2
+    dest: '{{ edr_install_dir }}\.env'
+
+- name: Install the pinned TraceEvent library (03 verifies its SHA-256)
+  ansible.windows.win_shell: '& "{{ edr_install_dir }}\scripts\Install-TraceEvent.ps1"'
+  args:
+    chdir: "{{ edr_install_dir }}"
+    creates: '{{ edr_install_dir }}\lib'
+
+- name: Run the canary at startup as SYSTEM
+  community.windows.win_scheduled_task:
+    name: WatchfloorEdrCanary
+    description: 03 EDR canary and process-tree monitor (Watchfloor lab)
+    actions:
+      - path: powershell.exe
+        arguments: '-NoProfile -ExecutionPolicy Bypass -File "{{ edr_install_dir }}\scripts\Start-EdrCanary.ps1"'
+        working_directory: "{{ edr_install_dir }}"
+    triggers:
+      - type: boot
+    username: SYSTEM
+    run_level: highest
+    restart_count: 3
+    restart_interval: PT1M
+    state: present
+    enabled: true
+
+- name: Start it now
+  ansible.windows.win_shell: Start-ScheduledTask -TaskName WatchfloorEdrCanary
+  changed_when: false

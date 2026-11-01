@@ -1,0 +1,25 @@
+title: Recursive Directory Listing via Cmd or Tree
+id: f8f9fdc3-8a11-4da3-8f06-a1caf91af849
+status: test
+description: Detects recursive directory enumeration (dir /s, tree /f), used to locate documents and credentials before collection.
+references:
+    - https://attack.mitre.org/techniques/T1083/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1083
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_dir:
+        Image|endswith: '\cmd.exe'
+        CommandLine|contains: 'dir '
+        CommandLine|contains|windash: ' -s'
+    selection_tree:
+        Image|endswith: '\tree.com'
+    condition: 1 of selection_*
+falsepositives:
+    - Users and scripts searching for files
+level: low

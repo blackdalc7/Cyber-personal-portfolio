@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/authentication.schema.json",
+  "title": "OCSF 1.4.0 Authentication [3002] (Watchfloor subset)",
+  "allOf": [
+    {
+      "$ref": "base_event.schema.json"
+    }
+  ],
+  "type": "object",
+  "required": [
+    "user",
+    "status_id"
+  ],
+  "properties": {
+    "class_uid": {
+      "const": 3002
+    },
+    "category_uid": {
+      "const": 3
+    },
+    "activity_id": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        99
+      ]
+    },
+    "user": {
+      "$ref": "base_event.schema.json#/$defs/user"
+    },
+    "auth_protocol": {
+      "type": "string"
+    },
+    "logon_type": {
+      "type": "string"
+    },
+    "is_remote": {
+      "type": "boolean"
+    },
+    "status_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        99
+      ]
+    }
+  }
+}

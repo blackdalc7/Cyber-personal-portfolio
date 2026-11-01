@@ -1,0 +1,11 @@
+rule: 8bb49bae-66d3-44ab-8bf8-063118149a12
+match:
+- Image: /usr/bin/dash
+  CommandLine: sh -c echo hi
+- Image: /bin/bash
+  CommandLine: bash -c 'id'
+no_match:
+- Image: /bin/bash
+  CommandLine: bash script.sh
+- Image: /usr/bin/fish
+  CommandLine: fish -c x

@@ -1,0 +1,22 @@
+[project]
+name = "sigma-attack-coverage"
+version = "1.0.0"
+description = "Sigma-validated MITRE ATT&CK detection coverage from purple-team exercise log exports"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+attack-coverage = "attack_coverage.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["attack_coverage"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

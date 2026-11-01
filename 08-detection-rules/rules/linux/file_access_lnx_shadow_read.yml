@@ -1,0 +1,44 @@
+title: Read of /etc/shadow by a process that has no business reading it
+id: a0b40576-aad7-468e-a22c-6b3bc3206bc7
+status: stable
+description: >
+  Tetragon's security_file_permission hook reports every open of /etc/shadow. Password tooling and PAM helpers read
+  it all day; anything else reading it is credential access until proven otherwise.
+references:
+  - https://attack.mitre.org/techniques/T1003/008/
+author: Watchfloor portfolio
+date: 2026-10-01
+tags:
+  - attack.credential-access
+  - attack.t1003.008
+logsource:
+  product: linux
+  category: file_access
+detection:
+  selection:
+    TargetFilename:
+      - /etc/shadow
+      - /etc/gshadow
+  filter_pam_and_password_tools:
+    Image|endswith:
+      - /unix_chkpwd
+      - /passwd
+      - /chpasswd
+      - /chage
+      - /useradd
+      - /usermod
+      - /userdel
+      - /groupadd
+      - /sshd
+      - /login
+      - /su
+      - /sudo
+      - /cron
+  condition: selection and not filter_pam_and_password_tools
+falsepositives:
+  - Backup agents that copy /etc wholesale (add them to the filter by full path, not by name)
+level: high
+tuned_from: >
+  First version alerted on every sudo, because sudo's PAM stack runs unix_chkpwd, which reads /etc/shadow.
+  The PAM helpers and the password tools now sit in a filter, matched by path suffix so a renamed copy elsewhere
+  still alerts.

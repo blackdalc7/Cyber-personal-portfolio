@@ -1,0 +1,67 @@
+- name: Checksum is mandatory
+  ansible.builtin.assert:
+    that: fluent_bit_windows_sha256 | length == 64
+    fail_msg: "Set fluent_bit_windows_sha256 for fluent-bit-{{ fluent_bit_windows_version }}-win64.zip"
+
+- name: Download Fluent Bit
+  ansible.windows.win_get_url:
+    url: "https://packages.fluentbit.io/windows/fluent-bit-{{ fluent_bit_windows_version }}-win64.zip"
+    dest: 'C:\Watchfloor\fluent-bit.zip'
+    checksum: "{{ fluent_bit_windows_sha256 }}"
+    checksum_algorithm: sha256
+
+- name: Unpack
+  community.windows.win_unzip:
+    src: 'C:\Watchfloor\fluent-bit.zip'
+    dest: 'C:\Watchfloor'
+    creates: 'C:\Watchfloor\fluent-bit-{{ fluent_bit_windows_version }}-win64\bin\fluent-bit.exe'
+
+- name: Token for the hub, readable by SYSTEM and Administrators only
+  ansible.windows.win_copy:
+    content: "{{ wf_ingest_token }}"
+    dest: 'C:\Watchfloor\ingest.token'
+  no_log: true
+
+- name: Lock the token file down
+  ansible.windows.win_acl_inheritance:
+    path: 'C:\Watchfloor\ingest.token'
+    state: absent
+    reorganize: false
+
+- name: Grant SYSTEM and Administrators only
+  ansible.windows.win_acl:
+    path: 'C:\Watchfloor\ingest.token'
+    user: "{{ item }}"
+    rights: Read
+    type: allow
+  loop: [SYSTEM, Administrators]
+
+- name: Configuration
+  ansible.windows.win_template:
+    src: fluent-bit.conf.j2
+    dest: 'C:\Watchfloor\fluent-bit.conf'
+  notify: Restart fluent-bit
+
+- name: Service wrapper script (reads the token at start so it is never in the service command line)
+  ansible.windows.win_copy:
+    dest: 'C:\Watchfloor\Start-FluentBit.ps1'
+    content: |
+      $env:WF_INGEST_TOKEN = (Get-Content -Raw 'C:\Watchfloor\ingest.token').Trim()
+      & 'C:\Watchfloor\fluent-bit-{{ fluent_bit_windows_version }}-win64\bin\fluent-bit.exe' -c 'C:\Watchfloor\fluent-bit.conf'
+
+- name: Run Fluent Bit at startup as SYSTEM
+  community.windows.win_scheduled_task:
+    name: WatchfloorFluentBit
+    description: Ships Sysmon, Security and 03 EDR alerts to the Watchfloor hub
+    actions:
+      - path: powershell.exe
+        arguments: '-NoProfile -ExecutionPolicy Bypass -File C:\Watchfloor\Start-FluentBit.ps1'
+    triggers:
+      - type: boot
+    username: SYSTEM
+    run_level: highest
+    restart_count: 5
+    restart_interval: PT1M
+    state: present
+    enabled: true
+  notify: Restart fluent-bit

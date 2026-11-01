@@ -1,0 +1,6 @@
+rule: 465bc6ad-fbad-481a-8010-30c9feeb855f
+match:
+- Image: C:\Windows\System32\systeminfo.exe
+- Image: C:\Windows\System32\HOSTNAME.EXE
+no_match:
+- Image: C:\Windows\System32\sysinfo-viewer.exe

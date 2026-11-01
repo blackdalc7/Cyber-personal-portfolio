@@ -1,0 +1,28 @@
+title: Scheduled task created to run at startup or logon
+id: 7d754821-6c6f-4f0a-9b25-951710fca9d9
+status: test
+description: schtasks /create with an ONSTART or ONLOGON trigger is a classic way to survive a reboot.
+references:
+  - https://attack.mitre.org/techniques/T1053/005/
+author: Watchfloor portfolio
+date: 2026-10-01
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.005
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_image:
+    Image|endswith: \schtasks.exe
+  selection_create:
+    CommandLine|contains: /create
+  selection_trigger:
+    CommandLine|contains:
+      - onstart
+      - onlogon
+  condition: all of selection_*
+falsepositives:
+  - Software installers that register updaters at logon
+level: medium

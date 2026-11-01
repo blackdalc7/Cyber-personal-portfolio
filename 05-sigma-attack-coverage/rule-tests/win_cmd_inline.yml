@@ -1,0 +1,14 @@
+rule: 7190ed3f-8657-4c1b-96fd-353776fb15d2
+match:
+- Image: C:\Windows\System32\cmd.exe
+  CommandLine: cmd.exe /c "echo x"
+  ParentImage: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+- Image: C:\x\notcmd.exe
+  OriginalFileName: Cmd.Exe
+  CommandLine: x /k dir
+no_match:
+- Image: C:\Windows\System32\cmd.exe
+  CommandLine: cmd.exe /c echo x
+  ParentImage: C:\Windows\explorer.exe
+- Image: C:\Windows\System32\cmd.exe
+  CommandLine: cmd.exe

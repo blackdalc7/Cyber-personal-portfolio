@@ -1,0 +1,46 @@
+# Linux techniques, run inside the lab's Atomic runner pod on lab-k8s (microK8s + Tetragon).
+# Tests are picked by name, which survives upstream renumbering. Check what a name resolves to with
+#   kubectl -n atomic exec deploy/atomic-runner -- pwsh -c "Invoke-AtomicTest T1003.008 -ShowDetailsBrief"
+name: Lab Linux (k8s runner pod)
+description: >
+  Credential access, persistence, defence evasion and discovery inside a container on the lab node.
+  Tetragon sees each of them; the scoring tells you which ones a rule actually turns into a finding.
+settle_s: 20
+targets:
+  - name: k8s
+    executor: kubectl
+    hostname: lab-k8s          # Tetragon reports the node name, so findings land on this host
+    kube_context: microk8s
+    namespace: atomic
+    workload: deploy/atomic-runner
+tests:
+  - technique: T1003.008
+    name: Read /etc/shadow
+    tactic: credential-access
+    target: k8s
+    test_names: ["Access /etc/shadow (Local)"]
+    telemetry_match: shadow
+  - technique: T1136.001
+    name: Create local account
+    tactic: persistence
+    target: k8s
+    test_names: ["Create a user account on a Linux system"]
+    telemetry_match: useradd
+  - technique: T1053.003
+    name: Cron persistence
+    tactic: persistence
+    target: k8s
+    test_names: ["Cron - Replace crontab with referenced file"]
+    telemetry_match: crontab
+  - technique: T1070.003
+    name: Clear shell history
+    tactic: defense-evasion
+    target: k8s
+    test_names: ["Clear Bash history (rm)"]
+    telemetry_match: bash_history
+  - technique: T1046
+    name: Port scan from a pod
+    tactic: discovery
+    target: k8s
+    test_names: ["Port Scan"]
+    timeout_s: 300

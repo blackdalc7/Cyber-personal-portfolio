@@ -1,0 +1,73 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: {interval: weekly}
+    groups:
+      actions: {patterns: ["*"]}
+  - package-ecosystem: pip
+    directory: /01-realtime-ai-siem
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /02-hitl-soar-bot
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /04-blast-radius-vuln-scanner
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /05-sigma-attack-coverage
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /06-alert-clustering-fp-reducer
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /01-realtime-ai-siem
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /02-hitl-soar-bot
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /04-blast-radius-vuln-scanner
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /06-alert-clustering-fp-reducer
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /07-attack-emulator
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /08-detection-rules
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /09-evidence-timeline
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /10-ai-analyst-mcp
+    schedule: {interval: weekly}
+  - package-ecosystem: pip
+    directory: /watchfloor/backend
+    schedule: {interval: weekly}
+  - package-ecosystem: npm
+    directory: /watchfloor/frontend
+    schedule: {interval: weekly}
+  - package-ecosystem: npm
+    directory: /packages/aegis-ui
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /08-detection-rules
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /09-evidence-timeline
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /10-ai-analyst-mcp
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /deploy/watchfloor
+    schedule: {interval: weekly}
+  - package-ecosystem: docker
+    directory: /deploy/velociraptor
+    schedule: {interval: weekly}
+  - package-ecosystem: docker-compose
+    directory: /deploy
+    schedule: {interval: weekly}

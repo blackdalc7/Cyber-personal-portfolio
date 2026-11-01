@@ -1,0 +1,67 @@
+# CMDB for the Watchfloor demo and the analyst's evals. Same format and schema as
+# 06-alert-clustering-fp-reducer/examples/cmdb_seed.yml, which this extends with the demo
+# workstation (ws01), the detection lab VMs and one more maintenance window.
+# Build the SQLite file with:  python -m ai_analyst build-cmdb   (examples/cmdb.sqlite, gitignored)
+#
+# Mock CMDB for the simulated lab network. Addresses are RFC 1918 (internal) and
+# RFC 5737 documentation ranges (external); none of them are real organisations.
+assets:
+  - {ip: 10.20.1.10, hostname: web01, os_family: linux, os_version: Ubuntu 22.04, role: public website,
+     criticality: 3, internet_facing: true, owner: web-team, business_unit: Marketing,
+     services: [{port: 22, service: ssh, product: OpenSSH 8.9}, {port: 80, service: http, product: nginx 1.24},
+                {port: 443, service: https, product: nginx 1.24}]}
+  - {ip: 10.20.1.11, hostname: web02, os_family: linux, os_version: Ubuntu 22.04, role: public website,
+     criticality: 3, internet_facing: true, owner: web-team, business_unit: Marketing,
+     services: [{port: 22, service: ssh, product: OpenSSH 8.9}, {port: 80, service: http, product: nginx 1.24},
+                {port: 443, service: https, product: nginx 1.24}]}
+  - {ip: 10.20.1.12, hostname: web03, os_family: linux, os_version: Debian 12, role: staff portal,
+     criticality: 2, internet_facing: true, owner: web-team, business_unit: IT,
+     services: [{port: 22, service: ssh, product: OpenSSH 9.2}, {port: 443, service: https, product: Apache httpd 2.4}]}
+  - {ip: 10.20.2.20, hostname: app01, os_family: linux, os_version: RHEL 9, role: student records API,
+     criticality: 4, internet_facing: true, owner: apps-team, business_unit: Registry,
+     services: [{port: 22, service: ssh, product: OpenSSH 8.7},
+                {port: 8443, service: https, product: Apache Tomcat 9 (struts2 application)}]}
+  - {ip: 10.20.3.30, hostname: db01, os_family: linux, os_version: RHEL 9, role: records database,
+     criticality: 5, internet_facing: false, owner: dba-team, business_unit: Registry,
+     services: [{port: 22, service: ssh, product: OpenSSH 8.7}, {port: 5432, service: postgresql, product: PostgreSQL 16}]}
+  - {ip: 10.20.4.40, hostname: dc01, os_family: windows, os_version: Server 2022, role: domain controller,
+     criticality: 5, internet_facing: false, owner: identity-team, business_unit: IT,
+     services: [{port: 53, service: dns, product: Microsoft DNS}, {port: 88, service: kerberos, product: Microsoft Kerberos},
+                {port: 389, service: ldap, product: Active Directory}, {port: 445, service: smb, product: Windows SMB},
+                {port: 3389, service: rdp, product: Remote Desktop Services}]}
+  - {ip: 10.20.4.41, hostname: fs01, os_family: windows, os_version: Server 2019, role: file server,
+     criticality: 4, internet_facing: false, owner: infra-team, business_unit: IT,
+     services: [{port: 445, service: smb, product: Windows SMB}, {port: 3389, service: rdp, product: Remote Desktop Services}]}
+  - {ip: 10.20.4.42, hostname: iis01, os_family: windows, os_version: Server 2022, role: intranet,
+     criticality: 2, internet_facing: false, owner: web-team, business_unit: IT,
+     services: [{port: 443, service: https, product: Microsoft IIS 10}, {port: 3389, service: rdp, product: Remote Desktop Services}]}
+  - {ip: 10.20.5.50, hostname: bastion01, os_family: linux, os_version: Ubuntu 24.04, role: SSH bastion,
+     criticality: 5, internet_facing: true, owner: infra-team, business_unit: IT,
+     services: [{port: 22, service: ssh, product: OpenSSH 9.6}]}
+  - {ip: 10.20.6.60, hostname: core-sw01, os_family: network, os_version: IOS-XE 17, role: core switch,
+     criticality: 5, internet_facing: false, owner: network-team, business_unit: IT,
+     services: [{port: 22, service: ssh, product: Cisco SSH}, {port: 161, protocol: udp, service: snmp, product: Cisco SNMP}]}
+  - {ip: 10.30.10.15, hostname: ws-fin-015, os_family: windows, os_version: Windows 11 23H2, role: finance workstation,
+     criticality: 3, internet_facing: false, owner: finance, business_unit: Finance,
+     services: [{port: 135, service: msrpc, product: Windows RPC}, {port: 445, service: smb, product: Windows SMB}]}
+  - {ip: 10.30.10.22, hostname: mac-design-022, os_family: macos, os_version: macOS 15, role: design workstation,
+     criticality: 2, internet_facing: false, owner: marketing, business_unit: Marketing}
+
+  - {ip: 10.30.10.31, hostname: ws01, os_family: windows, os_version: Windows 11 23H2, role: finance workstation,
+     criticality: 3, internet_facing: false, owner: finance, business_unit: Finance,
+     services: [{port: 135, service: msrpc, product: Windows RPC}, {port: 445, service: smb, product: Windows SMB}]}
+  - {ip: 192.168.56.10, hostname: lab-k8s, os_family: linux, os_version: Ubuntu 24.04 (microK8s), role: detection lab node,
+     criticality: 1, internet_facing: false, owner: detection-engineering, business_unit: Security,
+     services: [{port: 22, service: ssh, product: OpenSSH 9.6}, {port: 16443, service: https, product: Kubernetes API}]}
+  - {ip: 192.168.56.20, hostname: lab-win01, os_family: windows, os_version: Windows 11, role: detection lab endpoint,
+     criticality: 1, internet_facing: false, owner: detection-engineering, business_unit: Security,
+     services: [{port: 5985, service: winrm, product: Windows Remote Management}]}
+
+authorized_scanners:
+  - {cidr: 10.0.5.0/28, owner: secops-vuln-mgmt, purpose: weekly authenticated vulnerability scan}
+
+maintenance_windows:
+  - {ip: 10.20.3.30, starts_at: "2026-10-26T01:00:00+00:00", ends_at: "2026-10-26T03:30:00+00:00",
+     reason: "CHG-20431 PostgreSQL minor upgrade and reboot"}
+  - {ip: 10.20.4.41, starts_at: "2026-10-27T22:00:00+00:00", ends_at: "2026-10-28T00:30:00+00:00",
+     reason: "CHG-20517 backup agent upgrade on fs01 (installs the BackupAgent service)"}

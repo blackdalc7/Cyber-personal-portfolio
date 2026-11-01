@@ -1,0 +1,19 @@
+# Lint configuration (ruff), including bandit-equivalent security rules (S).
+line-length = 120
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE", "C4", "SIM", "RUF"]
+ignore = [
+  "S101",   # assert is how pytest works
+  "S311",   # random is used for jitter/simulation, never for secrets
+  "RUF001", "RUF002", "RUF003",  # unicode arrows/dashes in docs strings are intentional
+  "SIM105",
+]
+
+[lint.per-file-ignores]
+"**/tests/**" = ["S", "B", "BLE"]
+"src/detection_rules/backend.py" = ["S105"]  # pySigma calls its SQL keywords "tokens"
+
+[lint.isort]
+known-first-party = ["detection_rules"]

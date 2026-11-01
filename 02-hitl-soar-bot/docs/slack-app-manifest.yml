@@ -1,0 +1,21 @@
+# Slack app manifest: https://api.slack.com/reference/manifests
+# Replace soar.example.com with your public HTTPS endpoint.
+display_information:
+  name: HitL SOAR Bot
+  description: Human-approved containment for the SOC
+  background_color: "#1d1f21"
+features:
+  bot_user:
+    display_name: soar-bot
+    always_online: true
+oauth_config:
+  scopes:
+    bot:
+      - chat:write
+settings:
+  interactivity:
+    is_enabled: true
+    request_url: https://soar.example.com/slack/interactions
+  org_deploy_enabled: false
+  socket_mode_enabled: false
+  token_rotation_enabled: false

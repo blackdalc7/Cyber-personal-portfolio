@@ -1,0 +1,553 @@
+{
+  "generated": "2026-10-26T21:55:44+00:00",
+  "entry_points": [
+    "10.10.1.10"
+  ],
+  "attack_paths": [
+    {
+      "target": "10.10.2.20",
+      "probability": 0.8911,
+      "path": [
+        "internet",
+        "10.10.1.10",
+        "10.10.2.20"
+      ],
+      "steps": [
+        {
+          "from": "internet",
+          "to": "10.10.1.10",
+          "port": 80,
+          "cve": "CVE-2021-41773"
+        },
+        {
+          "from": "10.10.1.10",
+          "to": "10.10.2.20",
+          "port": 8080,
+          "cve": "CVE-2020-1938"
+        }
+      ]
+    },
+    {
+      "target": "10.10.3.31",
+      "probability": 0.8386,
+      "path": [
+        "internet",
+        "10.10.1.10",
+        "10.10.2.20",
+        "10.10.3.31"
+      ],
+      "steps": [
+        {
+          "from": "internet",
+          "to": "10.10.1.10",
+          "port": 80,
+          "cve": "CVE-2021-41773"
+        },
+        {
+          "from": "10.10.1.10",
+          "to": "10.10.2.20",
+          "port": 8080,
+          "cve": "CVE-2020-1938"
+        },
+        {
+          "from": "10.10.2.20",
+          "to": "10.10.3.31",
+          "port": 445,
+          "cve": "CVE-2017-7494"
+        }
+      ]
+    },
+    {
+      "target": "10.10.3.30",
+      "probability": 0.5525,
+      "path": [
+        "internet",
+        "10.10.1.10",
+        "10.10.2.20",
+        "10.10.3.30"
+      ],
+      "steps": [
+        {
+          "from": "internet",
+          "to": "10.10.1.10",
+          "port": 80,
+          "cve": "CVE-2021-41773"
+        },
+        {
+          "from": "10.10.1.10",
+          "to": "10.10.2.20",
+          "port": 8080,
+          "cve": "CVE-2020-1938"
+        },
+        {
+          "from": "10.10.2.20",
+          "to": "10.10.3.30",
+          "port": 5432,
+          "cve": "CVE-2019-9193"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "findings": [
+    {
+      "host": "10.10.1.10",
+      "port": 80,
+      "protocol": "tcp",
+      "asset": "web01",
+      "banner": "Apache httpd 2.4.49",
+      "cpe": "cpe:/a:apache:http_server:2.4.49",
+      "cve": "CVE-2021-42013",
+      "cvss": 9.8,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.943,
+      "epss_percentile": 0.9995,
+      "kev": true,
+      "kev_ransomware": false,
+      "likelihood": 0.943,
+      "criticality": 3,
+      "exposure": "internet",
+      "blast_radius_score": 10.5,
+      "chokepoint": 1.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.2.20",
+          "name": "app01",
+          "hops": 1,
+          "via_port": 8080,
+          "via_cve": "CVE-2020-1938"
+        },
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 2,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 2,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.21",
+          "name": "cache01",
+          "hops": 2,
+          "via_port": 6379,
+          "via_cve": "CVE-2022-0543"
+        }
+      ],
+      "priority": 77.8,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.2.20",
+      "port": 8009,
+      "protocol": "tcp",
+      "asset": "app01",
+      "banner": "Apache Jserv",
+      "cpe": "cpe:/a:apache:tomcat:9.0.30",
+      "cve": "CVE-2020-1938",
+      "cvss": 9.8,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.944,
+      "epss_percentile": 0.9996,
+      "kev": true,
+      "kev_ransomware": false,
+      "likelihood": 0.944,
+      "criticality": 4,
+      "exposure": "chained",
+      "blast_radius_score": 13.0,
+      "chokepoint": 1.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 1,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 1,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.21",
+          "name": "cache01",
+          "hops": 1,
+          "via_port": 6379,
+          "via_cve": "CVE-2022-0543"
+        }
+      ],
+      "priority": 75.9,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.2.20",
+      "port": 8080,
+      "protocol": "tcp",
+      "asset": "app01",
+      "banner": "Apache Tomcat 9.0.30",
+      "cpe": "cpe:/a:apache:tomcat:9.0.30",
+      "cve": "CVE-2020-1938",
+      "cvss": 9.8,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.944,
+      "epss_percentile": 0.9996,
+      "kev": true,
+      "kev_ransomware": false,
+      "likelihood": 0.944,
+      "criticality": 4,
+      "exposure": "chained",
+      "blast_radius_score": 13.0,
+      "chokepoint": 1.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 1,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 1,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.21",
+          "name": "cache01",
+          "hops": 1,
+          "via_port": 6379,
+          "via_cve": "CVE-2022-0543"
+        }
+      ],
+      "priority": 75.9,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.1.10",
+      "port": 80,
+      "protocol": "tcp",
+      "asset": "web01",
+      "banner": "Apache httpd 2.4.49",
+      "cpe": "cpe:/a:apache:http_server:2.4.49",
+      "cve": "CVE-2021-41773",
+      "cvss": 7.5,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "epss": 0.944,
+      "epss_percentile": 0.9997,
+      "kev": true,
+      "kev_ransomware": false,
+      "likelihood": 0.944,
+      "criticality": 3,
+      "exposure": "internet",
+      "blast_radius_score": 10.5,
+      "chokepoint": 1.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.2.20",
+          "name": "app01",
+          "hops": 1,
+          "via_port": 8080,
+          "via_cve": "CVE-2020-1938"
+        },
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 2,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 2,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.21",
+          "name": "cache01",
+          "hops": 2,
+          "via_port": 6379,
+          "via_cve": "CVE-2022-0543"
+        }
+      ],
+      "priority": 59.57,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.3.31",
+      "port": 445,
+      "protocol": "tcp",
+      "asset": "fs01",
+      "banner": "Samba smbd 4.5.9",
+      "cpe": "cpe:/a:samba:samba:4.5.9",
+      "cve": "CVE-2017-7494",
+      "cvss": 9.8,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.941,
+      "epss_percentile": 0.9992,
+      "kev": true,
+      "kev_ransomware": false,
+      "likelihood": 0.941,
+      "criticality": 5,
+      "exposure": "chained",
+      "blast_radius_score": 5.0,
+      "chokepoint": 0.3333,
+      "secondary_targets": [
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 1,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        }
+      ],
+      "priority": 55.23,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.2.21",
+      "port": 6379,
+      "protocol": "tcp",
+      "asset": "cache01",
+      "banner": "Redis key-value store 5.0.7",
+      "cpe": "cpe:/a:redis:redis:5.0.7",
+      "cve": "CVE-2022-0543",
+      "cvss": 10.0,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
+      "epss": 0.943,
+      "epss_percentile": 0.9994,
+      "kev": true,
+      "kev_ransomware": false,
+      "likelihood": 0.943,
+      "criticality": 3,
+      "exposure": "chained",
+      "blast_radius_score": 14.0,
+      "chokepoint": 0.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 1,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 1,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.20",
+          "name": "app01",
+          "hops": 1,
+          "via_port": 8080,
+          "via_cve": "CVE-2020-1938"
+        }
+      ],
+      "priority": 53.9,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.3.30",
+      "port": 5432,
+      "protocol": "tcp",
+      "asset": "db01",
+      "banner": "PostgreSQL DB 9.6.0",
+      "cpe": "cpe:/a:postgresql:postgresql:9.6.0",
+      "cve": "CVE-2019-9193",
+      "cvss": 7.2,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.62,
+      "epss_percentile": 0.98,
+      "kev": false,
+      "kev_ransomware": false,
+      "likelihood": 0.62,
+      "criticality": 5,
+      "exposure": "chained",
+      "blast_radius_score": 5.0,
+      "chokepoint": 0.3333,
+      "secondary_targets": [
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 1,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        }
+      ],
+      "priority": 32.94,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.4.41",
+      "port": 21,
+      "protocol": "tcp",
+      "asset": "legacy-ftp",
+      "banner": "vsftpd 2.3.4",
+      "cpe": "cpe:/a:beasts:vsftpd:2.3.4",
+      "cve": "CVE-2011-2523",
+      "cvss": 9.8,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.88,
+      "epss_percentile": 0.995,
+      "kev": false,
+      "kev_ransomware": false,
+      "likelihood": 0.88,
+      "criticality": 1,
+      "exposure": "internal",
+      "blast_radius_score": 0,
+      "chokepoint": 0.0,
+      "secondary_targets": [],
+      "priority": 11.26,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.1.10",
+      "port": 22,
+      "protocol": "tcp",
+      "asset": "web01",
+      "banner": "OpenSSH 7.2p2 Ubuntu 4ubuntu2.10",
+      "cpe": "cpe:/a:openbsd:openssh:7.2p2",
+      "cve": "CVE-2016-10009",
+      "cvss": 7.3,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:L",
+      "epss": 0.034,
+      "epss_percentile": 0.88,
+      "kev": false,
+      "kev_ransomware": false,
+      "likelihood": 0.034,
+      "criticality": 3,
+      "exposure": "internal",
+      "blast_radius_score": 10.5,
+      "chokepoint": 1.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.2.20",
+          "name": "app01",
+          "hops": 1,
+          "via_port": 8080,
+          "via_cve": "CVE-2020-1938"
+        },
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 2,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 2,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.21",
+          "name": "cache01",
+          "hops": 2,
+          "via_port": 6379,
+          "via_cve": "CVE-2022-0543"
+        }
+      ],
+      "priority": 8.48,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.3.30",
+      "port": 5432,
+      "protocol": "tcp",
+      "asset": "db01",
+      "banner": "PostgreSQL DB 9.6.0",
+      "cpe": "cpe:/a:postgresql:postgresql:9.6.0",
+      "cve": "CVE-2018-1058",
+      "cvss": 8.8,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H",
+      "epss": 0.012,
+      "epss_percentile": 0.78,
+      "kev": false,
+      "kev_ransomware": false,
+      "likelihood": 0.012,
+      "criticality": 5,
+      "exposure": "chained",
+      "blast_radius_score": 5.0,
+      "chokepoint": 0.3333,
+      "secondary_targets": [
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 1,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        }
+      ],
+      "priority": 5.6,
+      "match": "cpe"
+    },
+    {
+      "host": "10.10.1.10",
+      "port": 22,
+      "protocol": "tcp",
+      "asset": "web01",
+      "banner": "OpenSSH 7.2p2 Ubuntu 4ubuntu2.10",
+      "cpe": "cpe:/a:openbsd:openssh:7.2p2",
+      "cve": "CVE-2016-6210",
+      "cvss": 5.9,
+      "cvss_vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+      "epss": 0.021,
+      "epss_percentile": 0.83,
+      "kev": false,
+      "kev_ransomware": false,
+      "likelihood": 0.021,
+      "criticality": 3,
+      "exposure": "internal",
+      "blast_radius_score": 10.5,
+      "chokepoint": 1.0,
+      "secondary_targets": [
+        {
+          "ip": "10.10.2.20",
+          "name": "app01",
+          "hops": 1,
+          "via_port": 8080,
+          "via_cve": "CVE-2020-1938"
+        },
+        {
+          "ip": "10.10.3.30",
+          "name": "db01",
+          "hops": 2,
+          "via_port": 5432,
+          "via_cve": "CVE-2019-9193"
+        },
+        {
+          "ip": "10.10.3.31",
+          "name": "fs01",
+          "hops": 2,
+          "via_port": 445,
+          "via_cve": "CVE-2017-7494"
+        },
+        {
+          "ip": "10.10.2.21",
+          "name": "cache01",
+          "hops": 2,
+          "via_port": 6379,
+          "via_cve": "CVE-2022-0543"
+        }
+      ],
+      "priority": 5.39,
+      "match": "cpe"
+    }
+  ]
+}

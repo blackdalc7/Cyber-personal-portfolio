@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/network_activity.schema.json",
+  "title": "OCSF 1.4.0 Network Activity [4001] (Watchfloor subset)",
+  "allOf": [
+    {
+      "$ref": "base_event.schema.json"
+    }
+  ],
+  "type": "object",
+  "required": [
+    "src_endpoint",
+    "dst_endpoint"
+  ],
+  "properties": {
+    "class_uid": {
+      "const": 4001
+    },
+    "category_uid": {
+      "const": 4
+    },
+    "activity_id": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        99
+      ]
+    },
+    "connection_info": {
+      "type": "object",
+      "properties": {
+        "protocol_name": {
+          "type": "string"
+        },
+        "direction": {
+          "type": "string"
+        }
+      }
+    },
+    "status_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        99
+      ]
+    }
+  }
+}

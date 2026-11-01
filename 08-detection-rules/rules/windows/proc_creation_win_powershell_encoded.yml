@@ -1,0 +1,27 @@
+title: PowerShell started with an encoded command
+id: 0f084fc1-7bdd-4018-9346-7e72f506c45b
+status: stable
+description: >
+  -EncodedCommand (and every prefix PowerShell accepts for it, down to -e and -ec) hides the script from anyone
+  reading the command line. Legitimate tooling rarely needs it on a workstation.
+references:
+  - https://attack.mitre.org/techniques/T1059/001/
+author: Watchfloor portfolio
+date: 2026-10-01
+tags:
+  - attack.execution
+  - attack.t1059.001
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection_image:
+    Image|endswith:
+      - \powershell.exe
+      - \pwsh.exe
+  selection_flag:
+    CommandLine|re: '(?i)\s[-/](e|ec|en|enc|enco|encod|encode|encoded|encodedc|encodedco|encodedcom|encodedcomm|encodedcomma|encodedcomman|encodedcommand)\s+[A-Za-z0-9+/=]{8,}'
+  condition: all of selection_*
+falsepositives:
+  - Some management agents (SCCM, Intune scripts) use encoded commands; filter them by parent image
+level: high

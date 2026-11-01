@@ -1,0 +1,23 @@
+title: Local account created with useradd or adduser
+id: 2a7fe49d-58cf-448a-b8e9-e31ad799015d
+status: stable
+description: A new local account inside a container or on a server is persistence unless a change ticket says otherwise.
+references:
+  - https://attack.mitre.org/techniques/T1136/001/
+author: Watchfloor portfolio
+date: 2026-10-01
+tags:
+  - attack.persistence
+  - attack.t1136.001
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection:
+    Image|endswith:
+      - /useradd
+      - /adduser
+  condition: selection
+falsepositives:
+  - Image builds and configuration management runs (scope by host or parent if they are noisy)
+level: medium

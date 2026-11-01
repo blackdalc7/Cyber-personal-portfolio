@@ -1,0 +1,48 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Runtime data
+data/
+out/
+*.sqlite
+*.sqlite3
+*.db
+pester-results.xml
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Node / frontend builds
+node_modules/
+dist/
+dist-demo/
+.demo-coverage/
+test-results/
+playwright-report/
+*.tsbuildinfo
+
+# Lab VMs
+lab/.vagrant/
+
+# Stray archives at the repo root (demo evidence zips inside projects stay tracked)
+/*.zip
+/*.tar.gz
+/*.tgz
+/.watchfloor-portfolio.tar.gz

@@ -1,0 +1,267 @@
+# Watchfloor: the whole platform on one machine.
+#
+#   cp .env.example .env            # then fill in the secrets (see the comments in that file)
+#   docker compose up -d --build    # core: redis, ingest, adapters, hub+UI, SIEM (01), SOAR bot (02)
+#   docker compose --profile automation --profile detect --profile dfir --profile ai up -d --build
+#
+# Profiles:
+#   automation  n8n playbooks (alert intake, approval follow-up)
+#   detect      08's Sigma rules running against the lake every minute
+#   dfir        09 evidence service and a Velociraptor server
+#   ai          10's analyst, writing cited investigations for new incidents
+#   batch       one-shot jobs: 04 exposure analysis and 06 triage of a simulated alert set
+#
+# Every port binds to 127.0.0.1 unless .env says otherwise. Put a TLS reverse proxy or tunnel in front
+# of anything that Slack, Discord or the lab VMs must reach. Secrets come only from .env.
+
+name: watchfloor
+
+x-hardening: &hardening
+  read_only: true
+  tmpfs: [/tmp]
+  cap_drop: [ALL]
+  security_opt: ["no-new-privileges:true"]
+  restart: unless-stopped
+
+x-wf: &wf
+  <<: *hardening
+  build:
+    context: ..
+    dockerfile: deploy/watchfloor/Dockerfile
+  image: watchfloor:local
+  environment:
+    WF_REDIS_URL: redis://:${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}@redis:6379/0
+    WF_LAKE_DIR: /lake
+    WF_HUB_TOKEN: ${WF_HUB_TOKEN:-}
+    WF_INGEST_TOKEN: ${WF_INGEST_TOKEN:?set WF_INGEST_TOKEN in .env}
+    WF_COVERAGE_DIR: /artifacts/coverage
+    WF_EXPOSURE_FILE: /artifacts/exposure/findings.json
+    WF_RULES_INDEX: /artifacts/rules/rules_index.json
+    WF_EVIDENCE_DIR: /artifacts/evidence
+    WF_ANALYST_DIR: /artifacts/analyst
+    WF_SOAR_URL: http://soar-bot:8080
+    WF_SOAR_TOKEN: ${SOAR_API_TOKEN:-}
+    WF_SIEM_DIR: /siem
+    WF_TRIAGE_QUEUE: /artifacts/triage/queue.json
+    WF_ACTIONS_ENABLED: ${WF_ACTIONS_ENABLED:-false}
+    WF_SOAR_WEBHOOK_SECRET: ${WEBHOOK_SHARED_SECRET:-}
+  depends_on:
+    redis:
+      condition: service_healthy
+
+services:
+  redis:
+    <<: *hardening
+    image: redis:7.4-alpine
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes", "--maxmemory", "512mb",
+              "--maxmemory-policy", "noeviction"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" --no-auth-warning ping | grep -q PONG"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    cap_add: [SETUID, SETGID]
+
+  # Redis Streams -> Parquet. Acks a message only after its row is safely on disk.
+  ingest:
+    <<: *wf
+    command: ["ingest"]
+    volumes: [lake:/lake]
+
+  # Tails 01's NDJSON, watches 06's queue, polls 02's incidents; publishes OCSF to the stream.
+  adapters:
+    <<: *wf
+    command: ["adapters"]
+    volumes:
+      - lake:/lake
+      - siem-data:/siem:ro
+      - ${TRIAGE_DIR:-../06-alert-clustering-fp-reducer/examples/output}:/artifacts/triage:ro
+
+  hub:
+    <<: *wf
+    command: ["hub", "--host", "0.0.0.0", "--port", "8000"]
+    ports: ["${HUB_BIND:-127.0.0.1}:8000:8000"]
+    volumes:
+      - lake:/lake
+      - ${COVERAGE_05_DIR:-../05-sigma-attack-coverage/examples/output}:/artifacts/coverage/05:ro
+      - ${COVERAGE_07_DIR:-../07-attack-emulator/examples/output}:/artifacts/coverage/07:ro
+      - ${EXPOSURE_DIR:-../04-blast-radius-vuln-scanner/examples/output}:/artifacts/exposure:ro
+      - ${TRIAGE_DIR:-../06-alert-clustering-fp-reducer/examples/output}:/artifacts/triage:ro
+      - ${RULES_DIR:-../08-detection-rules/build}:/artifacts/rules:ro
+      - evidence:/artifacts/evidence:ro
+      - analyst:/artifacts/analyst:ro
+
+  # 01: syslog in, detections and AI-summarised chains out as NDJSON.
+  siem:
+    <<: *hardening
+    build: ../01-realtime-ai-siem
+    image: realtime-siem:local
+    env_file: [.env]
+    environment:
+      SIEM_OUTPUT_DIR: /data
+      SYSLOG_BIND_HOST: 0.0.0.0
+      SYSLOG_BIND_PORT: "5514"
+    ports: ["${SYSLOG_BIND:-127.0.0.1}:5514:5514/udp"]
+    volumes: [siem-data:/data]
+
+  # 02: the only component allowed to contain a host, and only after a signed human approval.
+  soar-bot:
+    <<: *hardening
+    build: ../02-hitl-soar-bot
+    image: hitl-soar-bot:local
+    env_file: [.env]
+    environment:
+      SOAR_DATA_DIR: /data
+      LISTEN_HOST: 0.0.0.0
+      LISTEN_PORT: "8080"
+      DECISION_WEBHOOK_URL: ${DECISION_WEBHOOK_URL:-}
+      DECISION_WEBHOOK_SECRET: ${DECISION_WEBHOOK_SECRET:-}
+    ports: ["${SOAR_BIND:-127.0.0.1}:8080:8080"]
+    volumes: [soar-data:/data]
+
+  # ---- automation ----------------------------------------------------------------------------------------
+  n8n:
+    image: ${N8N_IMAGE:-docker.n8n.io/n8nio/n8n:1.121.0}
+    profiles: [automation]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    ports: ["${N8N_BIND:-127.0.0.1}:5678:5678"]
+    environment:
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?set N8N_ENCRYPTION_KEY in .env}
+      N8N_HOST: ${N8N_HOST:-localhost}
+      WEBHOOK_URL: ${N8N_WEBHOOK_URL:-http://localhost:5678/}
+      GENERIC_TIMEZONE: ${TZ:-UTC}
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      N8N_SECURE_COOKIE: ${N8N_SECURE_COOKIE:-false}
+      # The playbooks read these with $env; nothing else from the host environment is exposed.
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
+      NODE_FUNCTION_ALLOW_BUILTIN: crypto      # Code nodes sign and verify HMACs; no other built-in modules
+      WF_HUB_URL: http://hub:8000
+      WF_HUB_TOKEN: ${WF_HUB_TOKEN:-}
+      SOAR_URL: http://soar-bot:8080
+      SOAR_WEBHOOK_SECRET: ${WEBHOOK_SHARED_SECRET}
+      DECISION_WEBHOOK_SECRET: ${DECISION_WEBHOOK_SECRET:-}
+      EVIDENCE_URL: http://evidence:8090
+      EVIDENCE_SHARED_SECRET: ${EVIDENCE_SHARED_SECRET:-}
+      NOTIFY_WEBHOOK_URL: ${NOTIFY_WEBHOOK_URL:-}
+      ABUSEIPDB_API_KEY: ${ABUSEIPDB_API_KEY:-}
+      MIN_SEVERITY_ID: ${N8N_MIN_SEVERITY_ID:-4}
+    volumes:
+      - n8n-data:/home/node/.n8n
+      - ../automation/n8n/workflows:/workflows:ro
+
+  # ---- detect --------------------------------------------------------------------------------------------
+  rules:
+    <<: *hardening
+    build: ../08-detection-rules
+    image: detection-rules:local
+    profiles: [detect]
+    command: ["run", "--watch", "--interval", "60"]
+    environment:
+      RULES_LAKE_DIR: /lake
+      RULES_HUB_URL: http://hub:8000
+      RULES_INGEST_TOKEN: ${WF_INGEST_TOKEN}
+      RULES_STATE_FILE: /state/state.json
+    volumes:
+      - lake:/lake:ro
+      - rules-state:/state
+
+  # ---- dfir ----------------------------------------------------------------------------------------------
+  evidence:
+    <<: *hardening
+    build: ../09-evidence-timeline
+    image: evidence-timeline:local
+    profiles: [dfir]
+    group_add: ["10002"]   # the velociraptor group: read access to the API client config only
+    environment:
+      EVIDENCE_SHARED_SECRET: ${EVIDENCE_SHARED_SECRET:?set EVIDENCE_SHARED_SECRET in .env}
+      EVIDENCE_LISTEN_HOST: 0.0.0.0
+      EVIDENCE_LISTEN_PORT: "8090"
+      EVIDENCE_OUT_DIR: /evidence
+      EVIDENCE_HUB_URL: http://hub:8000
+      EVIDENCE_HUB_TOKEN: ${WF_HUB_TOKEN:-}
+      EVIDENCE_MODE: ${EVIDENCE_MODE:-velociraptor}
+      VELOCIRAPTOR_API_CONFIG: /velo/api.config.yaml
+      HAYABUSA_ARTIFACT: ${HAYABUSA_ARTIFACT:-Windows.EventLogs.Hayabusa}
+      TRIAGE_ARTIFACTS: ${TRIAGE_ARTIFACTS:-Windows.System.Pslist,Windows.Network.Netstat,Windows.Sysinternals.Autoruns}
+    volumes:
+      - evidence:/evidence
+      - velo-data:/velo:ro
+
+  velociraptor:
+    build:
+      context: ./velociraptor
+      args:
+        VELOCIRAPTOR_URL: ${VELOCIRAPTOR_URL:?set VELOCIRAPTOR_URL in .env}
+        VELOCIRAPTOR_SHA256: ${VELOCIRAPTOR_SHA256:?set VELOCIRAPTOR_SHA256 in .env}
+    image: velociraptor:local
+    profiles: [dfir]
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    ports:
+      - "${VELO_GUI_BIND:-127.0.0.1}:8889:8889"
+      - "${VELO_FRONTEND_BIND:-127.0.0.1}:8100:8000"
+    environment:
+      VELO_PUBLIC_URL: ${VELO_PUBLIC_URL:-https://192.168.56.1:8100/}
+    volumes: [velo-data:/velo]
+
+  # ---- ai ------------------------------------------------------------------------------------------------
+  analyst:
+    <<: *hardening
+    build: ../10-ai-analyst-mcp
+    image: ai-analyst-mcp:local
+    profiles: [ai]
+    command: ["watch", "--interval", "60"]
+    environment:
+      ANALYST_LAKE_DIR: /lake
+      ANALYST_CMDB_PATH: /cmdb/cmdb.sqlite
+      ANALYST_OUT_DIR: /analyst
+      ANALYST_HUB_URL: http://hub:8000
+      ANALYST_HUB_TOKEN: ${WF_HUB_TOKEN:-}
+      ANALYST_PROVIDER: ${ANALYST_PROVIDER:-offline}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANALYST_MODEL: ${ANALYST_MODEL:-claude-opus-5-5}
+      OLLAMA_URL: ${OLLAMA_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:32b}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes:
+      - lake:/lake:ro
+      - analyst:/analyst
+      - ${CMDB_DIR:-../10-ai-analyst-mcp/examples}:/cmdb:ro
+
+  # ---- batch (one-shot: docker compose --profile batch run --rm exposure) -------------------------------
+  exposure:
+    build: ../04-blast-radius-vuln-scanner
+    image: vuln-scanner:local
+    profiles: [batch]
+    restart: "no"
+    env_file: [.env]
+    volumes: ["${EXPOSURE_DIR:-../04-blast-radius-vuln-scanner/examples/output}:/out"]
+    command: ["analyse", "examples/lab_scan.xml", "--inventory", "examples/inventory.yml", "--feeds-dir", "examples/feeds",
+              "--offline", "--json", "/out/findings.json", "--report", "/out/report.md"]
+
+  triage:
+    build: ../06-alert-clustering-fp-reducer
+    image: alert-triage:local
+    profiles: [batch]
+    restart: "no"
+    env_file: [.env]
+    volumes: ["${TRIAGE_DIR:-../06-alert-clustering-fp-reducer/examples/output}:/out"]
+    entrypoint: ["sh", "-c"]
+    command: ["python -m alert_triage init-cmdb && python -m alert_triage generate --count 5000 --seed 7 --out /tmp/alerts.json && python -m alert_triage triage --alerts /tmp/alerts.json --json /out/queue.json --report /out/report.md"]
+
+volumes:
+  redis-data:
+  lake:
+  siem-data:
+  soar-data:
+  n8n-data:
+  rules-state:
+  evidence:
+  velo-data:
+  analyst:

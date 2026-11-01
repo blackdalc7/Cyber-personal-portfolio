@@ -1,0 +1,13 @@
+match:
+  - name: rundll32 comsvcs MiniDump (Atomic T1003.001)
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: rundll32.exe, cmd_line: 'C:\Windows\System32\rundll32.exe C:\windows\System32\comsvcs.dll, MiniDump 724 C:\Windows\Temp\lsass-comsvcs.dmp full',
+                file: {name: rundll32.exe, path: 'C:\Windows\System32\rundll32.exe'}}
+nomatch:
+  - name: unrelated rundll32
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: rundll32.exe, cmd_line: 'rundll32.exe shell32.dll,Control_RunDLL', file: {name: rundll32.exe, path: 'C:\Windows\System32\rundll32.exe'}}

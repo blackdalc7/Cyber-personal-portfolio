@@ -1,0 +1,9 @@
+{
+  "id": "SIEM-2026-1026-0042",
+  "title": "SSH brute force followed by successful login on web01",
+  "severity": "critical",
+  "source": "AI-SIEM-Analyzer",
+  "description": "42 failed logins from 185.220.101.1 then Accepted password for admin",
+  "source_ip": "185.220.101.1",
+  "host": "web01"
+}

@@ -1,0 +1,45 @@
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:00.000000Z", "ProcessId": 600, "ParentProcessId": 4, "ImageName": "wininit.exe", "CommandLine": ""}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:00.100000Z", "ProcessId": 700, "ParentProcessId": 600, "ImageName": "services.exe", "CommandLine": ""}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:01.000000Z", "ProcessId": 1200, "ParentProcessId": 1100, "ImageName": "C:\\Windows\\explorer.exe", "CommandLine": "C:\\Windows\\Explorer.EXE"}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:05.000000Z", "ProcessId": 2200, "ParentProcessId": 1200, "ImageName": "C:\\Windows\\System32\\notepad.exe", "CommandLine": "notepad.exe notes.txt"}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:06.000000Z", "ProcessId": 2300, "ParentProcessId": 1200, "ImageName": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "CommandLine": "powershell.exe -NoProfile"}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:10.000000Z", "ProcessId": 3100, "ParentProcessId": 1200, "ImageName": "C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE", "CommandLine": "\"WINWORD.EXE\" /n \"C:\\Users\\dana\\Downloads\\invoice_8841.docm\""}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:12.000000Z", "ProcessId": 3150, "ParentProcessId": 3100, "ImageName": "C:\\Windows\\System32\\cmd.exe", "CommandLine": "cmd.exe /c powershell -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoA"}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:12.500000Z", "ProcessId": 3160, "ParentProcessId": 3150, "ImageName": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "CommandLine": "powershell -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoA"}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:13.000000Z", "ProcessId": 3170, "ParentProcessId": 3100, "ImageName": "C:\\Windows\\System32\\rundll32.exe", "CommandLine": "rundll32.exe C:\\Users\\Public\\x.dll,Start"}
+{"Type": "ProcessStop", "TimeStamp": "2026-10-26T09:00:14.000000Z", "ProcessId": 3100, "ImageName": "WINWORD.EXE"}
+{"Type": "ProcessStart", "TimeStamp": "2026-10-26T09:00:20.000000Z", "ProcessId": 4100, "ParentProcessId": 3160, "ImageName": "C:\\Users\\Public\\svch0st.exe", "CommandLine": "svch0st.exe"}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.000000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_00.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.100000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_01.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.200000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_02.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.300000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_03.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.400000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_04.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.500000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_05.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.600000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_06.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.700000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_07.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.800000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_08.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:21.900000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_09.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.000000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_10.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.100000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_11.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.200000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_12.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.300000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_13.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.400000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_14.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.500000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_15.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.600000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_16.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.700000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_17.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.800000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_18.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:22.900000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_19.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.000000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_20.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.100000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_21.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.200000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_22.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.300000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_23.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.400000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_24.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.500000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_25.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.600000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_26.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.700000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_27.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.800000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_28.xlsx", "Size": 65536}
+{"Type": "FileWrite", "TimeStamp": "2026-10-26T09:00:23.900000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_29.xlsx", "Size": 65536}
+{"Type": "FileCreate", "TimeStamp": "2026-10-26T09:00:25.000000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\report_00.xlsx.lockbit"}
+{"Type": "DiskWrite", "TimeStamp": "2026-10-26T09:00:26.000000Z", "ProcessId": 4100, "FilePath": "\\Device\\HarddiskVolume3\\Share\\Finance\\0_passwords.docx", "Size": 4096}
+{"Type": "Bogus", "TimeStamp": "2026-10-26T09:00:27.000000Z", "ProcessId": 1}
+{not json

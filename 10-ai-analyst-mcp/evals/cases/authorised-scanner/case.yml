@@ -1,0 +1,9 @@
+name: authorised-scanner
+kind: triage
+incident_id: INC-20261028-5CA11E5C
+description: The weekly vulnerability scan from 10.0.5.3 trips the port-scan rules on db01.
+expect:
+  verdict:
+  - benign_true_positive
+  tools:
+  - check_ip

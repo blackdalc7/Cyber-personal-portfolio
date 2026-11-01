@@ -1,0 +1,9 @@
+name: lone-low-signal
+kind: triage
+incident_id: INC-20261029-1A7E0F2D
+description: One low-severity account enumeration on a finance workstation, nothing else.
+expect:
+  verdict:
+  - needs_more_data
+  - false_positive
+  max_confidence: 0.6

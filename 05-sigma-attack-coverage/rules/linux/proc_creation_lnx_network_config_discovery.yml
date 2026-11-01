@@ -1,0 +1,27 @@
+title: Linux Network Configuration Discovery
+id: 0b60d776-1703-4d6c-9eb8-41762a498f17
+status: test
+description: Detects ifconfig, and ip addr or ip route, used to map interfaces and routes.
+references:
+    - https://attack.mitre.org/techniques/T1016/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1016
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_ifconfig:
+        Image|endswith: '/ifconfig'
+    selection_ip:
+        Image|endswith: '/ip'
+        CommandLine|contains:
+            - ' addr'
+            - ' a '
+            - ' route'
+    condition: 1 of selection_*
+falsepositives:
+    - Network troubleshooting
+level: informational

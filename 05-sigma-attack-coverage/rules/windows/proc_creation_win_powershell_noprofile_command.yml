@@ -1,0 +1,27 @@
+title: PowerShell Run Non-Interactively With an Inline Command
+id: 685258d2-03ff-4331-86e2-6709c212ce81
+status: test
+description: Detects powershell.exe or pwsh.exe started with -NoProfile and -Command, the pattern used by droppers and remote execution tooling.
+references:
+    - https://attack.mitre.org/techniques/T1059/001/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.execution
+    - attack.t1059.001
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+    selection_cli:
+        CommandLine|contains|all|windash:
+            - '-noprofile'
+            - '-command'
+    condition: all of selection_*
+falsepositives:
+    - Configuration management agents (SCCM, Intune, Ansible)
+level: medium

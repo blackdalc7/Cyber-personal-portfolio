@@ -1,0 +1,19 @@
+# T1548: a process asking the kernel for uid 0. Becomes OCSF Process Activity (1007, activity Other) with the
+# kprobe function in unmapped.kprobe.function.
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: watchfloor-setuid-root
+spec:
+  kprobes:
+    - call: "__sys_setuid"
+      syscall: false
+      args:
+        - index: 0
+          type: "int"
+      selectors:
+        - matchArgs:
+            - index: 0
+              operator: "Equal"
+              values:
+                - "0"

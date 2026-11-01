@@ -1,0 +1,9 @@
+rule: f8f9fdc3-8a11-4da3-8f06-a1caf91af849
+match:
+- Image: C:\Windows\System32\cmd.exe
+  CommandLine: cmd /c dir /s C:\Users
+- Image: C:\Windows\System32\tree.com
+  CommandLine: tree /f
+no_match:
+- Image: C:\Windows\System32\cmd.exe
+  CommandLine: cmd /c dir C:\Users

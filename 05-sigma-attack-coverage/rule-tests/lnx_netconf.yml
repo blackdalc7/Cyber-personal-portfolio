@@ -1,0 +1,11 @@
+rule: 0b60d776-1703-4d6c-9eb8-41762a498f17
+match:
+- Image: /usr/sbin/ip
+  CommandLine: ip addr show
+- Image: /sbin/ifconfig
+  CommandLine: ifconfig
+no_match:
+- Image: /usr/sbin/ip
+  CommandLine: ip link set eth0 up
+- Image: /usr/bin/ss
+  CommandLine: ss -tunap

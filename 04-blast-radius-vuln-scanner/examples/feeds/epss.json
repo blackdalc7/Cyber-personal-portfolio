@@ -1,0 +1,66 @@
+{
+ "_comment": "Illustrative EPSS snapshot (approximate values). Refresh with `python -m vuln_scanner snapshot`.",
+ "status": "OK",
+ "data": [
+  {
+   "cve": "CVE-2021-41773",
+   "epss": "0.94400",
+   "percentile": "0.99970",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2021-42013",
+   "epss": "0.94300",
+   "percentile": "0.99950",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2016-6210",
+   "epss": "0.02100",
+   "percentile": "0.83000",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2016-10009",
+   "epss": "0.03400",
+   "percentile": "0.88000",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2020-1938",
+   "epss": "0.94400",
+   "percentile": "0.99960",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2022-0543",
+   "epss": "0.94300",
+   "percentile": "0.99940",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2019-9193",
+   "epss": "0.62000",
+   "percentile": "0.98000",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2018-1058",
+   "epss": "0.01200",
+   "percentile": "0.78000",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2017-7494",
+   "epss": "0.94100",
+   "percentile": "0.99920",
+   "date": "2026-10-25"
+  },
+  {
+   "cve": "CVE-2011-2523",
+   "epss": "0.88000",
+   "percentile": "0.99500",
+   "date": "2026-10-25"
+  }
+ ]
+}

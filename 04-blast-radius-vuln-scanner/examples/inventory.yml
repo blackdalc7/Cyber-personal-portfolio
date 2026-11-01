@@ -1,0 +1,24 @@
+# Fictional lab estate. Criticality: 1 = expendable … 5 = crown jewel.
+intra_zone: allow          # hosts inside one zone reach each other (a flat VLAN)
+default_criticality: 2     # for scanned hosts missing from this file
+
+assets:
+  - {ip: 10.10.1.10, name: web01,      zone: dmz,  criticality: 3, owner: web-team}
+  - {ip: 10.10.1.11, name: vpn01,      zone: dmz,  criticality: 4, owner: netops}
+  - {ip: 10.10.2.20, name: app01,      zone: app,  criticality: 4, owner: payments, tags: [pci]}
+  - {ip: 10.10.2.21, name: cache01,    zone: app,  criticality: 3, owner: payments}
+  - {ip: 10.10.3.30, name: db01,       zone: data, criticality: 5, owner: dba, tags: [pci, pii]}
+  - {ip: 10.10.3.31, name: fs01,       zone: data, criticality: 5, owner: it, tags: [finance]}
+  - {ip: 10.10.4.40, name: hr-ws07,    zone: corp, criticality: 2, owner: hr}
+  - {ip: 10.10.4.41, name: legacy-ftp, zone: lab,  criticality: 1, owner: it}
+  - {ip: 10.10.5.50, name: jump01,     zone: mgmt, criticality: 4, owner: netops}
+
+# Firewall policy between zones (or individual IPs). Anything not listed is denied.
+flows:
+  - {from: internet, to: dmz,  ports: [80, 443]}
+  - {from: dmz,      to: app,  ports: [8080, 8009]}
+  - {from: app,      to: data, ports: [5432, 445]}
+  - {from: corp,     to: data, ports: [445]}
+  - {from: corp,     to: lab,  ports: [21]}
+  - {from: mgmt,     to: any,  ports: [22, 3389, 5432]}
+  - {from: corp,     to: mgmt, ports: [22]}

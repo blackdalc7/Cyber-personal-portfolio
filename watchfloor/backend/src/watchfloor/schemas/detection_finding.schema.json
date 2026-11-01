@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/detection_finding.schema.json",
+  "title": "OCSF 1.4.0 Detection Finding [2004] (Watchfloor subset)",
+  "allOf": [
+    {
+      "$ref": "base_event.schema.json"
+    }
+  ],
+  "type": "object",
+  "required": [
+    "finding_info"
+  ],
+  "properties": {
+    "class_uid": {
+      "const": 2004
+    },
+    "category_uid": {
+      "const": 2
+    },
+    "activity_id": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        99
+      ]
+    },
+    "finding_info": {
+      "type": "object",
+      "required": [
+        "uid",
+        "title"
+      ],
+      "properties": {
+        "uid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "desc": {
+          "type": "string"
+        },
+        "analytic": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "uid": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "type_id": {
+              "type": "integer"
+            }
+          }
+        },
+        "attacks": {
+          "type": "array",
+          "items": {
+            "$ref": "base_event.schema.json#/$defs/attack"
+          }
+        },
+        "related_events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "uid"
+            ],
+            "properties": {
+              "uid": {
+                "type": "string"
+              }
+            }
+          },
+          "maxItems": 500
+        },
+        "types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "risk_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "confidence_id": {
+      "type": "integer"
+    },
+    "status_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        99
+      ]
+    }
+  }
+}

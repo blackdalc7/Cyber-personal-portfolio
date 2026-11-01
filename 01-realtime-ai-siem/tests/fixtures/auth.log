@@ -1,0 +1,138 @@
+Oct 26 08:01:30 web01 sshd[2055]: Accepted publickey for deploy from 192.0.2.11 port 42778 ssh2: ED25519 SHA256:abc
+Oct 26 08:04:49 web01 sshd[2067]: Accepted publickey for alice from 192.0.2.10 port 44638 ssh2: ED25519 SHA256:abc
+Oct 26 08:29:01 web01 sshd[2051]: Accepted publickey for bob from 192.0.2.11 port 48492 ssh2: ED25519 SHA256:abc
+Oct 26 09:14:07 web01 sshd[2016]: Accepted publickey for deploy from 192.0.2.11 port 45405 ssh2: ED25519 SHA256:abc
+Oct 26 09:19:48 web01 sshd[2018]: Accepted publickey for deploy from 192.0.2.25 port 50280 ssh2: ED25519 SHA256:abc
+Oct 26 09:32:35 web01 sshd[2006]: Accepted publickey for bob from 192.0.2.10 port 58528 ssh2: ED25519 SHA256:abc
+Oct 26 09:35:17 web01 sshd[2021]: Accepted publickey for bob from 192.0.2.25 port 42129 ssh2: ED25519 SHA256:abc
+Oct 26 09:35:20 web01 sshd[2022]: Failed password for bob from 192.0.2.25 port 51515 ssh2
+Oct 26 09:44:14 web01 sshd[2054]: Accepted publickey for bob from 192.0.2.10 port 51066 ssh2: ED25519 SHA256:abc
+Oct 26 09:52:21 web01 sshd[2038]: Accepted publickey for deploy from 192.0.2.10 port 43354 ssh2: ED25519 SHA256:abc
+Oct 26 09:52:24 web01 sshd[2039]: Failed password for deploy from 192.0.2.10 port 51515 ssh2
+Oct 26 10:02:58 web01 sshd[2056]: Accepted publickey for bob from 192.0.2.25 port 46531 ssh2: ED25519 SHA256:abc
+Oct 26 10:03:35 web01 sshd[2068]: Accepted publickey for alice from 192.0.2.11 port 56985 ssh2: ED25519 SHA256:abc
+Oct 26 10:20:52 web01 sshd[2029]: Accepted publickey for bob from 192.0.2.25 port 49123 ssh2: ED25519 SHA256:abc
+Oct 26 10:22:27 web01 sshd[2062]: Accepted publickey for alice from 192.0.2.10 port 40917 ssh2: ED25519 SHA256:abc
+Oct 26 10:29:39 web01 sshd[2060]: Accepted publickey for deploy from 192.0.2.11 port 51482 ssh2: ED25519 SHA256:abc
+Oct 26 10:34:14 web01 sshd[2032]: Accepted publickey for deploy from 192.0.2.10 port 40395 ssh2: ED25519 SHA256:abc
+Oct 26 10:34:34 web01 sshd[2040]: Accepted publickey for alice from 192.0.2.11 port 40835 ssh2: ED25519 SHA256:abc
+Oct 26 10:34:37 web01 sshd[2041]: Failed password for alice from 192.0.2.11 port 51515 ssh2
+Oct 26 10:35:33 web01 sshd[2066]: Accepted publickey for deploy from 192.0.2.10 port 54422 ssh2: ED25519 SHA256:abc
+Oct 26 10:35:59 web01 sshd[2017]: Accepted publickey for bob from 192.0.2.11 port 41284 ssh2: ED25519 SHA256:abc
+Oct 26 10:51:22 web01 sshd[2048]: Accepted publickey for alice from 192.0.2.25 port 57746 ssh2: ED25519 SHA256:abc
+Oct 26 10:54:08 web01 sshd[2059]: Accepted publickey for alice from 192.0.2.10 port 59359 ssh2: ED25519 SHA256:abc
+Oct 26 11:00:00 web01 sshd[2070]: Failed password for admin from 203.0.113.66 port 50000 ssh2
+Oct 26 11:00:07 web01 sshd[2071]: Failed password for admin from 203.0.113.66 port 50001 ssh2
+Oct 26 11:00:14 web01 sshd[2072]: Failed password for admin from 203.0.113.66 port 50002 ssh2
+Oct 26 11:00:21 web01 sshd[2073]: Failed password for admin from 203.0.113.66 port 50003 ssh2
+Oct 26 11:00:28 web01 sshd[2074]: Failed password for admin from 203.0.113.66 port 50004 ssh2
+Oct 26 11:00:35 web01 sshd[2075]: Failed password for admin from 203.0.113.66 port 50005 ssh2
+Oct 26 11:00:42 web01 sshd[2076]: Failed password for admin from 203.0.113.66 port 50006 ssh2
+Oct 26 11:00:49 web01 sshd[2077]: Failed password for admin from 203.0.113.66 port 50007 ssh2
+Oct 26 11:00:56 web01 sshd[2078]: Failed password for admin from 203.0.113.66 port 50008 ssh2
+Oct 26 11:01:03 web01 sshd[2079]: Failed password for admin from 203.0.113.66 port 50009 ssh2
+Oct 26 11:01:10 web01 sshd[2080]: Failed password for admin from 203.0.113.66 port 50010 ssh2
+Oct 26 11:01:17 web01 sshd[2081]: Failed password for admin from 203.0.113.66 port 50011 ssh2
+Oct 26 11:01:24 web01 sshd[2082]: Failed password for admin from 203.0.113.66 port 50012 ssh2
+Oct 26 11:01:31 web01 sshd[2083]: Failed password for admin from 203.0.113.66 port 50013 ssh2
+Oct 26 11:01:38 web01 sshd[2084]: Failed password for admin from 203.0.113.66 port 50014 ssh2
+Oct 26 11:01:45 web01 sshd[2085]: Failed password for admin from 203.0.113.66 port 50015 ssh2
+Oct 26 11:01:52 web01 sshd[2086]: Failed password for admin from 203.0.113.66 port 50016 ssh2
+Oct 26 11:01:59 web01 sshd[2087]: Failed password for admin from 203.0.113.66 port 50017 ssh2
+Oct 26 11:02:06 web01 sshd[2088]: Failed password for admin from 203.0.113.66 port 50018 ssh2
+Oct 26 11:02:13 web01 sshd[2089]: Failed password for admin from 203.0.113.66 port 50019 ssh2
+Oct 26 11:02:20 web01 sshd[2090]: Failed password for admin from 203.0.113.66 port 50020 ssh2
+Oct 26 11:02:27 web01 sshd[2057]: Accepted publickey for deploy from 192.0.2.11 port 42842 ssh2: ED25519 SHA256:abc
+Oct 26 11:02:27 web01 sshd[2091]: Failed password for admin from 203.0.113.66 port 50021 ssh2
+Oct 26 11:02:34 web01 sshd[2092]: Failed password for admin from 203.0.113.66 port 50022 ssh2
+Oct 26 11:02:41 web01 sshd[2093]: Failed password for admin from 203.0.113.66 port 50023 ssh2
+Oct 26 11:02:48 web01 sshd[2094]: Failed password for admin from 203.0.113.66 port 50024 ssh2
+Oct 26 11:02:55 web01 sshd[2095]: Failed password for admin from 203.0.113.66 port 50025 ssh2
+Oct 26 11:03:02 web01 sshd[2096]: Failed password for admin from 203.0.113.66 port 50026 ssh2
+Oct 26 11:03:09 web01 sshd[2097]: Failed password for admin from 203.0.113.66 port 50027 ssh2
+Oct 26 11:03:16 web01 sshd[2098]: Failed password for admin from 203.0.113.66 port 50028 ssh2
+Oct 26 11:03:23 web01 sshd[2099]: Failed password for admin from 203.0.113.66 port 50029 ssh2
+Oct 26 11:03:30 web01 sshd[2100]: Failed password for admin from 203.0.113.66 port 50030 ssh2
+Oct 26 11:03:37 web01 sshd[2101]: Failed password for admin from 203.0.113.66 port 50031 ssh2
+Oct 26 11:03:44 web01 sshd[2102]: Failed password for admin from 203.0.113.66 port 50032 ssh2
+Oct 26 11:03:51 web01 sshd[2103]: Failed password for admin from 203.0.113.66 port 50033 ssh2
+Oct 26 11:03:58 web01 sshd[2104]: Failed password for admin from 203.0.113.66 port 50034 ssh2
+Oct 26 11:04:05 web01 sshd[2105]: Failed password for admin from 203.0.113.66 port 50035 ssh2
+Oct 26 11:04:12 web01 sshd[2106]: Failed password for admin from 203.0.113.66 port 50036 ssh2
+Oct 26 11:04:19 web01 sshd[2107]: Failed password for admin from 203.0.113.66 port 50037 ssh2
+Oct 26 11:04:26 web01 sshd[2108]: Failed password for admin from 203.0.113.66 port 50038 ssh2
+Oct 26 11:04:33 web01 sshd[2109]: Failed password for admin from 203.0.113.66 port 50039 ssh2
+Oct 26 11:04:40 web01 sshd[2110]: Failed password for admin from 203.0.113.66 port 50040 ssh2
+Oct 26 11:04:44 web01 sshd[2014]: Accepted publickey for alice from 192.0.2.10 port 58822 ssh2: ED25519 SHA256:abc
+Oct 26 11:04:47 web01 sshd[2111]: Failed password for admin from 203.0.113.66 port 50041 ssh2
+Oct 26 11:04:59 web01 sshd[2112]: Accepted password for admin from 203.0.113.66 port 50999 ssh2
+Oct 26 11:06:16 web01 sshd[2033]: Accepted publickey for bob from 192.0.2.10 port 44773 ssh2: ED25519 SHA256:abc
+Oct 26 11:06:59 web01 sudo[2113]:    admin : TTY=pts/1 ; PWD=/home/admin ; USER=root ; COMMAND=/usr/bin/cat /etc/shadow
+Oct 26 11:08:59 web01 useradd[2114]: new user: name=svc-backup, UID=1005, GID=1005, home=/home/svc-backup, shell=/bin/bash
+Oct 26 11:12:23 web01 sshd[2011]: Accepted publickey for alice from 192.0.2.25 port 42057 ssh2: ED25519 SHA256:abc
+Oct 26 11:30:31 web01 sshd[2012]: Accepted publickey for deploy from 192.0.2.25 port 54011 ssh2: ED25519 SHA256:abc
+Oct 26 11:30:33 web01 sshd[2046]: Accepted publickey for bob from 192.0.2.10 port 57798 ssh2: ED25519 SHA256:abc
+Oct 26 11:32:39 web01 sshd[2042]: Accepted publickey for bob from 192.0.2.10 port 48265 ssh2: ED25519 SHA256:abc
+Oct 26 11:39:02 web01 sshd[2004]: Accepted publickey for alice from 192.0.2.11 port 53702 ssh2: ED25519 SHA256:abc
+Oct 26 11:39:05 web01 sshd[2005]: Failed password for alice from 192.0.2.11 port 51515 ssh2
+Oct 26 11:48:40 web01 sshd[2007]: Accepted publickey for deploy from 192.0.2.25 port 42027 ssh2: ED25519 SHA256:abc
+Oct 26 12:54:08 web01 sshd[2027]: Accepted publickey for deploy from 192.0.2.10 port 53038 ssh2: ED25519 SHA256:abc
+Oct 26 12:56:26 web01 sshd[2009]: Accepted publickey for alice from 192.0.2.25 port 43859 ssh2: ED25519 SHA256:abc
+Oct 26 12:59:32 web01 sshd[2063]: Accepted publickey for alice from 192.0.2.25 port 50682 ssh2: ED25519 SHA256:abc
+Oct 26 13:17:41 web01 sshd[2023]: Accepted publickey for deploy from 192.0.2.25 port 54602 ssh2: ED25519 SHA256:abc
+Oct 26 13:31:09 web01 sshd[2001]: Accepted publickey for bob from 192.0.2.25 port 41582 ssh2: ED25519 SHA256:abc
+Oct 26 13:31:12 web01 sshd[2002]: Failed password for bob from 192.0.2.25 port 51515 ssh2
+Oct 26 13:37:40 web01 sshd[2049]: Accepted publickey for alice from 192.0.2.25 port 46394 ssh2: ED25519 SHA256:abc
+Oct 26 13:50:47 web01 sshd[2045]: Accepted publickey for bob from 192.0.2.11 port 45290 ssh2: ED25519 SHA256:abc
+Oct 26 13:52:28 web01 sshd[2052]: Accepted publickey for deploy from 192.0.2.11 port 51948 ssh2: ED25519 SHA256:abc
+Oct 26 13:52:31 web01 sshd[2053]: Failed password for deploy from 192.0.2.11 port 51515 ssh2
+Oct 26 13:58:38 web01 sshd[2019]: Accepted publickey for bob from 192.0.2.25 port 54948 ssh2: ED25519 SHA256:abc
+Oct 26 13:58:41 web01 sshd[2020]: Failed password for bob from 192.0.2.25 port 51515 ssh2
+Oct 26 14:00:00 web01 sshd[2115]: Failed password for invalid user root from 198.51.100.23 port 40000 ssh2
+Oct 26 14:00:04 web01 sshd[2116]: Failed password for invalid user root from 198.51.100.23 port 40001 ssh2
+Oct 26 14:00:08 web01 sshd[2117]: Failed password for invalid user root from 198.51.100.23 port 40002 ssh2
+Oct 26 14:00:20 web01 sshd[2118]: Failed password for invalid user oracle from 198.51.100.23 port 40010 ssh2
+Oct 26 14:00:24 web01 sshd[2119]: Failed password for invalid user oracle from 198.51.100.23 port 40011 ssh2
+Oct 26 14:00:28 web01 sshd[2120]: Failed password for invalid user oracle from 198.51.100.23 port 40012 ssh2
+Oct 26 14:00:40 web01 sshd[2121]: Failed password for invalid user test from 198.51.100.23 port 40020 ssh2
+Oct 26 14:00:44 web01 sshd[2122]: Failed password for invalid user test from 198.51.100.23 port 40021 ssh2
+Oct 26 14:00:48 web01 sshd[2123]: Failed password for invalid user test from 198.51.100.23 port 40022 ssh2
+Oct 26 14:01:00 web01 sshd[2124]: Failed password for invalid user postgres from 198.51.100.23 port 40030 ssh2
+Oct 26 14:01:04 web01 sshd[2125]: Failed password for invalid user postgres from 198.51.100.23 port 40031 ssh2
+Oct 26 14:01:08 web01 sshd[2126]: Failed password for invalid user postgres from 198.51.100.23 port 40032 ssh2
+Oct 26 14:01:20 web01 sshd[2127]: Failed password for invalid user ubuntu from 198.51.100.23 port 40040 ssh2
+Oct 26 14:01:24 web01 sshd[2128]: Failed password for invalid user ubuntu from 198.51.100.23 port 40041 ssh2
+Oct 26 14:01:28 web01 sshd[2129]: Failed password for invalid user ubuntu from 198.51.100.23 port 40042 ssh2
+Oct 26 14:01:40 web01 sshd[2130]: Failed password for invalid user git from 198.51.100.23 port 40050 ssh2
+Oct 26 14:01:44 web01 sshd[2131]: Failed password for invalid user git from 198.51.100.23 port 40051 ssh2
+Oct 26 14:01:48 web01 sshd[2132]: Failed password for invalid user git from 198.51.100.23 port 40052 ssh2
+Oct 26 14:02:00 web01 sshd[2133]: Failed password for invalid user jenkins from 198.51.100.23 port 40060 ssh2
+Oct 26 14:02:04 web01 sshd[2134]: Failed password for invalid user jenkins from 198.51.100.23 port 40061 ssh2
+Oct 26 14:02:08 web01 sshd[2135]: Failed password for invalid user jenkins from 198.51.100.23 port 40062 ssh2
+Oct 26 14:02:20 web01 sshd[2136]: Failed password for invalid user pi from 198.51.100.23 port 40070 ssh2
+Oct 26 14:02:24 web01 sshd[2137]: Failed password for invalid user pi from 198.51.100.23 port 40071 ssh2
+Oct 26 14:02:28 web01 sshd[2138]: Failed password for invalid user pi from 198.51.100.23 port 40072 ssh2
+Oct 26 14:03:10 web01 sshd[2025]: Accepted publickey for deploy from 192.0.2.10 port 56177 ssh2: ED25519 SHA256:abc
+Oct 26 14:03:13 web01 sshd[2026]: Failed password for deploy from 192.0.2.10 port 51515 ssh2
+Oct 26 14:07:43 web01 sshd[2030]: Accepted publickey for bob from 192.0.2.10 port 44945 ssh2: ED25519 SHA256:abc
+Oct 26 14:07:46 web01 sshd[2031]: Failed password for bob from 192.0.2.10 port 51515 ssh2
+Oct 26 14:12:30 web01 sshd[2043]: Accepted publickey for alice from 192.0.2.10 port 55993 ssh2: ED25519 SHA256:abc
+Oct 26 14:18:39 web01 sshd[2034]: Accepted publickey for deploy from 192.0.2.11 port 44112 ssh2: ED25519 SHA256:abc
+Oct 26 14:35:56 web01 sshd[2024]: Accepted publickey for deploy from 192.0.2.11 port 40739 ssh2: ED25519 SHA256:abc
+Oct 26 14:45:29 web01 sshd[2058]: Accepted publickey for bob from 192.0.2.25 port 42782 ssh2: ED25519 SHA256:abc
+Oct 26 14:46:03 web01 sshd[2008]: Accepted publickey for alice from 192.0.2.10 port 58240 ssh2: ED25519 SHA256:abc
+Oct 26 14:50:03 web01 sshd[2037]: Accepted publickey for alice from 192.0.2.10 port 46840 ssh2: ED25519 SHA256:abc
+Oct 26 14:50:47 web01 sshd[2050]: Accepted publickey for alice from 192.0.2.10 port 56961 ssh2: ED25519 SHA256:abc
+Oct 26 15:09:53 web01 sshd[2064]: Accepted publickey for alice from 192.0.2.10 port 51592 ssh2: ED25519 SHA256:abc
+Oct 26 15:56:37 web01 sshd[2013]: Accepted publickey for bob from 192.0.2.11 port 49822 ssh2: ED25519 SHA256:abc
+Oct 26 15:57:30 web01 sshd[2044]: Accepted publickey for bob from 192.0.2.11 port 42814 ssh2: ED25519 SHA256:abc
+Oct 26 16:14:50 web01 sshd[2069]: Accepted publickey for alice from 192.0.2.25 port 41861 ssh2: ED25519 SHA256:abc
+Oct 26 16:26:56 web01 sshd[2015]: Accepted publickey for bob from 192.0.2.25 port 54707 ssh2: ED25519 SHA256:abc
+Oct 26 16:28:05 web01 sshd[2028]: Accepted publickey for alice from 192.0.2.11 port 53161 ssh2: ED25519 SHA256:abc
+Oct 26 16:47:39 web01 sshd[2035]: Accepted publickey for deploy from 192.0.2.25 port 41769 ssh2: ED25519 SHA256:abc
+Oct 26 17:00:19 web01 sshd[2047]: Accepted publickey for deploy from 192.0.2.10 port 48556 ssh2: ED25519 SHA256:abc
+Oct 26 17:08:06 web01 sshd[2003]: Accepted publickey for bob from 192.0.2.25 port 41900 ssh2: ED25519 SHA256:abc
+Oct 26 17:21:08 web01 sshd[2061]: Accepted publickey for alice from 192.0.2.10 port 43367 ssh2: ED25519 SHA256:abc
+Oct 26 17:32:25 web01 sshd[2036]: Accepted publickey for bob from 192.0.2.11 port 52914 ssh2: ED25519 SHA256:abc
+Oct 26 17:33:52 web01 sshd[2010]: Accepted publickey for deploy from 192.0.2.10 port 43376 ssh2: ED25519 SHA256:abc
+Oct 26 17:57:52 web01 sshd[2065]: Accepted publickey for deploy from 192.0.2.11 port 56438 ssh2: ED25519 SHA256:abc

@@ -1,0 +1,15 @@
+rule: 2eb114e7-c7a8-4190-af38-14dd2ff3e9b8
+match:
+- Image: C:\Windows\System32\ipconfig.exe
+  CommandLine: ipconfig /all
+- Image: C:\Windows\System32\ipconfig.exe
+  CommandLine: ipconfig -all
+- Image: C:\Windows\System32\ROUTE.EXE
+  CommandLine: route print
+- Image: C:\Windows\System32\arp.exe
+  CommandLine: arp -a
+no_match:
+- Image: C:\Windows\System32\ipconfig.exe
+  CommandLine: ipconfig /renew
+- Image: C:\Windows\System32\route.exe
+  CommandLine: route add 10.0.0.0

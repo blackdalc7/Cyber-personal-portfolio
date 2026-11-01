@@ -1,0 +1,33 @@
+- name: Base packages
+  ansible.builtin.apt:
+    name: [curl, jq, ca-certificates, auditd, rsyslog, ufw]
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: UTC everywhere so timelines line up
+  community.general.timezone:
+    name: UTC
+
+- name: Forward auth logs to 01's syslog listener
+  ansible.builtin.copy:
+    dest: /etc/rsyslog.d/60-watchfloor.conf
+    mode: "0644"
+    content: |
+      # Managed by Ansible: auth and sudo events to the Watchfloor SIEM (01) over UDP
+      auth,authpriv.* @{{ wf_syslog_host }}:{{ wf_syslog_port }};RSYSLOG_SyslogProtocol23Format
+  notify: Restart rsyslog
+
+- name: Firewall - allow SSH and the Kubernetes API from the lab network only
+  community.general.ufw:
+    rule: allow
+    src: "{{ lab_net_prefix }}.0/24"
+    port: "{{ item }}"
+    proto: tcp
+  loop: ["22", "16443"]
+
+- name: Firewall - default deny incoming, enable
+  community.general.ufw:
+    state: enabled
+    policy: deny
+    direction: incoming

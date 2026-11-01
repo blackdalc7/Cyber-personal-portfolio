@@ -1,0 +1,77 @@
+# Publishes the Watchfloor replay demo (static, no backend) to GitHub Pages.
+# Settings -> Pages -> Source: GitHub Actions.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ["watchfloor/**", "packages/**", "04-blast-radius-vuln-scanner/examples/output/**", "05-sigma-attack-coverage/examples/output/**",
+            "06-alert-clustering-fp-reducer/examples/output/**", "07-attack-emulator/examples/output/**",
+            "08-detection-rules/build/**", "09-evidence-timeline/examples/output/**", "10-ai-analyst-mcp/examples/output/**",
+            ".github/workflows/pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: watchfloor/backend/requirements*.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: watchfloor/frontend/package-lock.json
+      - name: Export the replay data from the recorded datasets and project outputs
+        working-directory: watchfloor/backend
+        env:
+          WF_EXPOSURE_FILE: ../../04-blast-radius-vuln-scanner/examples/output/findings.json
+          WF_COVERAGE_DIR: ${{ runner.temp }}/coverage
+          WF_TRIAGE_QUEUE: ../../06-alert-clustering-fp-reducer/examples/output/queue.json
+          WF_RULES_INDEX: ../../08-detection-rules/build/rules_index.json
+          WF_EVIDENCE_DIR: ../../09-evidence-timeline/examples/output
+          WF_ANALYST_DIR: ../../10-ai-analyst-mcp/examples/output
+        run: |
+          mkdir -p "$WF_COVERAGE_DIR/05" "$WF_COVERAGE_DIR/07"
+          cp ../../05-sigma-attack-coverage/examples/output/coverage.json "$WF_COVERAGE_DIR/05/"
+          cp ../../07-attack-emulator/examples/output/run-*.json "$WF_COVERAGE_DIR/07/" 2>/dev/null || true
+          pip install -r requirements.txt
+          PYTHONPATH=src python -m watchfloor export-demo --out ../frontend/public/demo
+      - name: Build the static UI
+        working-directory: watchfloor/frontend
+        run: |
+          (cd ../../packages/aegis-ui && npm ci --no-audit --no-fund && npm test)
+          npm ci --no-audit --no-fund
+          npm test
+          npm run build:demo
+      - name: Browser smoke test
+        working-directory: watchfloor/frontend
+        run: |
+          npx playwright install --with-deps chromium
+          npm run e2e
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: watchfloor/frontend/dist-demo
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

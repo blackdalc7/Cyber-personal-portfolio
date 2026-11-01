@@ -1,0 +1,196 @@
+{
+  "name": "Watchfloor: alert intake",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "e577bd6b-0dc9-5904-9e7c-6464f92eee9d",
+      "name": "Every minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ $env.WF_HUB_URL }}/api/findings",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "since",
+              "value": "={{ Date.now() - 5 * 60 * 1000 }}"
+            },
+            {
+              "name": "min_severity",
+              "value": "={{ $env.MIN_SEVERITY_ID || 4 }}"
+            },
+            {
+              "name": "limit",
+              "value": "500"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $env.WF_HUB_TOKEN }}"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "f904570e-4a76-5ece-adaf-17a63584f7f3",
+      "name": "Recent findings",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Forward each Watchfloor Detection Finding once. Seen uids live in the workflow's static data for 6 hours\n// (n8n persists static data for active, production executions).\nconst state = $getWorkflowStaticData('global');\nstate.seen = state.seen || {};\nconst now = Date.now();\nfor (const [uid, t] of Object.entries(state.seen)) {\n  if (now - t > 6 * 3600 * 1000) delete state.seen[uid];\n}\nconst out = [];\nfor (const item of $input.all()) {\n  const f = item.json;\n  if (!f || !f.uid || f.class_uid !== 2004) continue;\n  if (f.product === 'soar-bot') continue; // 02's own incidents come back through the hub: never loop them\n  if (state.seen[f.uid]) continue;\n  state.seen[f.uid] = now;\n  out.push({ json: f });\n}\nreturn out;\n"
+      },
+      "id": "16897c7e-1bff-5e91-8f90-d60b13d5cecd",
+      "name": "New findings only",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turn a finding into 02's generic alert, add host context from the hub, and sign it exactly as 02 expects:\n// X-SOAR-Signature = \"sha256=\" + HMAC-SHA256(secret, \"<timestamp>.\" + body). Needs NODE_FUNCTION_ALLOW_BUILTIN=crypto.\nconst crypto = require('crypto');\nconst SEVERITY = { 0: 'low', 1: 'low', 2: 'low', 3: 'medium', 4: 'high', 5: 'critical', 6: 'critical' };\nconst hub = $env.WF_HUB_URL;\nconst token = $env.WF_HUB_TOKEN || '';\nconst secret = $env.SOAR_WEBHOOK_SECRET || '';\nif (secret.length < 32) throw new Error('SOAR_WEBHOOK_SECRET is not set (>= 32 chars, same as 02 WEBHOOK_SHARED_SECRET)');\n\nconst out = [];\nfor (const item of $input.all()) {\n  const f = item.json;\n  const techniques = Array.isArray(f.techniques) ? f.techniques : [];\n  let context = '';\n  if (f.hostname) {\n    try {\n      const related = await this.helpers.httpRequest({\n        method: 'GET',\n        url: `${hub}/api/findings`,\n        qs: { hostname: f.hostname, since: Number(f.time) - 3600 * 1000, limit: 50 },\n        headers: token ? { Authorization: `Bearer ${token}` } : {},\n        json: true,\n      });\n      const seen = [...new Set(related.flatMap((r) => r.techniques || []))].sort();\n      context = `\\n\\nHost context (last hour): ${related.length} findings on ${f.hostname}` +\n        (seen.length ? `, techniques ${seen.join(', ')}` : '') + '.';\n    } catch (e) {\n      context = '\\n\\nHost context unavailable (hub did not answer).';\n    }\n  }\n  const alert = {\n    id: `wf-${f.uid}`,\n    title: String(f.finding_title || 'Watchfloor finding').slice(0, 200),\n    severity: SEVERITY[f.severity_id] || 'medium',\n    source: `watchfloor:${f.product || 'unknown'}`,\n    timestamp: Number(f.time) / 1000,\n    description: `${f.message || f.finding_title || ''}\\nTechniques: ${techniques.join(', ') || 'none'}\\n` +\n      `Watchfloor finding: ${f.uid}${context}`,\n  };\n  if (f.hostname) alert.host = f.hostname;\n  if (f.src_ip) alert.source_ip = f.src_ip;\n  const body = JSON.stringify(alert);\n  const ts = String(Math.floor(Date.now() / 1000));\n  const sig = 'sha256=' + crypto.createHmac('sha256', secret).update(`${ts}.${body}`).digest('hex');\n  out.push({ json: { uid: f.uid, body, ts, sig } });\n}\nreturn out;\n"
+      },
+      "id": "7188d2a2-a5eb-5c1d-ac40-0e720bcdd5d2",
+      "name": "Build signed alert",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.SOAR_URL }}/alerts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-SOAR-Timestamp",
+              "value": "={{ $json.ts }}"
+            },
+            {
+              "name": "X-SOAR-Signature",
+              "value": "={{ $json.sig }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.body }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "04c1294f-2723-53b8-8f28-5166918de7fc",
+      "name": "Open incident in 02",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        0
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000
+    }
+  ],
+  "connections": {
+    "Every minute": {
+      "main": [
+        [
+          {
+            "node": "Recent findings",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recent findings": {
+      "main": [
+        [
+          {
+            "node": "New findings only",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New findings only": {
+      "main": [
+        [
+          {
+            "node": "Build signed alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build signed alert": {
+      "main": [
+        [
+          {
+            "node": "Open incident in 02",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "tags": [
+    {
+      "name": "watchfloor"
+    },
+    {
+      "name": "soar"
+    }
+  ],
+  "meta": {
+    "generatedBy": "automation/n8n/build_workflows.py"
+  }
+}

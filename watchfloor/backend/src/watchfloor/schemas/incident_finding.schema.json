@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/incident_finding.schema.json",
+  "title": "OCSF 1.4.0 Incident Finding [2005] (Watchfloor subset)",
+  "allOf": [
+    {
+      "$ref": "base_event.schema.json"
+    }
+  ],
+  "type": "object",
+  "required": [
+    "finding_info_list"
+  ],
+  "properties": {
+    "class_uid": {
+      "const": 2005
+    },
+    "category_uid": {
+      "const": 2
+    },
+    "activity_id": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        99
+      ]
+    },
+    "finding_info_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "uid",
+          "title"
+        ],
+        "properties": {
+          "uid": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "status_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        99
+      ]
+    },
+    "priority_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        99
+      ]
+    },
+    "verdict_id": {
+      "type": "integer"
+    },
+    "desc": {
+      "type": "string"
+    },
+    "assignee": {
+      "$ref": "base_event.schema.json#/$defs/user"
+    }
+  }
+}

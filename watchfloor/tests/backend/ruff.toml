@@ -1,0 +1,4 @@
+extend = "../../backend/ruff.toml"
+
+[lint.per-file-ignores]
+"*.py" = ["S", "B", "BLE"]

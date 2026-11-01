@@ -1,0 +1,26 @@
+match:
+  - name: -EncodedCommand over WinRM
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: powershell.exe, cmd_line: powershell.exe -NoProfile -EncodedCommand VwByAGkAdABlAC0ASABvAHMAdAA=,
+                file: {name: powershell.exe, path: 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'}}
+  - name: the shortest prefix, -ec, in pwsh
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: pwsh.exe, cmd_line: pwsh.exe -ec VwByAGkAdABlAC0ASABvAHMAdAA=,
+                file: {name: pwsh.exe, path: 'C:\Program Files\PowerShell\7\pwsh.exe'}}
+nomatch:
+  - name: -ExecutionPolicy is not -EncodedCommand
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: powershell.exe, cmd_line: powershell.exe -ExecutionPolicy Bypass -File C:\scripts\backup.ps1,
+                file: {name: powershell.exe, path: 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe'}}
+  - name: Linux pwsh in the Atomic runner pod (the emulator's own transport)
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: pwsh, cmd_line: /usr/bin/pwsh -NoProfile -NonInteractive -EncodedCommand SQBuAHYAbwBrAGUA,
+                file: {name: pwsh, path: /usr/bin/pwsh}}

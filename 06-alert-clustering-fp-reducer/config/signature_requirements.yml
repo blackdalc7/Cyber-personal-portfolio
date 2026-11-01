@@ -1,0 +1,83 @@
+# Signature applicability: what a target must have for the detected attack to be able to work.
+#
+# A meta-alert is a STRUCTURAL false positive only when every target is in the CMDB and every
+# target fails at least one requirement of every rule in the cluster. Port and product checks
+# are applied only to assets that have a service inventory.
+#
+# Deliberately NOT listed: Log4Shell and other "any JVM / any library" bugs. Embedded
+# dependencies are not reliably inventoried, so absence from the CMDB proves nothing.
+
+- id: rdp
+  match: "(?i)\\b(rdp|ms-wbt-server|bluekeep|terminal services|remote desktop)\\b"
+  requires: {os_family: [windows], ports: [3389]}
+  reason: RDP attacks need a Windows host listening on 3389/tcp
+
+- id: smb
+  match: "(?i)\\b(smb|smbv1|smbv3|eternalblue|ms17-010|smbghost|netbios)\\b"
+  requires: {os_family: [windows], ports: [139, 445]}
+  reason: SMB exploitation needs a Windows host exposing 139/445
+
+- id: winrm
+  match: "(?i)\\bwinrm\\b"
+  requires: {os_family: [windows], ports: [5985, 5986]}
+  reason: WinRM attacks need Windows Remote Management on 5985/5986
+
+- id: print-spooler
+  match: "(?i)\\b(printnightmare|print spooler|spoolss)\\b"
+  requires: {os_family: [windows]}
+  reason: Print Spooler bugs only affect Windows
+
+- id: iis
+  match: "(?i)\\b(iis|webdav)\\b"
+  requires: {os_family: [windows], products: [iis]}
+  reason: IIS attacks need Microsoft IIS
+
+- id: exchange
+  match: "(?i)\\b(proxylogon|proxyshell|proxynotshell|owa|exchange server)\\b"
+  requires: {os_family: [windows], products: [exchange]}
+  reason: Exchange attacks need an on-premises Exchange server
+
+- id: mssql
+  match: "(?i)\\b(mssql|ms-sql|sql server)\\b"
+  requires: {ports: [1433]}
+  reason: MSSQL attacks need SQL Server on 1433/tcp
+
+- id: struts
+  match: "(?i)\\bstruts2?\\b"
+  requires: {products: [struts]}
+  reason: Struts attacks need an Apache Struts application
+
+- id: linux-local
+  match: "(?i)\\b(pwnkit|polkit|dirty ?pipe|dirty ?cow|shellshock)\\b"
+  requires: {os_family: [linux, macos]}
+  reason: These privilege-escalation bugs only exist on Linux/Unix userlands
+
+- id: ssh
+  match: "(?i)\\bssh\\b"
+  requires: {ports: [22]}
+  reason: SSH attacks need an SSH daemon
+
+- id: telnet
+  match: "(?i)\\btelnet\\b"
+  requires: {ports: [23]}
+  reason: Telnet attacks need a Telnet service
+
+- id: vnc
+  match: "(?i)\\bvnc\\b"
+  requires: {ports: [5900, 5901]}
+  reason: VNC attacks need a VNC server
+
+- id: mysql
+  match: "(?i)\\bmysql\\b"
+  requires: {ports: [3306]}
+  reason: MySQL attacks need MySQL on 3306/tcp
+
+- id: redis
+  match: "(?i)\\bredis\\b"
+  requires: {ports: [6379]}
+  reason: Redis attacks need Redis on 6379/tcp
+
+- id: macos
+  match: "(?i)\\b(gatekeeper|macos|osascript)\\b"
+  requires: {os_family: [macos]}
+  reason: macOS-specific techniques need a macOS host

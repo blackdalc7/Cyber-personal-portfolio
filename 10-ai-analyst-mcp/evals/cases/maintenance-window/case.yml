@@ -1,0 +1,9 @@
+name: maintenance-window
+kind: triage
+incident_id: INC-20261027-B4C0A6E1
+description: A new service is installed on fs01 during its approved change window.
+expect:
+  verdict:
+  - benign_true_positive
+  tools:
+  - lookup_asset

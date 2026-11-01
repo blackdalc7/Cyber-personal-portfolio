@@ -1,0 +1,11 @@
+name: maldoc-ransomware
+kind: triage
+incident_id: INC-20261026-F64AEE6E
+description: 'Watchfloor''s recorded scenario: macro document to ransomware on ws01.'
+expect:
+  verdict:
+  - true_positive
+  tools:
+  - get_incident
+  - lookup_asset
+  min_confidence: 0.7

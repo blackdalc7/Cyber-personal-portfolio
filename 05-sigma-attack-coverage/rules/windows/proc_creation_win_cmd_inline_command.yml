@@ -1,0 +1,28 @@
+title: Cmd.exe Executing an Inline Command
+id: 7190ed3f-8657-4c1b-96fd-353776fb15d2
+status: test
+description: Detects cmd.exe started with /c or /k and a command string, the most common way malware and operators run one-off shell commands.
+references:
+    - https://attack.mitre.org/techniques/T1059/003/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.execution
+    - attack.t1059.003
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        - Image|endswith: '\cmd.exe'
+        - OriginalFileName: 'Cmd.Exe'
+    selection_cli:
+        CommandLine|contains|windash:
+            - ' -c '
+            - ' -k '
+    filter_explorer_parent:
+        ParentImage|endswith: '\explorer.exe'
+    condition: all of selection_* and not filter_explorer_parent
+falsepositives:
+    - Software installers and login scripts
+level: low

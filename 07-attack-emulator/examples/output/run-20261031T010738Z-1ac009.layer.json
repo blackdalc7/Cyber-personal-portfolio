@@ -1,0 +1,96 @@
+{
+  "name": "Watchfloor emulation: Replay demo",
+  "versions": {
+    "attack": "17",
+    "navigator": "5.1.0",
+    "layer": "4.5"
+  },
+  "domain": "enterprise-attack",
+  "description": "run-20261031T010738Z-1ac009: detection coverage 62.5%",
+  "sorting": 3,
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1003.008",
+      "score": 2,
+      "color": "#39ff88",
+      "comment": "detected, TTD 1.9s",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1036.003",
+      "score": 2,
+      "color": "#39ff88",
+      "comment": "detected, TTD 4.7s",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1053.003",
+      "score": 2,
+      "color": "#39ff88",
+      "comment": "detected, TTD 1.5s",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1059.001",
+      "score": 2,
+      "color": "#39ff88",
+      "comment": "detected, TTD 1.0s",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1070.003",
+      "score": 1,
+      "color": "#ffb224",
+      "comment": "telemetry_only",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1087.001",
+      "score": 1,
+      "color": "#ffb224",
+      "comment": "telemetry_only",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1136.001",
+      "score": 2,
+      "color": "#39ff88",
+      "comment": "detected, TTD 1.1s",
+      "enabled": true
+    },
+    {
+      "techniqueID": "T1562.001",
+      "score": 0,
+      "color": "#ff3b5c",
+      "comment": "missed",
+      "enabled": true
+    }
+  ],
+  "legendItems": [
+    {
+      "label": "detected",
+      "color": "#39ff88"
+    },
+    {
+      "label": "prevented",
+      "color": "#a78bfa"
+    },
+    {
+      "label": "telemetry only",
+      "color": "#ffb224"
+    },
+    {
+      "label": "missed",
+      "color": "#ff3b5c"
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#ff3b5c",
+      "#39ff88"
+    ],
+    "minValue": 0,
+    "maxValue": 3
+  }
+}

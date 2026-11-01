@@ -1,0 +1,22 @@
+[project]
+name = "alert-clustering-fp-reducer"
+version = "1.0.0"
+description = "Clusters SIEM alerts into meta-alerts, enriches them from a CMDB and filters structural false positives"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+alert-triage = "alert_triage.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["alert_triage"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

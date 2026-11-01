@@ -1,0 +1,22 @@
+[project]
+name = "ai-analyst-mcp"
+version = "1.0.0"
+description = "Read-only MCP tools over the Watchfloor lake (DuckDB) and the CMDB (SQLite), and an analyst that investigates new incidents with them and cites every claim"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+ai-analyst = "ai_analyst.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["src/ai_analyst"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

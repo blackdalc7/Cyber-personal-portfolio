@@ -1,0 +1,28 @@
+title: Network Configuration Discovery via Ipconfig, Route or Arp
+id: 2eb114e7-c7a8-4190-af38-14dd2ff3e9b8
+status: test
+description: Detects ipconfig /all, route print and arp -a, used to map local interfaces, gateways and neighbouring hosts.
+references:
+    - https://attack.mitre.org/techniques/T1016/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1016
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_ipconfig:
+        Image|endswith: '\ipconfig.exe'
+        CommandLine|contains|windash: ' -all'
+    selection_route:
+        Image|endswith: '\route.exe'
+        CommandLine|contains: ' print'
+    selection_arp:
+        Image|endswith: '\arp.exe'
+        CommandLine|contains|windash: ' -a'
+    condition: 1 of selection_*
+falsepositives:
+    - Network troubleshooting by administrators
+level: low

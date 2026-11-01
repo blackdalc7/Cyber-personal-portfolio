@@ -1,0 +1,10 @@
+rule: ce753259-9469-4fd9-9727-fd242d084d4f
+match:
+- Image: C:\Windows\System32\whoami.exe
+  CommandLine: whoami /all
+- Image: C:\Tmp\renamed.exe
+  OriginalFileName: whoami.exe
+no_match:
+- Image: C:\Windows\System32\whoami.exe
+  ParentImage: C:\Windows\System32\msiexec.exe
+- Image: C:\Tools\whoami-helper.exe

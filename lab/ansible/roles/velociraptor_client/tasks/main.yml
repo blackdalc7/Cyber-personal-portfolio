@@ -1,0 +1,47 @@
+# Enrols the endpoint with the Velociraptor server from deploy/ (profile dfir). The server writes
+# client.config.yaml into its volume on first start: copy it to deploy/velociraptor/client.config.yaml first.
+- name: Skip cleanly when the client is not configured yet
+  ansible.builtin.meta: end_role
+  when: velociraptor_client_msi_url | length == 0
+
+- name: Checksum is mandatory
+  ansible.builtin.assert:
+    that: velociraptor_client_msi_sha256 | length == 64
+    fail_msg: "Set velociraptor_client_msi_sha256 for {{ velociraptor_client_msi_url }}"
+
+- name: Client config must exist on the control host
+  ansible.builtin.stat:
+    path: "{{ velociraptor_client_config_src }}"
+  delegate_to: localhost
+  register: velo_cfg
+
+- name: Explain how to get the client config
+  ansible.builtin.fail:
+    msg: >-
+      {{ velociraptor_client_config_src }} not found. Run:
+      docker compose --profile dfir cp velociraptor:/velo/client.config.yaml deploy/velociraptor/client.config.yaml
+  when: not velo_cfg.stat.exists
+
+- name: Download the Velociraptor MSI
+  ansible.windows.win_get_url:
+    url: "{{ velociraptor_client_msi_url }}"
+    dest: 'C:\Watchfloor\velociraptor.msi'
+    checksum: "{{ velociraptor_client_msi_sha256 }}"
+    checksum_algorithm: sha256
+
+- name: Install
+  ansible.windows.win_package:
+    path: 'C:\Watchfloor\velociraptor.msi'
+    state: present
+
+- name: Client configuration
+  ansible.windows.win_copy:
+    src: "{{ velociraptor_client_config_src }}"
+    dest: 'C:\Program Files\Velociraptor\client.config.yaml'
+  notify: Restart velociraptor
+
+- name: Service running
+  ansible.windows.win_service:
+    name: Velociraptor
+    start_mode: auto
+    state: started

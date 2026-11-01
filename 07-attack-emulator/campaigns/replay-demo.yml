@@ -1,0 +1,29 @@
+# No lab needed: each technique's recorded lab telemetry is replayed into the hub (activity events only, never the
+# recorded findings), and the hub's own rules decide the outcome. Run with
+#   attack-emulator run campaigns/replay-demo.yml --fixtures tests/fixtures/replay
+name: Replay demo
+description: >
+  Recorded Tetragon and Sysmon telemetry from the lab, replayed through the real pipeline. Shows every outcome the
+  scoring can produce except "prevented", which only a live endpoint can tell you.
+settle_s: 3
+targets:
+  - {name: k8s, executor: replay, hostname: lab-k8s}
+  - {name: win01, executor: replay, hostname: lab-win01}
+tests:
+  - {technique: T1003.008, name: Read /etc/shadow, tactic: credential-access, target: k8s,
+     test_names: ["Access /etc/shadow (Local)"], telemetry_match: shadow}
+  - {technique: T1136.001, name: Create local account, tactic: persistence, target: k8s,
+     test_names: ["Create a user account on a Linux system"], telemetry_match: useradd}
+  - {technique: T1053.003, name: Cron persistence, tactic: persistence, target: k8s,
+     test_names: ["Cron - Replace crontab with referenced file"], telemetry_match: crontab}
+  - {technique: T1070.003, name: Clear shell history, tactic: defense-evasion, target: k8s,
+     test_names: ["Clear Bash history (rm)"], telemetry_match: bash_history}
+  - {technique: T1059.001, name: Encoded PowerShell, tactic: execution, target: win01,
+     test_names: ["ATHPowerShellCommandLineParameter -EncodedCommand parameter variations"],
+     telemetry_match: encodedcommand}
+  - {technique: T1036.003, name: Masquerade as lsass.exe, tactic: defense-evasion, target: win01,
+     test_names: ["Masquerading as Windows LSASS process"], telemetry_match: lsass.exe}
+  - {technique: T1087.001, name: Enumerate local accounts, tactic: discovery, target: win01,
+     test_names: ["Enumerate all accounts on Windows (Local)"], telemetry_match: "net "}
+  - {technique: T1562.001, name: Stop Sysmon, tactic: defense-evasion, target: win01,
+     test_names: ["Unload Sysmon Filter Driver"]}
