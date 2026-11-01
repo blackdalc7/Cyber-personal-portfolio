@@ -1,0 +1,243 @@
+{
+  "kind": "emulation-run",
+  "version": 1,
+  "run_id": "run-20261030T202140Z-5c0dd8",
+  "campaign": "Replay demo",
+  "started": 1793391700848,
+  "finished": 1793391908954,
+  "dry_run": false,
+  "summary": {
+    "total": 8,
+    "scored": 8,
+    "detected": 5,
+    "prevented": 0,
+    "telemetry_only": 2,
+    "missed": 1,
+    "error": 0,
+    "skipped": 0,
+    "detection_coverage": 62.5,
+    "telemetry_coverage": 87.5,
+    "mean_ttd_ms": 1421
+  },
+  "results": [
+    {
+      "technique": "T1003.008",
+      "name": "Read /etc/shadow",
+      "tactic": "credential-access",
+      "target": "k8s",
+      "hostname": "lab-k8s",
+      "test": "T1003.008#Access /etc/shadow (Local)",
+      "executor": "replay",
+      "outcome": "detected",
+      "started": 1793391700848,
+      "ended": 1793391700848,
+      "ttd_ms": 1086,
+      "findings": [
+        {
+          "title": "Read of /etc/shadow by a process that has no business reading it",
+          "product": "detection-rules",
+          "time": 1793391701934,
+          "uid": "rules-6f0c07e0b6aef4b8073c4ee95156d6ce"
+        }
+      ],
+      "telemetry_events": 3,
+      "polls": 2,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":5,\"accepted\":5,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1136.001",
+      "name": "Create local account",
+      "tactic": "persistence",
+      "target": "k8s",
+      "hostname": "lab-k8s",
+      "test": "T1136.001#Create a user account on a Linux system",
+      "executor": "replay",
+      "outcome": "detected",
+      "started": 1793391704934,
+      "ended": 1793391704934,
+      "ttd_ms": 1292,
+      "findings": [
+        {
+          "title": "Local account created with useradd or adduser",
+          "product": "detection-rules",
+          "time": 1793391706226,
+          "uid": "rules-9225a816b4208fa7e42af55c826835a1"
+        }
+      ],
+      "telemetry_events": 4,
+      "polls": 2,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":6,\"accepted\":6,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1053.003",
+      "name": "Cron persistence",
+      "tactic": "persistence",
+      "target": "k8s",
+      "hostname": "lab-k8s",
+      "test": "T1053.003#Cron - Replace crontab with referenced file",
+      "executor": "replay",
+      "outcome": "detected",
+      "started": 1793391709226,
+      "ended": 1793391709226,
+      "ttd_ms": 1941,
+      "findings": [
+        {
+          "title": "Crontab replaced from a file",
+          "product": "detection-rules",
+          "time": 1793391711167,
+          "uid": "rules-16d392974459c9f591625c0829caa3fd"
+        }
+      ],
+      "telemetry_events": 4,
+      "polls": 2,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":6,\"accepted\":6,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1070.003",
+      "name": "Clear shell history",
+      "tactic": "defense-evasion",
+      "target": "k8s",
+      "hostname": "lab-k8s",
+      "test": "T1070.003#Clear Bash history (rm)",
+      "executor": "replay",
+      "outcome": "telemetry_only",
+      "started": 1793391714167,
+      "ended": 1793391714167,
+      "ttd_ms": null,
+      "findings": [],
+      "telemetry_events": 2,
+      "polls": 17,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":4,\"accepted\":4,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1059.001",
+      "name": "Encoded PowerShell",
+      "tactic": "execution",
+      "target": "win01",
+      "hostname": "lab-win01",
+      "test": "T1059.001#ATHPowerShellCommandLineParameter -EncodedCommand parameter variations",
+      "executor": "replay",
+      "outcome": "detected",
+      "started": 1793391777167,
+      "ended": 1793391777167,
+      "ttd_ms": 1246,
+      "findings": [
+        {
+          "title": "PowerShell started with an encoded command",
+          "product": "detection-rules",
+          "time": 1793391778413,
+          "uid": "rules-0aeee1badda042af6ede3416abd1057d"
+        }
+      ],
+      "telemetry_events": 1,
+      "polls": 2,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":4,\"accepted\":4,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1036.003",
+      "name": "Masquerade as lsass.exe",
+      "tactic": "defense-evasion",
+      "target": "win01",
+      "hostname": "lab-win01",
+      "test": "T1036.003#Masquerading as Windows LSASS process",
+      "executor": "replay",
+      "outcome": "detected",
+      "started": 1793391781413,
+      "ended": 1793391781413,
+      "ttd_ms": 1541,
+      "findings": [
+        {
+          "title": "Windows system process name running from the wrong folder",
+          "product": "detection-rules",
+          "time": 1793391782954,
+          "uid": "rules-a1f3cf8f94051aeed972fd82c1c55ba4"
+        }
+      ],
+      "telemetry_events": 2,
+      "polls": 2,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":5,\"accepted\":5,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1087.001",
+      "name": "Enumerate local accounts",
+      "tactic": "discovery",
+      "target": "win01",
+      "hostname": "lab-win01",
+      "test": "T1087.001#Enumerate all accounts on Windows (Local)",
+      "executor": "replay",
+      "outcome": "telemetry_only",
+      "started": 1793391785954,
+      "ended": 1793391785954,
+      "ttd_ms": null,
+      "findings": [],
+      "telemetry_events": 2,
+      "polls": 17,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":5,\"accepted\":5,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    },
+    {
+      "technique": "T1562.001",
+      "name": "Stop Sysmon",
+      "tactic": "defense-evasion",
+      "target": "win01",
+      "hostname": "lab-win01",
+      "test": "T1562.001#Unload Sysmon Filter Driver",
+      "executor": "replay",
+      "outcome": "missed",
+      "started": 1793391848954,
+      "ended": 1793391848954,
+      "ttd_ms": null,
+      "findings": [],
+      "telemetry_events": 0,
+      "polls": 15,
+      "rc": 0,
+      "error": null,
+      "cleanup_rc": null,
+      "output_tail": {
+        "stdout": "{\"received\":0,\"accepted\":0,\"rejected\":0,\"skipped\":0}",
+        "stderr": ""
+      }
+    }
+  ]
+}

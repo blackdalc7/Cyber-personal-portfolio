@@ -1,0 +1,3 @@
+-- PowerShell started with an encoded command
+-- 0f084fc1-7bdd-4018-9346-7e72f506c45b
+SELECT uid, time, hostname, product, user_name, process_name, process_path, cmd_line, parent_path, target_file, dst_ip, dst_port FROM ocsf_flat WHERE time >= ? AND time < ? AND class_uid = 1007 AND activity_id = 1 AND ((coalesce(process_path ILIKE '%\\powershell.exe' ESCAPE '\', false) OR coalesce(process_path ILIKE '%\\pwsh.exe' ESCAPE '\', false)) AND coalesce(regexp_matches(cmd_line, '(?i)\s[-/](e|ec|en|enc|enco|encod|encode|encoded|encodedc|encodedco|encodedcom|encodedcomm|encodedcomma|encodedcomman|encodedcommand)\s+[A-Za-z0-9+/=]{8,}'), false)) ORDER BY time;

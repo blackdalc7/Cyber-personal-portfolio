@@ -1,0 +1,113 @@
+{
+  "incident_id": "INC-20261026-FB976B87",
+  "incident_title": "Correlated alert chain: True Positive (post_compromise)",
+  "host": "web01",
+  "scenario": "ssh-bruteforce-to-persistence",
+  "provider": "offline",
+  "model": "rules-v1",
+  "verdict": "true_positive",
+  "confidence": 0.93,
+  "summary": "Correlated alert chain: True Positive (post_compromise) on web01 (public website, criticality 3, owner web-team). 7 detection findings between 11:01:03 and 11:08:59 UTC cover T1078, T1098, T1110.001, T1136.001, T1548.003. The most severe is \"Correlated alert chain\". Source 203.0.113.66 is a documentation address with 42 failed and 1 successful logins around the incident. 7 high or critical detections on web01 line up into one chain (T1078, T1098, T1110.001, T1136.001, T1548.003), which does not fit any authorised activity in the CMDB. In the SOAR bot the incident is remediated (decided by analyst.dana).",
+  "evidence": [
+    {
+      "tool_call": "c1",
+      "quote": "Correlated alert chain: True Positive (post_compromise)",
+      "valid": true
+    },
+    {
+      "tool_call": "c1",
+      "quote": "Correlated alert chain",
+      "valid": true
+    },
+    {
+      "tool_call": "c1",
+      "quote": "Successful login after brute force",
+      "valid": true
+    },
+    {
+      "tool_call": "c1",
+      "quote": "Privileged activity after compromise",
+      "valid": true
+    },
+    {
+      "tool_call": "c2",
+      "quote": "public website",
+      "valid": true
+    },
+    {
+      "tool_call": "c4",
+      "quote": "admin",
+      "valid": true
+    }
+  ],
+  "recommended_actions": [
+    "Keep web01 isolated until the evidence package for INC-20261026-FB976B87 has been reviewed.",
+    "Reset the password of admin and review every session it opened.",
+    "Block 203.0.113.66 at the perimeter; it is external and not in the CMDB.",
+    "Hunt for T1078, T1098, T1110.001, T1136.001 on other hosts in the same window."
+  ],
+  "citations_valid": true,
+  "tool_calls": [
+    {
+      "id": "c1",
+      "tool": "get_incident",
+      "arguments": {
+        "incident_id": "INC-20261026-FB976B87"
+      },
+      "result_preview": "{\"incident\":{\"id\":\"INC-20261026-FB976B87\",\"title\":\"Correlated alert chain: True Positive (post_compromise)\",\"status\":\"remediated\",\"severity_id\":5,\"host\":\"web01\",\"indicator_ip\":\"203.0.113.66\",\"source\":\"realtime_siem\",\"risk_score\":80,\"description\":\"203.0.113.66 brute forced and then logged in to web01, followed by privileged activity (sudo, account or group changes) involving admin, svc-backup. This…",
+      "error": false
+    },
+    {
+      "id": "c2",
+      "tool": "lookup_asset",
+      "arguments": {
+        "hostname": "web01",
+        "at_ms": 1793012463000
+      },
+      "result_preview": "{\"found\":true,\"asset\":{\"ip\":\"10.20.1.10\",\"hostname\":\"web01\",\"os_family\":\"linux\",\"os_version\":\"Ubuntu 22.04\",\"role\":\"public website\",\"criticality\":3,\"internet_facing\":true,\"owner\":\"web-team\",\"business_unit\":\"Marketing\",\"services\":[{\"port\":22,\"protocol\":\"tcp\",\"service\":\"ssh\",\"product\":\"OpenSSH 8.9\"},{\"port\":80,\"protocol\":\"tcp\",\"service\":\"http\",\"product\":\"nginx 1.24\"},{\"port\":443,\"protocol\":\"tcp\",\"se…",
+      "error": false
+    },
+    {
+      "id": "c3",
+      "tool": "check_ip",
+      "arguments": {
+        "ip": "203.0.113.66"
+      },
+      "result_preview": "{\"ip\":\"203.0.113.66\",\"scope\":\"documentation\",\"asset\":null,\"authorized_scanner\":null,\"seen_in_lake\":{\"events\":52,\"first\":1793012400000,\"last\":1793013189000,\"hosts\":[\"web01\"],\"first_utc\":\"2026-10-26T11:00:00.000+00:00\",\"last_utc\":\"2026-10-26T11:13:09.000+00:00\"}}",
+      "error": false
+    },
+    {
+      "id": "c4",
+      "tool": "auth_summary",
+      "arguments": {
+        "since_ms": 1792990863000,
+        "until_ms": 1793016063000,
+        "src_ip": "203.0.113.66"
+      },
+      "result_preview": "{\"rows\":[{\"src_ip\":\"203.0.113.66\",\"user_name\":\"admin\",\"outcome\":\"failure\",\"attempts\":42,\"first\":1793012400000,\"last\":1793012687000,\"first_utc\":\"2026-10-26T11:00:00.000+00:00\",\"last_utc\":\"2026-10-26T11:04:47.000+00:00\"},{\"src_ip\":\"203.0.113.66\",\"user_name\":\"admin\",\"outcome\":\"success\",\"attempts\":1,\"first\":1793012699000,\"last\":1793012699000,\"first_utc\":\"2026-10-26T11:04:59.000+00:00\",\"last_utc\":\"2026…",
+      "error": false
+    },
+    {
+      "id": "c5",
+      "tool": "get_findings",
+      "arguments": {
+        "hostname": "web01",
+        "since_ms": 1793005263000,
+        "until_ms": 1793016063000
+      },
+      "result_preview": "{\"rows\":[{\"time\":1793012463000,\"uid\":\"ce5f84bd-d6ac-4f0f-be62-1a496de3b8b1\",\"product\":\"realtime-siem\",\"severity_id\":4,\"finding_title\":\"Authentication brute force\",\"techniques\":[\"T1110.001\"],\"hostname\":\"web01\",\"src_ip\":\"203.0.113.66\",\"user_name\":\"admin\",\"process_name\":null,\"process_pid\":null,\"cmd_line\":null,\"file_path\":null,\"message\":\"[HIGH] Authentication brute force: 10 failed logins from 203.0.1…",
+      "error": false
+    }
+  ],
+  "refused_calls": [],
+  "untrusted_instructions": [],
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "turns": 0
+  },
+  "duration_s": 0.0,
+  "engine_version": "1.0",
+  "created": "2026-10-26T11:03:03+00:00",
+  "incident_status": "remediated"
+}

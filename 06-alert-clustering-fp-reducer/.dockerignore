@@ -1,0 +1,8 @@
+.env
+data/
+tests/
+**/__pycache__
+.pytest_cache
+.coverage
+examples/alerts_simulated.json
+examples/output/

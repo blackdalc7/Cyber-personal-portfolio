@@ -1,0 +1,9 @@
+rule: d17b9ff4-4fc4-4332-a199-88205b1f8280
+match:
+- Image: /usr/bin/uname
+  CommandLine: uname -a
+- Image: /usr/bin/cat
+  CommandLine: cat /etc/os-release
+no_match:
+- Image: /usr/bin/cat
+  CommandLine: cat /etc/hosts

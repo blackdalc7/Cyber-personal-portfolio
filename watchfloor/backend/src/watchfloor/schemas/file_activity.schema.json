@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/file_activity.schema.json",
+  "title": "OCSF 1.4.0 File Activity [1001] (Watchfloor subset)",
+  "allOf": [
+    {
+      "$ref": "base_event.schema.json"
+    }
+  ],
+  "type": "object",
+  "required": [
+    "file",
+    "device"
+  ],
+  "properties": {
+    "class_uid": {
+      "const": 1001
+    },
+    "category_uid": {
+      "const": 1
+    },
+    "activity_id": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        99
+      ]
+    },
+    "file": {
+      "$ref": "base_event.schema.json#/$defs/file"
+    },
+    "status_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        99
+      ]
+    }
+  }
+}

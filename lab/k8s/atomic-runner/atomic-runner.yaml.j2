@@ -1,0 +1,96 @@
+# Atomic Red Team runner: a long-lived pod that 07-attack-emulator drives with `kubectl exec`.
+# Tetragon on the node sees everything it does. It runs as root inside its container (some atomics need it) but
+# with no extra capabilities, no host namespaces and no service-account token.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ atomic_namespace }}
+  labels:
+    watchfloor.lab/purpose: attack-emulation
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: atomic-bootstrap
+  namespace: {{ atomic_namespace }}
+data:
+  bootstrap.sh: |
+    #!/bin/sh
+    # Installs Invoke-AtomicRedTeam and the atomics into the pod's volume on first start, then idles.
+    set -eu
+    if [ ! -d /opt/AtomicRedTeam/atomics ]; then
+      apt-get update && apt-get install -y --no-install-recommends curl ca-certificates unzip procps
+      pwsh -NoProfile -Command "Set-PSRepository PSGallery -InstallationPolicy Trusted; Install-Module invoke-atomicredteam -RequiredVersion {{ invoke_atomicredteam_version }} -Scope AllUsers -Force; Install-Module powershell-yaml -Scope AllUsers -Force"
+      curl -fsSL -o /tmp/art.zip "https://github.com/redcanaryco/atomic-red-team/archive/{{ atomic_red_team_ref }}.zip"
+      unzip -q /tmp/art.zip -d /tmp
+      mkdir -p /opt/AtomicRedTeam
+      mv /tmp/atomic-red-team-*/atomics /opt/AtomicRedTeam/atomics
+      rm -rf /tmp/art.zip /tmp/atomic-red-team-*
+    fi
+    echo "atomic runner ready"
+    exec sleep infinity
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: atomic-runner
+  namespace: {{ atomic_namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: atomic-runner}
+  template:
+    metadata:
+      labels: {app: atomic-runner}
+    spec:
+      automountServiceAccountToken: false
+      hostNetwork: false
+      hostPID: false
+      containers:
+        - name: runner
+          image: {{ atomic_image | default('mcr.microsoft.com/powershell:7.5-ubuntu-24.04') }}
+          command: ["/bin/sh", "/bootstrap/bootstrap.sh"]
+          env:
+            - {name: ATOMICS, value: /opt/AtomicRedTeam/atomics}
+          securityContext:
+            runAsUser: 0
+            privileged: false
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+              add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETUID", "SETGID"]
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          readinessProbe:
+            exec:
+              command: ["test", "-d", "/opt/AtomicRedTeam/atomics"]
+            periodSeconds: 10
+          volumeMounts:
+            - {name: bootstrap, mountPath: /bootstrap}
+            - {name: art, mountPath: /opt/AtomicRedTeam}
+      volumes:
+        - name: bootstrap
+          configMap: {name: atomic-bootstrap, defaultMode: 0755}
+        - name: art
+          emptyDir: {}
+---
+# No traffic in, and out only to DNS and the internet for the bootstrap download (not to the lab or the host).
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: atomic-runner-egress
+  namespace: {{ atomic_namespace }}
+spec:
+  podSelector:
+    matchLabels: {app: atomic-runner}
+  policyTypes: [Ingress, Egress]
+  ingress: []
+  egress:
+    - ports:
+        - {protocol: UDP, port: 53}
+        - {protocol: TCP, port: 53}
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except: ["{{ lab_net_prefix }}.0/24", "10.0.0.0/8", "172.16.0.0/12"]

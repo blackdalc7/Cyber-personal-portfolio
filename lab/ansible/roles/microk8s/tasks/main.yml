@@ -1,0 +1,39 @@
+- name: Install microK8s
+  community.general.snap:
+    name: microk8s
+    classic: true
+    channel: "{{ microk8s_channel }}"
+
+- name: Let the vagrant user run microk8s
+  ansible.builtin.user:
+    name: vagrant
+    groups: microk8s
+    append: true
+
+- name: Wait for microK8s
+  ansible.builtin.command: microk8s status --wait-ready --timeout 300
+  changed_when: false
+
+- name: Enable add-ons
+  ansible.builtin.command: "microk8s enable {{ item }}"
+  loop: [dns, helm3, hostpath-storage]
+  register: addon
+  changed_when: "'already enabled' not in addon.stdout"
+
+- name: kubectl and helm shims
+  ansible.builtin.copy:
+    dest: "/usr/local/bin/{{ item }}"
+    mode: "0755"
+    content: |
+      #!/bin/sh
+      exec /snap/bin/microk8s {{ 'kubectl' if item == 'kubectl' else 'helm3' }} "$@"
+  loop: [kubectl, helm]
+
+- name: Export a kubeconfig for 07's kubectl executor (copy it to the host from /home/vagrant/.kube/config)
+  ansible.builtin.shell: |
+    set -eu
+    mkdir -p /home/vagrant/.kube
+    microk8s config | sed "s#server: https://.*:16443#server: https://{{ ansible_host }}:16443#" > /home/vagrant/.kube/config
+    chown -R vagrant:vagrant /home/vagrant/.kube && chmod 600 /home/vagrant/.kube/config
+  args:
+    creates: /home/vagrant/.kube/config

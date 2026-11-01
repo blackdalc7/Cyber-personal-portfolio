@@ -1,0 +1,22 @@
+[project]
+name = "detection-rules"
+version = "1.0.0"
+description = "Sigma rules for the Watchfloor OCSF lake: a pySigma OCSF pipeline, a DuckDB backend, rule tests and a streaming runner"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+detection-rules = "detection_rules.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["src/detection_rules"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

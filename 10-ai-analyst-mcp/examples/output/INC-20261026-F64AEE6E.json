@@ -1,0 +1,103 @@
+{
+  "incident_id": "INC-20261026-F64AEE6E",
+  "incident_title": "Canary file tampered",
+  "host": "ws01",
+  "scenario": "maldoc-to-ransomware",
+  "provider": "offline",
+  "model": "rules-v1",
+  "verdict": "true_positive",
+  "confidence": 0.95,
+  "summary": "Canary file tampered on ws01 (finance workstation, criticality 3, owner finance). 5 detection findings between 09:00:12 and 09:00:26 UTC cover T1059.001, T1059.003, T1105, T1204.002, T1218, T1485, T1486, T1566.001. The most severe is \"Office application spawned a shell or script host\". Process chain: explorer.exe → WINWORD.EXE → cmd.exe. 5 high or critical detections on ws01 line up into one chain (T1059.001, T1059.003, T1105, T1204.002, T1218, T1485, T1486, T1566.001), which does not fit any authorised activity in the CMDB. In the SOAR bot the incident is remediated (decided by analyst.dana).",
+  "evidence": [
+    {
+      "tool_call": "c1",
+      "quote": "Canary file tampered",
+      "valid": true
+    },
+    {
+      "tool_call": "c1",
+      "quote": "Office application spawned a shell or script host",
+      "valid": true
+    },
+    {
+      "tool_call": "c1",
+      "quote": "Mass file modification (possible encryption)",
+      "valid": true
+    },
+    {
+      "tool_call": "c2",
+      "quote": "finance workstation",
+      "valid": true
+    },
+    {
+      "tool_call": "c4",
+      "quote": "WINWORD.EXE",
+      "valid": true
+    },
+    {
+      "tool_call": "c4",
+      "quote": "explorer.exe",
+      "valid": true
+    }
+  ],
+  "recommended_actions": [
+    "Keep ws01 isolated until the evidence package for INC-20261026-F64AEE6E has been reviewed.",
+    "Restore the modified files from backup after the host is rebuilt, and check the shares it could write to.",
+    "Hunt for T1059.001, T1059.003, T1105, T1204.002 on other hosts in the same window."
+  ],
+  "citations_valid": true,
+  "tool_calls": [
+    {
+      "id": "c1",
+      "tool": "get_incident",
+      "arguments": {
+        "incident_id": "INC-20261026-F64AEE6E"
+      },
+      "result_preview": "{\"incident\":{\"id\":\"INC-20261026-F64AEE6E\",\"title\":\"Canary file tampered\",\"status\":\"remediated\",\"severity_id\":5,\"host\":\"ws01\",\"indicator_ip\":null,\"source\":\"edr_canary\",\"risk_score\":80,\"description\":\"[CRITICAL] Canary file tampered: DiskWrite on canary 0_passwords.docx by svch0st.exe (PID 4100)\",\"decided_by\":\"analyst.dana\",\"detected_at_ms\":1793005226000,\"time\":1793005321000,\"time_utc\":\"2026-10-26T09…",
+      "error": false
+    },
+    {
+      "id": "c2",
+      "tool": "lookup_asset",
+      "arguments": {
+        "hostname": "ws01",
+        "at_ms": 1793005226000
+      },
+      "result_preview": "{\"found\":true,\"asset\":{\"ip\":\"10.30.10.31\",\"hostname\":\"ws01\",\"os_family\":\"windows\",\"os_version\":\"Windows 11 23H2\",\"role\":\"finance workstation\",\"criticality\":3,\"internet_facing\":false,\"owner\":\"finance\",\"business_unit\":\"Finance\",\"services\":[{\"port\":135,\"protocol\":\"tcp\",\"service\":\"msrpc\",\"product\":\"Windows RPC\"},{\"port\":445,\"protocol\":\"tcp\",\"service\":\"smb\",\"product\":\"Windows SMB\"}],\"maintenance_window…",
+      "error": false
+    },
+    {
+      "id": "c3",
+      "tool": "get_findings",
+      "arguments": {
+        "hostname": "ws01",
+        "since_ms": 1792998026000,
+        "until_ms": 1793008826000
+      },
+      "result_preview": "{\"rows\":[{\"time\":1793005212000,\"uid\":\"5af6e7e3-eb28-5fd5-8142-775848d4d30c\",\"product\":\"edr-canary\",\"severity_id\":5,\"finding_title\":\"Office application spawned a shell or script host\",\"techniques\":[\"T1059.001\",\"T1059.003\",\"T1204.002\",\"T1566.001\"],\"hostname\":\"ws01\",\"src_ip\":null,\"user_name\":null,\"process_name\":\"cmd.exe\",\"process_pid\":3150,\"cmd_line\":\"cmd.exe /c powershell -w hidden -enc SQBFAFgAIAAo…",
+      "error": false
+    },
+    {
+      "id": "c4",
+      "tool": "process_ancestry",
+      "arguments": {
+        "hostname": "ws01",
+        "pid": 3150,
+        "at_ms": 1793005212000
+      },
+      "result_preview": "{\"hostname\":\"ws01\",\"pid\":3150,\"found\":true,\"ancestry\":[{\"time\":1793005212000,\"process_pid\":3150,\"parent_pid\":3100,\"process_name\":\"cmd.exe\",\"cmd_line\":\"cmd.exe /c powershell -w hidden -enc SQBFAFgAIAAoAE4AZQB3AC0ATwBiAGoA\",\"user_name\":null,\"time_utc\":\"2026-10-26T09:00:12.000+00:00\"},{\"time\":1793005210000,\"process_pid\":3100,\"parent_pid\":1200,\"process_name\":\"WINWORD.EXE\",\"cmd_line\":\"\\\"WINWORD.EXE\\\" /…",
+      "error": false
+    }
+  ],
+  "refused_calls": [],
+  "untrusted_instructions": [],
+  "usage": {
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "turns": 0
+  },
+  "duration_s": 0.0,
+  "engine_version": "1.0",
+  "created": "2026-10-26T09:02:26+00:00",
+  "incident_status": "remediated"
+}

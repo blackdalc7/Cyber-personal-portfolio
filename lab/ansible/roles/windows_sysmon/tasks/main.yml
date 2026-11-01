@@ -1,0 +1,50 @@
+- name: Checksums are mandatory for anything downloaded onto the endpoint
+  ansible.builtin.assert:
+    that:
+      - sysmon_zip_sha256 | length == 64
+      - sysmon_config_sha256 | length == 64
+    fail_msg: "Set sysmon_zip_sha256 and sysmon_config_sha256 in group_vars/all.yml (sha256 of the files you reviewed)."
+
+- name: Working folders
+  ansible.windows.win_file:
+    path: "{{ item }}"
+    state: directory
+  loop: ['C:\Watchfloor', 'C:\Watchfloor\sysmon']
+
+- name: Download Sysmon
+  ansible.windows.win_get_url:
+    url: "{{ sysmon_zip_url }}"
+    dest: 'C:\Watchfloor\sysmon\Sysmon.zip'
+    checksum: "{{ sysmon_zip_sha256 }}"
+    checksum_algorithm: sha256
+
+- name: Unpack Sysmon
+  community.windows.win_unzip:
+    src: 'C:\Watchfloor\sysmon\Sysmon.zip'
+    dest: 'C:\Watchfloor\sysmon'
+    creates: 'C:\Watchfloor\sysmon\Sysmon64.exe'
+
+- name: Download the Sysmon configuration
+  ansible.windows.win_get_url:
+    url: "{{ sysmon_config_url }}"
+    dest: 'C:\Watchfloor\sysmon\sysmonconfig.xml'
+    checksum: "{{ sysmon_config_sha256 }}"
+    checksum_algorithm: sha256
+  register: sysmon_cfg
+
+- name: Is Sysmon installed?
+  ansible.windows.win_service_info:
+    name: Sysmon64
+  register: sysmon_svc
+
+- name: Install Sysmon
+  ansible.windows.win_command: 'C:\Watchfloor\sysmon\Sysmon64.exe -accepteula -i C:\Watchfloor\sysmon\sysmonconfig.xml'
+  when: not sysmon_svc.exists
+
+- name: Update the Sysmon configuration
+  ansible.windows.win_command: 'C:\Watchfloor\sysmon\Sysmon64.exe -c C:\Watchfloor\sysmon\sysmonconfig.xml'
+  when: sysmon_svc.exists and sysmon_cfg.changed
+
+- name: Audit logon events so Security 4624/4625 are emitted
+  ansible.windows.win_command: auditpol /set /subcategory:"Logon" /success:enable /failure:enable
+  changed_when: false

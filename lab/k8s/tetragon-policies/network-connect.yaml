@@ -1,0 +1,20 @@
+# T1071 / T1105: outbound TCP connections from workloads. Becomes OCSF Network Activity (4001). Loopback and the
+# cluster's own service range are excluded to keep the volume sane.
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: watchfloor-tcp-connect
+spec:
+  kprobes:
+    - call: "tcp_connect"
+      syscall: false
+      args:
+        - index: 0
+          type: "sock"
+      selectors:
+        - matchArgs:
+            - index: 0
+              operator: "NotDAddr"
+              values:
+                - "127.0.0.0/8"
+                - "10.152.183.0/24"

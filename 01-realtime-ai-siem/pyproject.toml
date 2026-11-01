@@ -1,0 +1,23 @@
+[project]
+name = "realtime-siem"
+version = "1.0.0"
+description = "Real-time UDP syslog SIEM with strict ECS output, streaming detections and Claude alert-chain summaries"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+realtime-siem = "realtime_siem.server:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = ["live: calls the real Anthropic API (skipped without ANTHROPIC_API_KEY)"]
+
+[tool.coverage.run]
+source = ["realtime_siem"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

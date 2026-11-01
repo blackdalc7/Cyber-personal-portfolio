@@ -1,0 +1,19 @@
+match:
+  - name: ONSTART task (Atomic T1053.005 test 1)
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: schtasks.exe, cmd_line: 'schtasks /create /tn "T1053_005_OnStartup" /sc onstart /ru system /tr "cmd.exe /c calc.exe"',
+                file: {name: schtasks.exe, path: 'C:\Windows\System32\schtasks.exe'}}
+nomatch:
+  - name: querying tasks
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: schtasks.exe, cmd_line: schtasks /query /fo LIST, file: {name: schtasks.exe, path: 'C:\Windows\System32\schtasks.exe'}}
+  - name: a daily task
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: schtasks.exe, cmd_line: 'schtasks /create /tn backup /sc daily /tr C:\backup.cmd',
+                file: {name: schtasks.exe, path: 'C:\Windows\System32\schtasks.exe'}}

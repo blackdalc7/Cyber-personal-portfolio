@@ -1,0 +1,23 @@
+title: System Information Discovery via Systeminfo or Hostname
+id: 465bc6ad-fbad-481a-8010-30c9feeb855f
+status: test
+description: Detects systeminfo.exe and hostname.exe, the built-in tools used to fingerprint a host's OS, patch level and domain membership.
+references:
+    - https://attack.mitre.org/techniques/T1082/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1082
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\systeminfo.exe'
+            - '\hostname.exe'
+    condition: selection
+falsepositives:
+    - Helpdesk and asset-inventory tooling
+level: low

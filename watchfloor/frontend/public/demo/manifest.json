@@ -1,0 +1,1 @@
+{"generated":"2026-10-31T00:58:40+00:00","ocsf_version":"1.4.0","scenarios":["maldoc-to-ransomware","ssh-bruteforce-to-persistence"],"incidents":["INC-20261026-FB976B87","INC-20261026-F64AEE6E"],"has_exposure":true,"has_triage":true}

@@ -1,0 +1,22 @@
+[project]
+name = "hitl-soar-bot"
+version = "1.0.0"
+description = "Human-in-the-Loop SOAR bot: Slack/Discord approval buttons, gated remediation, SQLite MTTR tracking"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+soar-bot = "soar_bot.server:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "tests"]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["soar_bot"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true

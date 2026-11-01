@@ -1,0 +1,269 @@
+/* Aegis x Carbon & Neon. Import once from the app stylesheet, after `@import "tailwindcss";`:
+ *   @import "@portfolio/aegis-ui/theme.css";
+ * Base: zinc-950 obsidian, 1px zinc-800 lines, glass panels. Neon is functional only:
+ * cyan = active/scanning, crimson = breach/isolate, amber = drift/warning, green = terminal/ok. */
+
+@source "./";
+
+@theme {
+  --font-sans: "Geist", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --color-bg: var(--ae-bg);
+  --color-panel: var(--ae-panel);
+  --color-panel-2: var(--ae-panel-2);
+  --color-line: var(--ae-line);
+  --color-ink: var(--ae-ink);
+  --color-muted: var(--ae-muted);
+  --color-accent: var(--ae-cyan);
+  --color-good: var(--ae-green);
+  --color-warn: var(--ae-amber);
+  --color-bad: var(--ae-crimson);
+  --color-crit: var(--ae-crit);
+  --color-cyan: var(--ae-cyan);
+  --color-green: var(--ae-green);
+  --color-amber: var(--ae-amber);
+  --color-crimson: var(--ae-crimson);
+
+  /* Named result states shared by Watchfloor and Driftwatch */
+  --color-status-prevented: var(--ae-status-prevented);
+  --color-status-detected: var(--ae-status-detected);
+  --color-status-missed: var(--ae-status-missed);
+  --color-status-error: var(--ae-status-error);
+  --color-status-drift: var(--ae-status-drift);
+  --color-status-remediated: var(--ae-status-remediated);
+  --color-status-telemetry: var(--ae-status-telemetry);
+  --color-status-skipped: var(--ae-status-skipped);
+}
+
+:root,
+[data-theme="dark"] {
+  --ae-bg: #09090b;          /* zinc-950 */
+  --ae-panel: rgb(24 24 27 / 0.72);   /* zinc-900, translucent for the glass */
+  --ae-panel-solid: #18181b;
+  --ae-panel-2: rgb(39 39 42 / 0.6);  /* zinc-800 */
+  --ae-line: #27272a;        /* zinc-800 */
+  --ae-line-bright: #3f3f46; /* zinc-700 */
+  --ae-ink: #f4f4f5;
+  --ae-muted: #a1a1aa;
+  --ae-cyan: #22e4ff;
+  --ae-green: #39ff88;
+  --ae-amber: #ffb224;
+  --ae-crimson: #ff3b5c;
+  --ae-crit: #ff1f4b;
+  --ae-glow: 0 0 0 1px rgb(34 228 255 / 0.35), 0 0 24px -6px rgb(34 228 255 / 0.45);
+  --ae-status-prevented: #a78bfa;
+  --ae-status-detected: var(--ae-green);
+  --ae-status-missed: var(--ae-crimson);
+  --ae-status-error: #f472b6;
+  --ae-status-drift: var(--ae-amber);
+  --ae-status-remediated: var(--ae-cyan);
+  --ae-status-telemetry: var(--ae-amber);
+  --ae-status-skipped: #71717a;
+  color-scheme: dark;
+}
+
+/* A daylight variant for screenshots and accessibility; same hues, darker so they pass contrast. */
+[data-theme="light"] {
+  --ae-bg: #f4f4f5;
+  --ae-panel: rgb(255 255 255 / 0.8);
+  --ae-panel-solid: #ffffff;
+  --ae-panel-2: rgb(228 228 231 / 0.7);
+  --ae-line: #d4d4d8;
+  --ae-line-bright: #a1a1aa;
+  --ae-ink: #09090b;
+  --ae-muted: #52525b;
+  --ae-cyan: #0e7490;
+  --ae-green: #15803d;
+  --ae-amber: #b45309;
+  --ae-crimson: #be123c;
+  --ae-crit: #9f1239;
+  --ae-glow: 0 0 0 1px rgb(14 116 144 / 0.4);
+  --ae-status-prevented: #6d28d9;
+  --ae-status-error: #be185d;
+  --ae-status-skipped: #52525b;
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background-color: var(--ae-bg);
+  color: var(--ae-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Carbon weave plus a faint cyan bloom in the corner: texture without noise. */
+[data-theme="dark"] body,
+:root:not([data-theme]) body {
+  background-image:
+    radial-gradient(1200px 600px at 100% -10%, rgb(34 228 255 / 0.07), transparent 60%),
+    radial-gradient(900px 500px at -10% 110%, rgb(57 255 136 / 0.04), transparent 60%),
+    repeating-linear-gradient(45deg, rgb(255 255 255 / 0.012) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(-45deg, rgb(0 0 0 / 0.35) 0 2px, transparent 2px 4px);
+  background-attachment: fixed;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ae-line-bright) transparent;
+}
+
+::selection {
+  background: rgb(34 228 255 / 0.3);
+}
+
+:focus-visible {
+  outline: 1px solid var(--ae-cyan);
+  outline-offset: 2px;
+  box-shadow: var(--ae-glow);
+}
+
+/* ---------- utilities ---------- */
+
+@utility ae-glass {
+  background: var(--ae-panel);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid var(--ae-line);
+}
+
+/* Brutalist corner ticks: four bright 8px corners on a quiet 1px frame. */
+@utility ae-ticks {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) top left / 8px 1px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) top left / 1px 8px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) top right / 8px 1px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) top right / 1px 8px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) bottom left / 8px 1px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) bottom left / 1px 8px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) bottom right / 8px 1px no-repeat,
+      linear-gradient(var(--ae-line-bright), var(--ae-line-bright)) bottom right / 1px 8px no-repeat;
+  }
+}
+
+/* CRT scanlines over charts. Purely decorative; it never blocks pointer events. */
+@utility ae-scanlines {
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgb(255 255 255 / 0.025) 0 1px, transparent 1px 3px);
+    mix-blend-mode: overlay;
+    border-radius: inherit;
+  }
+}
+
+@utility ae-neon-text {
+  text-shadow: 0 0 12px color-mix(in srgb, currentColor 55%, transparent);
+}
+
+@utility ae-empty-radial {
+  background: radial-gradient(closest-side, rgb(34 228 255 / 0.08), transparent);
+}
+
+/* ---------- animation ---------- */
+
+@keyframes ae-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--ae-cyan) 55%, transparent); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+@keyframes ae-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ae-blink {
+  50% { opacity: 0; }
+}
+@keyframes ae-glitch {
+  0% { transform: translate(0); clip-path: inset(0 0 0 0); }
+  20% { transform: translate(-2px, 1px); clip-path: inset(10% 0 60% 0); }
+  40% { transform: translate(2px, -1px); clip-path: inset(50% 0 20% 0); }
+  60% { transform: translate(-1px, 2px); clip-path: inset(30% 0 40% 0); }
+  80% { transform: translate(1px, -2px); clip-path: inset(70% 0 5% 0); }
+  100% { transform: translate(0); clip-path: inset(0 0 0 0); }
+}
+@keyframes ae-flicker {
+  0%, 100% { opacity: 1; } 47% { opacity: 0.86; } 50% { opacity: 0.6; } 53% { opacity: 0.9; }
+}
+
+.ae-live { animation: ae-pulse 1.6s ease-in-out infinite; }
+.ae-in { animation: ae-in 0.25s ease-out both; }
+.ae-caret::after { content: "▋"; margin-left: 1px; animation: ae-blink 1s steps(1) infinite; color: var(--ae-green); }
+/* Backwards-compatible names used by earlier Watchfloor pages */
+.wf-live { animation: ae-pulse 1.6s ease-in-out infinite; }
+.wf-in { animation: ae-in 0.25s ease-out both; }
+
+/* ---------- Konami: 1990s green-phosphor terminal ---------- */
+
+[data-mode="phosphor"] {
+  --ae-bg: #020a03;
+  --ae-panel: rgb(3 18 6 / 0.92);
+  --ae-panel-solid: #031206;
+  --ae-panel-2: rgb(10 40 16 / 0.8);
+  --ae-line: #0f5f24;
+  --ae-line-bright: #22c55e;
+  --ae-ink: #4bff7a;
+  --ae-muted: #2fa352;
+  --ae-cyan: #4bff7a;
+  --ae-green: #4bff7a;
+  --ae-amber: #b7ff4b;
+  --ae-crimson: #c8ff9a;
+  --ae-crit: #e2ffd0;
+  --font-sans: var(--font-mono);
+}
+[data-mode="phosphor"] body {
+  font-family: var(--font-mono);
+  text-shadow: 0 0 6px rgb(75 255 122 / 0.55);
+  animation: ae-flicker 3s infinite;
+}
+[data-mode="phosphor"] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(to bottom, rgb(0 0 0 / 0.28) 0 1px, transparent 1px 3px),
+    radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.55) 100%);
+}
+[data-mode="phosphor"] svg,
+[data-mode="phosphor"] canvas {
+  filter: grayscale(1) sepia(1) hue-rotate(70deg) saturate(5) brightness(0.95);
+}
+
+/* ---------- Deface: what the SOC looks like the day it gets owned ---------- */
+
+[data-mode="deface"] {
+  --ae-cyan: #ff2a2a;
+  --ae-green: #ff2a2a;
+  --ae-amber: #ff2a2a;
+  --ae-ink: #ffd6d6;
+  --ae-line: #5c0b0b;
+  --ae-line-bright: #ff2a2a;
+}
+[data-mode="deface"] h1,
+[data-mode="deface"] h2 {
+  color: #ff2a2a;
+  animation: ae-glitch 0.6s steps(2) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ae-live, .wf-live, .ae-in, .wf-in, .ae-caret::after { animation: none; }
+  [data-mode="phosphor"] body { animation: none; }
+  [data-mode="deface"] h1, [data-mode="deface"] h2 { animation: none; }
+}

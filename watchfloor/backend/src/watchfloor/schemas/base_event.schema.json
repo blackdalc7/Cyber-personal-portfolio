@@ -1,0 +1,267 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/base_event.schema.json",
+  "title": "OCSF 1.4.0 base event (Watchfloor subset)",
+  "type": "object",
+  "required": [
+    "class_uid",
+    "category_uid",
+    "activity_id",
+    "type_uid",
+    "severity_id",
+    "time",
+    "metadata"
+  ],
+  "properties": {
+    "class_uid": {
+      "type": "integer"
+    },
+    "category_uid": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 8
+    },
+    "activity_id": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 99
+    },
+    "type_uid": {
+      "type": "integer"
+    },
+    "severity_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        99
+      ]
+    },
+    "time": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Event time, epoch milliseconds UTC"
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 8192
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "version",
+        "product",
+        "uid"
+      ],
+      "properties": {
+        "version": {
+          "type": "string",
+          "pattern": "^1\\.[0-9]+\\.[0-9]+$"
+        },
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "correlation_uid": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "logged_time": {
+          "type": "integer"
+        },
+        "labels": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "maxItems": 32
+        },
+        "product": {
+          "type": "object",
+          "required": [
+            "name",
+            "vendor_name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "vendor_name": {
+              "type": "string"
+            },
+            "version": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "device": {
+      "$ref": "#/$defs/device"
+    },
+    "src_endpoint": {
+      "$ref": "#/$defs/endpoint"
+    },
+    "dst_endpoint": {
+      "$ref": "#/$defs/endpoint"
+    },
+    "actor": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/$defs/user"
+        },
+        "process": {
+          "$ref": "#/$defs/process"
+        }
+      }
+    },
+    "unmapped": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "device": {
+      "type": "object",
+      "properties": {
+        "hostname": {
+          "type": "string"
+        },
+        "ip": {
+          "type": "string"
+        },
+        "os": {
+          "type": "object"
+        }
+      }
+    },
+    "endpoint": {
+      "type": "object",
+      "properties": {
+        "ip": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "hostname": {
+          "type": "string"
+        }
+      }
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "uid": {
+          "type": "string"
+        }
+      }
+    },
+    "file": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "size": {
+          "type": "integer"
+        }
+      }
+    },
+    "process": {
+      "type": "object",
+      "properties": {
+        "pid": {
+          "type": "integer"
+        },
+        "uid": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "cmd_line": {
+          "type": "string"
+        },
+        "file": {
+          "$ref": "#/$defs/file"
+        },
+        "user": {
+          "$ref": "#/$defs/user"
+        },
+        "parent_process": {
+          "type": "object",
+          "properties": {
+            "pid": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            },
+            "cmd_line": {
+              "type": "string"
+            },
+            "file": {
+              "$ref": "#/$defs/file"
+            }
+          }
+        }
+      }
+    },
+    "attack": {
+      "type": "object",
+      "required": [
+        "technique"
+      ],
+      "properties": {
+        "technique": {
+          "type": "object",
+          "required": [
+            "uid"
+          ],
+          "properties": {
+            "uid": {
+              "type": "string",
+              "pattern": "^T[0-9]{4}(\\.[0-9]{3})?$"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "tactic": {
+          "type": "object",
+          "properties": {
+            "uid": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        "version": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

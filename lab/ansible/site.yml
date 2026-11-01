@@ -1,0 +1,36 @@
+# Watchfloor lab. Run from lab/ansible:  ansible-playbook site.yml -e wf_ingest_token=...   (or via `vagrant provision`)
+# Everything here targets the throwaway lab VMs on the host-only network only.
+- name: Guard rails
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Refuse to run against anything outside the lab network
+      ansible.builtin.assert:
+        that: ansible_host is match('^' ~ (lab_net_prefix | regex_escape) ~ '\.\d{1,3}$')
+        fail_msg: "{{ inventory_hostname }} ({{ ansible_host }}) is outside {{ lab_net_prefix }}.0/24. This playbook is lab-only."
+      delegate_to: localhost
+    - name: Require the hub ingest token
+      ansible.builtin.assert:
+        that: wf_ingest_token | length >= 16
+        fail_msg: "Set WF_INGEST_TOKEN in the environment or pass -e wf_ingest_token=... (same value as deploy/.env)."
+      delegate_to: localhost
+      run_once: true
+
+- name: Kubernetes node (microK8s, Tetragon, Fluent Bit, Atomic runner)
+  hosts: k8s
+  become: true
+  roles:
+    - common
+    - microk8s
+    - tetragon
+    - fluent_bit_k8s
+    - atomic_runner
+
+- name: Windows endpoint (Sysmon, 03 EDR canary, Fluent Bit, Atomic, Velociraptor)
+  hosts: windows
+  roles:
+    - windows_sysmon
+    - windows_edr_canary
+    - windows_fluent_bit
+    - windows_atomic
+    - velociraptor_client

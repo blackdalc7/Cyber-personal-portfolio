@@ -1,0 +1,18 @@
+# Lint configuration (ruff), including bandit-equivalent security rules (S).
+line-length = 120
+target-version = "py310"
+
+[lint]
+select = ["E", "F", "W", "I", "B", "UP", "S", "BLE", "C4", "SIM", "RUF"]
+ignore = [
+  "S101",   # assert is how pytest works
+  "RUF001", "RUF002", "RUF003",  # unicode arrows/dashes in docs strings are intentional
+  "SIM105",
+]
+
+[lint.per-file-ignores]
+"**/tests/**" = ["S", "B", "BLE"]
+"scripts/*" = ["E402"]
+
+[lint.isort]
+known-first-party = ["ai_analyst"]

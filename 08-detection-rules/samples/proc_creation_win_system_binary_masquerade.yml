@@ -1,0 +1,23 @@
+match:
+  - name: lsass.exe from C:\Windows\Temp (Atomic T1036.003 test 1)
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: lsass.exe, cmd_line: 'C:\Windows\Temp\lsass.exe /B', file: {name: lsass.exe, path: 'C:\Windows\Temp\lsass.exe'}}
+  - name: svchost.exe in a user profile
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: svchost.exe, file: {name: svchost.exe, path: 'C:\Users\vagrant\AppData\Roaming\svchost.exe'}}
+nomatch:
+  - name: the real svchost
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: svchost.exe, cmd_line: 'C:\Windows\system32\svchost.exe -k netsvcs -p',
+                file: {name: svchost.exe, path: 'C:\Windows\System32\svchost.exe'}}
+  - name: case does not matter for the folder either
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: LSASS.EXE, file: {name: LSASS.EXE, path: 'c:\windows\system32\LSASS.EXE'}}

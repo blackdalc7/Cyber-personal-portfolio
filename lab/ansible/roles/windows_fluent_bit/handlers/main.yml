@@ -1,0 +1,5 @@
+- name: Restart fluent-bit
+  ansible.windows.win_shell: |
+    Stop-ScheduledTask -TaskName WatchfloorFluentBit -ErrorAction SilentlyContinue
+    Get-Process fluent-bit -ErrorAction SilentlyContinue | Stop-Process -Force
+    Start-ScheduledTask -TaskName WatchfloorFluentBit

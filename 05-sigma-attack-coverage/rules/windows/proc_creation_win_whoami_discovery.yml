@@ -1,0 +1,24 @@
+title: Local User Discovery via Whoami
+id: ce753259-9469-4fd9-9727-fd242d084d4f
+status: test
+description: Detects whoami.exe, used by operators right after initial access to learn which account and privileges they landed with.
+references:
+    - https://attack.mitre.org/techniques/T1033/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1033
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection_img:
+        - Image|endswith: '\whoami.exe'
+        - OriginalFileName: 'whoami.exe'
+    filter_system_parent:
+        ParentImage|endswith: '\msiexec.exe'
+    condition: selection_img and not filter_system_parent
+falsepositives:
+    - Administrative and inventory scripts
+level: low

@@ -1,0 +1,1692 @@
+{
+  "run": {
+    "input": "examples/alerts_simulated.json",
+    "algorithm": "dbscan",
+    "eps": 0.3,
+    "time_window_s": 3600,
+    "llm_provider": "offline",
+    "llm_model": "rules-v1",
+    "minutes_per_raw_alert": 4.0,
+    "minutes_per_meta_alert": 12.0,
+    "simulated": true,
+    "llm_stats": null
+  },
+  "metrics": {
+    "raw_alerts": 5000,
+    "unique_documents": 48,
+    "meta_alerts": 19,
+    "silhouette": 0.5512,
+    "escalate": 6,
+    "investigate": 4,
+    "suppressed_meta_alerts": 9,
+    "suppressed_alerts": 3752,
+    "analyst_queue": 10,
+    "queue_reduction_pct": 99.8,
+    "suppression_reasons": {
+      "STRUCTURAL_FP": 5,
+      "AUTHORIZED_SCANNER": 2,
+      "MAINTENANCE_WINDOW": 2
+    },
+    "analyst_hours_before": 333.3,
+    "analyst_hours_after": 2.0,
+    "analyst_time_saved_pct": 99.4
+  },
+  "evaluation": {
+    "labelled_alerts": 5000,
+    "true_positive_alerts": 404,
+    "true_threat_recall": 1.0,
+    "suppression_precision": 1.0,
+    "noise_removed_pct": 81.64,
+    "cluster_purity": 1.0,
+    "suppressed_true_positive_meta_alerts": [],
+    "escalated_noise_meta_alerts": [
+      "MA-0002"
+    ]
+  },
+  "queue": [
+    {
+      "id": "MA-0016",
+      "count": 1,
+      "rules": [
+        "Successful SSH login after repeated failures"
+      ],
+      "severity": "critical",
+      "first_seen": "2026-10-26T13:24:38.602000+00:00",
+      "last_seen": "2026-10-26T13:24:38.602000+00:00",
+      "sources": [
+        "198.51.100.77"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "198.51.100.0/24"
+      ],
+      "targets": [
+        "10.20.5.50"
+      ],
+      "target_count": 1,
+      "ports": [
+        22
+      ],
+      "signature": "Accepted password for user deploy after 214 failures",
+      "category": "initial-access",
+      "cohesion": 1.0,
+      "disposition": "escalate",
+      "reason": "RULES_TRUE_POSITIVE",
+      "explanation": "critical severity activity; treat as real until disproved.",
+      "priority": 83.4,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.5.50",
+          "hostname": "bastion01",
+          "os": "linux Ubuntu 24.04",
+          "role": "SSH bastion",
+          "criticality": 5,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.6"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": {
+        "verdict": "true_positive",
+        "confidence": 0.7,
+        "structural_mismatch": false,
+        "rationale": "critical severity activity; treat as real until disproved.",
+        "recommended_action": "Escalate to Tier-2 and scope the affected hosts.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 1
+      }
+    },
+    {
+      "id": "MA-0015",
+      "count": 222,
+      "rules": [
+        "SSH brute force: repeated authentication failures"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T13:00:02.737000+00:00",
+      "last_seen": "2026-10-26T13:23:57.201000+00:00",
+      "sources": [
+        "198.51.100.77"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "198.51.100.0/24"
+      ],
+      "targets": [
+        "10.20.5.50"
+      ],
+      "target_count": 1,
+      "ports": [
+        22
+      ],
+      "signature": "More than 20 failed SSH logins from one source in 60 seconds",
+      "category": "credential-access",
+      "cohesion": 1.0,
+      "disposition": "escalate",
+      "reason": "RULES_TRUE_POSITIVE",
+      "explanation": "High-severity detection against a known asset that exposes the targeted service.",
+      "priority": 80.2,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.5.50",
+          "hostname": "bastion01",
+          "os": "linux Ubuntu 24.04",
+          "role": "SSH bastion",
+          "criticality": 5,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.6"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": {
+        "verdict": "true_positive",
+        "confidence": 0.6,
+        "structural_mismatch": false,
+        "rationale": "High-severity detection against a known asset that exposes the targeted service.",
+        "recommended_action": "Review the payload and the asset's logs for follow-on activity.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 222
+      }
+    },
+    {
+      "id": "MA-0002",
+      "count": 133,
+      "rules": [
+        "ET EXPLOIT Citrix ADC path traversal attempt"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T00:01:55.736000+00:00",
+      "last_seen": "2026-10-26T23:36:21.924000+00:00",
+      "sources": [
+        "198.51.100.6",
+        "198.51.100.155",
+        "198.51.100.163",
+        "198.51.100.80",
+        "198.51.100.30",
+        "198.51.100.54",
+        "198.51.100.74",
+        "198.51.100.37",
+        "198.51.100.165",
+        "198.51.100.156"
+      ],
+      "source_count": 102,
+      "source_subnets": [
+        "198.51.100.0/24"
+      ],
+      "targets": [
+        "10.20.1.12",
+        "10.20.1.10",
+        "10.20.1.11"
+      ],
+      "target_count": 3,
+      "ports": [
+        443
+      ],
+      "signature": "HTTP request matching CVE-2019-19781 path pattern vpns path",
+      "category": "exploit",
+      "cohesion": 0.9355,
+      "disposition": "escalate",
+      "reason": "RULES_TRUE_POSITIVE",
+      "explanation": "High-severity detection against a known asset that exposes the targeted service.",
+      "priority": 75.1,
+      "flags": [],
+      "max_criticality": 3,
+      "target_assets": [
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        },
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": {
+        "verdict": "true_positive",
+        "confidence": 0.6,
+        "structural_mismatch": false,
+        "rationale": "High-severity detection against a known asset that exposes the targeted service.",
+        "recommended_action": "Review the payload and the asset's logs for follow-on activity.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "false_positive": 133
+      }
+    },
+    {
+      "id": "MA-0017",
+      "count": 27,
+      "rules": [
+        "Kerberoasting: excessive RC4 service ticket requests"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T14:00:10.876000+00:00",
+      "last_seen": "2026-10-26T14:11:34.073000+00:00",
+      "sources": [
+        "10.30.10.15"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "10.30.10.0/24"
+      ],
+      "targets": [
+        "10.20.4.40"
+      ],
+      "target_count": 1,
+      "ports": [
+        88
+      ],
+      "signature": "TGS requests with RC4 encryption for many service accounts",
+      "category": "credential-access",
+      "cohesion": 1.0,
+      "disposition": "escalate",
+      "reason": "RULES_TRUE_POSITIVE",
+      "explanation": "high severity activity from an internal asset; treat as real until disproved.",
+      "priority": 72.2,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.4.40",
+          "hostname": "dc01",
+          "os": "windows Server 2022",
+          "role": "domain controller",
+          "criticality": 5,
+          "internet_facing": false,
+          "business_unit": "IT",
+          "listening_services": [
+            "53/tcp dns Microsoft DNS",
+            "88/tcp kerberos Microsoft Kerberos",
+            "389/tcp ldap Active Directory",
+            "445/tcp smb Windows SMB",
+            "3389/tcp rdp Remote Desktop Services"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [
+        {
+          "ip": "10.30.10.15",
+          "hostname": "ws-fin-015",
+          "os": "windows Windows 11 23H2",
+          "role": "finance workstation",
+          "criticality": 3,
+          "internet_facing": false,
+          "business_unit": "Finance",
+          "listening_services": [
+            "135/tcp msrpc Windows RPC",
+            "445/tcp smb Windows SMB"
+          ]
+        }
+      ],
+      "verdict": {
+        "verdict": "true_positive",
+        "confidence": 0.7,
+        "structural_mismatch": false,
+        "rationale": "high severity activity from an internal asset; treat as real until disproved.",
+        "recommended_action": "Escalate to Tier-2 and scope the affected hosts.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 27
+      }
+    },
+    {
+      "id": "MA-0018",
+      "count": 3,
+      "rules": [
+        "Credential dumping: LSASS memory access by unsigned process"
+      ],
+      "severity": "critical",
+      "first_seen": "2026-10-26T14:18:36.477000+00:00",
+      "last_seen": "2026-10-26T14:20:21.701000+00:00",
+      "sources": [
+        "10.30.10.15"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "10.30.10.0/24"
+      ],
+      "targets": [
+        "10.30.10.15"
+      ],
+      "target_count": 1,
+      "ports": [],
+      "signature": "Unsigned process opened lsass.exe with PROCESS_VM_READ",
+      "category": "credential-access",
+      "cohesion": 1.0,
+      "disposition": "escalate",
+      "reason": "RULES_TRUE_POSITIVE",
+      "explanation": "critical severity activity from an internal asset; treat as real until disproved.",
+      "priority": 67.4,
+      "flags": [],
+      "max_criticality": 3,
+      "target_assets": [
+        {
+          "ip": "10.30.10.15",
+          "hostname": "ws-fin-015",
+          "os": "windows Windows 11 23H2",
+          "role": "finance workstation",
+          "criticality": 3,
+          "internet_facing": false,
+          "business_unit": "Finance",
+          "listening_services": [
+            "135/tcp msrpc Windows RPC",
+            "445/tcp smb Windows SMB"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [
+        {
+          "ip": "10.30.10.15",
+          "hostname": "ws-fin-015",
+          "os": "windows Windows 11 23H2",
+          "role": "finance workstation",
+          "criticality": 3,
+          "internet_facing": false,
+          "business_unit": "Finance",
+          "listening_services": [
+            "135/tcp msrpc Windows RPC",
+            "445/tcp smb Windows SMB"
+          ]
+        }
+      ],
+      "verdict": {
+        "verdict": "true_positive",
+        "confidence": 0.7,
+        "structural_mismatch": false,
+        "rationale": "critical severity activity from an internal asset; treat as real until disproved.",
+        "recommended_action": "Escalate to Tier-2 and scope the affected hosts.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 3
+      }
+    },
+    {
+      "id": "MA-0019",
+      "count": 36,
+      "rules": [
+        "Outbound connection to threat-intel C2 indicator"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T14:24:10.848000+00:00",
+      "last_seen": "2026-10-26T15:58:41.892000+00:00",
+      "sources": [
+        "10.30.10.15"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "10.30.10.0/24"
+      ],
+      "targets": [
+        "203.0.113.200"
+      ],
+      "target_count": 1,
+      "ports": [
+        443
+      ],
+      "signature": "Periodic HTTPS connections to an indicator on the internal block list",
+      "category": "command-and-control",
+      "cohesion": 1.0,
+      "disposition": "escalate",
+      "reason": "RULES_TRUE_POSITIVE",
+      "explanation": "high severity activity from an internal asset; treat as real until disproved.",
+      "priority": 60.6,
+      "flags": [],
+      "max_criticality": 3,
+      "target_assets": [],
+      "unknown_targets": [
+        "203.0.113.200"
+      ],
+      "source_assets": [
+        {
+          "ip": "10.30.10.15",
+          "hostname": "ws-fin-015",
+          "os": "windows Windows 11 23H2",
+          "role": "finance workstation",
+          "criticality": 3,
+          "internet_facing": false,
+          "business_unit": "Finance",
+          "listening_services": [
+            "135/tcp msrpc Windows RPC",
+            "445/tcp smb Windows SMB"
+          ]
+        }
+      ],
+      "verdict": {
+        "verdict": "true_positive",
+        "confidence": 0.7,
+        "structural_mismatch": false,
+        "rationale": "high severity activity from an internal asset; treat as real until disproved.",
+        "recommended_action": "Escalate to Tier-2 and scope the affected hosts.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 36
+      }
+    },
+    {
+      "id": "MA-0013",
+      "count": 71,
+      "rules": [
+        "ET WEB_SERVER SQL injection attempt in query string"
+      ],
+      "severity": "medium",
+      "first_seen": "2026-10-26T10:00:32.239000+00:00",
+      "last_seen": "2026-10-26T10:29:48.023000+00:00",
+      "sources": [
+        "203.0.113.45",
+        "203.0.113.46"
+      ],
+      "source_count": 2,
+      "source_subnets": [
+        "203.0.113.0/24"
+      ],
+      "targets": [
+        "10.20.2.20"
+      ],
+      "target_count": 1,
+      "ports": [
+        8443
+      ],
+      "signature": "Query string containing SQL boolean tautology pattern boolean tautology",
+      "category": "exploit",
+      "cohesion": 0.9304,
+      "disposition": "investigate",
+      "reason": "NEEDS_REVIEW",
+      "explanation": "Rules cannot decide this cluster without analyst review.",
+      "priority": 50.6,
+      "flags": [],
+      "max_criticality": 4,
+      "target_assets": [
+        {
+          "ip": "10.20.2.20",
+          "hostname": "app01",
+          "os": "linux RHEL 9",
+          "role": "student records API",
+          "criticality": 4,
+          "internet_facing": true,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "8443/tcp https Apache Tomcat 9 (struts2 application)"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": {
+        "verdict": "needs_investigation",
+        "confidence": 0.5,
+        "structural_mismatch": false,
+        "rationale": "Rules cannot decide this cluster without analyst review.",
+        "recommended_action": "Review a sample of the clustered alerts.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 71
+      }
+    },
+    {
+      "id": "MA-0011",
+      "count": 178,
+      "rules": [
+        "DNS query for newly registered domain"
+      ],
+      "severity": "low",
+      "first_seen": "2026-10-26T07:02:32.776000+00:00",
+      "last_seen": "2026-10-26T17:57:05.214000+00:00",
+      "sources": [
+        "10.30.10.11",
+        "10.30.10.17",
+        "10.30.10.10",
+        "10.30.10.5",
+        "10.30.10.26",
+        "10.30.10.20",
+        "10.30.10.23",
+        "10.30.10.29",
+        "10.30.10.15",
+        "10.30.10.25"
+      ],
+      "source_count": 30,
+      "source_subnets": [
+        "10.30.10.0/24"
+      ],
+      "targets": [
+        "10.20.4.40"
+      ],
+      "target_count": 1,
+      "ports": [
+        53
+      ],
+      "signature": "Resolution of a domain registered in the last 30 days",
+      "category": "dns",
+      "cohesion": 1.0,
+      "disposition": "investigate",
+      "reason": "NEEDS_REVIEW",
+      "explanation": "Rules cannot decide this cluster without analyst review.",
+      "priority": 48.0,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.4.40",
+          "hostname": "dc01",
+          "os": "windows Server 2022",
+          "role": "domain controller",
+          "criticality": 5,
+          "internet_facing": false,
+          "business_unit": "IT",
+          "listening_services": [
+            "53/tcp dns Microsoft DNS",
+            "88/tcp kerberos Microsoft Kerberos",
+            "389/tcp ldap Active Directory",
+            "445/tcp smb Windows SMB",
+            "3389/tcp rdp Remote Desktop Services"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [
+        {
+          "ip": "10.30.10.15",
+          "hostname": "ws-fin-015",
+          "os": "windows Windows 11 23H2",
+          "role": "finance workstation",
+          "criticality": 3,
+          "internet_facing": false,
+          "business_unit": "Finance",
+          "listening_services": [
+            "135/tcp msrpc Windows RPC",
+            "445/tcp smb Windows SMB"
+          ]
+        },
+        {
+          "ip": "10.30.10.22",
+          "hostname": "mac-design-022",
+          "os": "macos macOS 15",
+          "role": "design workstation",
+          "criticality": 2,
+          "internet_facing": false,
+          "business_unit": "Marketing",
+          "listening_services": []
+        }
+      ],
+      "verdict": {
+        "verdict": "needs_investigation",
+        "confidence": 0.5,
+        "structural_mismatch": false,
+        "rationale": "Rules cannot decide this cluster without analyst review.",
+        "recommended_action": "Review a sample of the clustered alerts.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "benign": 178
+      }
+    },
+    {
+      "id": "MA-0014",
+      "count": 44,
+      "rules": [
+        "Telnet login attempt to unregistered host"
+      ],
+      "severity": "medium",
+      "first_seen": "2026-10-26T11:00:29.124000+00:00",
+      "last_seen": "2026-10-26T11:28:01.050000+00:00",
+      "sources": [
+        "10.40.0.10",
+        "10.40.0.5",
+        "10.40.0.7",
+        "10.40.0.3",
+        "10.40.0.13",
+        "10.40.0.6",
+        "10.40.0.14",
+        "10.40.0.12",
+        "10.40.0.4",
+        "10.40.0.1"
+      ],
+      "source_count": 14,
+      "source_subnets": [
+        "10.40.0.0/24"
+      ],
+      "targets": [
+        "10.20.9.99"
+      ],
+      "target_count": 1,
+      "ports": [
+        23
+      ],
+      "signature": "Cleartext Telnet session to a host with no CMDB record",
+      "category": "policy",
+      "cohesion": 1.0,
+      "disposition": "investigate",
+      "reason": "NEEDS_REVIEW",
+      "explanation": "1 target(s) are not in the CMDB, so the attack surface is unknown.",
+      "priority": 43.6,
+      "flags": [],
+      "max_criticality": 0,
+      "target_assets": [],
+      "unknown_targets": [
+        "10.20.9.99"
+      ],
+      "source_assets": [],
+      "verdict": {
+        "verdict": "needs_investigation",
+        "confidence": 0.5,
+        "structural_mismatch": false,
+        "rationale": "1 target(s) are not in the CMDB, so the attack surface is unknown.",
+        "recommended_action": "Identify the owner of the unknown hosts and register them.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "true_positive": 44
+      }
+    },
+    {
+      "id": "MA-0005",
+      "count": 533,
+      "rules": [
+        "Inbound probe to common service ports"
+      ],
+      "severity": "low",
+      "first_seen": "2026-10-26T00:04:07.219000+00:00",
+      "last_seen": "2026-10-26T23:58:29.901000+00:00",
+      "sources": [
+        "192.0.2.182",
+        "198.51.100.21",
+        "203.0.113.196",
+        "192.0.2.23",
+        "198.51.100.28",
+        "192.0.2.73",
+        "198.51.100.86",
+        "203.0.113.73",
+        "198.51.100.106",
+        "198.51.100.116"
+      ],
+      "source_count": 390,
+      "source_subnets": [
+        "192.0.2.0/24",
+        "198.51.100.0/24",
+        "203.0.113.0/24"
+      ],
+      "targets": [
+        "10.20.1.10",
+        "10.20.1.11",
+        "10.20.5.50",
+        "10.20.1.12"
+      ],
+      "target_count": 4,
+      "ports": [
+        21,
+        23,
+        25,
+        80,
+        110,
+        143,
+        443,
+        3306,
+        5900,
+        6379,
+        8080,
+        8443
+      ],
+      "signature": "Unsolicited inbound connection attempts from the internet tcp syn",
+      "category": "reconnaissance",
+      "cohesion": 0.871,
+      "disposition": "investigate",
+      "reason": "LLM_BENIGN_UNCONFIRMED",
+      "explanation": "External scanning of internet-facing assets is expected background activity.",
+      "priority": 31.1,
+      "flags": [
+        "guardrail:confidence 0.60 < 0.80, asset criticality 5 >= 4"
+      ],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.5.50",
+          "hostname": "bastion01",
+          "os": "linux Ubuntu 24.04",
+          "role": "SSH bastion",
+          "criticality": 5,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.6"
+          ]
+        },
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": {
+        "verdict": "benign_true_positive",
+        "confidence": 0.6,
+        "structural_mismatch": false,
+        "rationale": "External scanning of internet-facing assets is expected background activity.",
+        "recommended_action": "Confirm the scanned ports match the published services.",
+        "provider": "offline",
+        "model": "rules-v1",
+        "cached": false,
+        "fallback_reason": null
+      },
+      "labels": {
+        "benign": 533
+      }
+    }
+  ],
+  "suppressed": [
+    {
+      "id": "MA-0001",
+      "count": 267,
+      "rules": [
+        "GPL RDP brute force login attempts"
+      ],
+      "severity": "medium",
+      "first_seen": "2026-10-26T00:01:20.889000+00:00",
+      "last_seen": "2026-10-26T23:54:52.338000+00:00",
+      "sources": [
+        "203.0.113.130",
+        "203.0.113.111",
+        "203.0.113.192",
+        "203.0.113.83",
+        "203.0.113.79",
+        "203.0.113.188",
+        "203.0.113.238",
+        "203.0.113.58",
+        "203.0.113.85",
+        "203.0.113.204"
+      ],
+      "source_count": 170,
+      "source_subnets": [
+        "203.0.113.0/24"
+      ],
+      "targets": [
+        "10.20.1.10",
+        "10.20.1.12",
+        "10.20.1.11"
+      ],
+      "target_count": 3,
+      "ports": [
+        3389
+      ],
+      "signature": "Repeated RDP connection attempts x224 request",
+      "category": "credential-access",
+      "cohesion": 0.9241,
+      "disposition": "suppress",
+      "reason": "STRUCTURAL_FP",
+      "explanation": "attack cannot succeed on any of the 3 target(s) [rdp]: targets windows but web01 runs linux; targets windows but web03 runs linux; targets windows but web02 runs linux",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 3,
+      "target_assets": [
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        },
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "false_positive": 267
+      }
+    },
+    {
+      "id": "MA-0003",
+      "count": 267,
+      "rules": [
+        "ET WEB_SERVER IIS WebDAV exploitation attempt"
+      ],
+      "severity": "medium",
+      "first_seen": "2026-10-26T00:02:44.458000+00:00",
+      "last_seen": "2026-10-26T23:52:55.334000+00:00",
+      "sources": [
+        "198.51.100.36",
+        "198.51.100.73",
+        "198.51.100.29",
+        "198.51.100.176",
+        "198.51.100.123",
+        "198.51.100.233",
+        "198.51.100.224",
+        "198.51.100.217",
+        "198.51.100.67",
+        "198.51.100.150"
+      ],
+      "source_count": 165,
+      "source_subnets": [
+        "198.51.100.0/24"
+      ],
+      "targets": [
+        "10.20.1.11",
+        "10.20.1.10"
+      ],
+      "target_count": 2,
+      "ports": [
+        443
+      ],
+      "signature": "PROPFIND request matching IIS WebDAV exploitation pattern translate header",
+      "category": "exploit",
+      "cohesion": 0.9646,
+      "disposition": "suppress",
+      "reason": "STRUCTURAL_FP",
+      "explanation": "attack cannot succeed on any of the 2 target(s) [iis]: targets windows but web02 runs linux; targets windows but web01 runs linux",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 3,
+      "target_assets": [
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "false_positive": 267
+      }
+    },
+    {
+      "id": "MA-0004",
+      "count": 622,
+      "rules": [
+        "ET EXPLOIT Possible BlueKeep RDP exploitation attempt"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T00:03:59.716000+00:00",
+      "last_seen": "2026-10-26T23:57:27.902000+00:00",
+      "sources": [
+        "198.51.100.50",
+        "198.51.100.40",
+        "198.51.100.77",
+        "198.51.100.183",
+        "198.51.100.235",
+        "198.51.100.229",
+        "198.51.100.189",
+        "198.51.100.4",
+        "198.51.100.34",
+        "198.51.100.33"
+      ],
+      "source_count": 226,
+      "source_subnets": [
+        "198.51.100.0/24"
+      ],
+      "targets": [
+        "10.20.1.11",
+        "10.20.1.12",
+        "10.20.1.10"
+      ],
+      "target_count": 3,
+      "ports": [
+        3389
+      ],
+      "signature": "RDP connection request matching BlueKeep exploitation pattern virtual channel request",
+      "category": "exploit",
+      "cohesion": 0.9165,
+      "disposition": "suppress",
+      "reason": "STRUCTURAL_FP",
+      "explanation": "attack cannot succeed on any of the 3 target(s) [rdp]: targets windows but web02 runs linux; targets windows but web03 runs linux; targets windows but web01 runs linux",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 3,
+      "target_assets": [
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        },
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "false_positive": 622
+      }
+    },
+    {
+      "id": "MA-0006",
+      "count": 356,
+      "rules": [
+        "ET EXPLOIT EternalBlue SMB exploitation attempt"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T00:08:00.454000+00:00",
+      "last_seen": "2026-10-26T23:56:41.277000+00:00",
+      "sources": [
+        "203.0.113.126",
+        "203.0.113.56",
+        "203.0.113.228",
+        "203.0.113.230",
+        "203.0.113.191",
+        "203.0.113.74",
+        "203.0.113.86",
+        "203.0.113.72",
+        "203.0.113.25",
+        "203.0.113.2"
+      ],
+      "source_count": 195,
+      "source_subnets": [
+        "203.0.113.0/24"
+      ],
+      "targets": [
+        "10.20.2.20",
+        "10.20.1.12",
+        "10.20.1.11",
+        "10.20.1.10"
+      ],
+      "target_count": 4,
+      "ports": [
+        445
+      ],
+      "signature": "SMBv1 transaction matching MS17-010 exploitation pattern trans2 request",
+      "category": "exploit",
+      "cohesion": 0.9189,
+      "disposition": "suppress",
+      "reason": "STRUCTURAL_FP",
+      "explanation": "attack cannot succeed on any of the 4 target(s) [smb]: targets windows but app01 runs linux; targets windows but web03 runs linux; targets windows but web02 runs linux",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 4,
+      "target_assets": [
+        {
+          "ip": "10.20.2.20",
+          "hostname": "app01",
+          "os": "linux RHEL 9",
+          "role": "student records API",
+          "criticality": 4,
+          "internet_facing": true,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "8443/tcp https Apache Tomcat 9 (struts2 application)"
+          ]
+        },
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        },
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "false_positive": 356
+      }
+    },
+    {
+      "id": "MA-0007",
+      "count": 1600,
+      "rules": [
+        "ET SCAN Nmap SYN scan"
+      ],
+      "severity": "low",
+      "first_seen": "2026-10-26T00:30:18.832000+00:00",
+      "last_seen": "2026-10-26T02:29:59.713000+00:00",
+      "sources": [
+        "10.0.5.10",
+        "10.0.5.11"
+      ],
+      "source_count": 2,
+      "source_subnets": [
+        "10.0.5.0/24"
+      ],
+      "targets": [
+        "10.20.4.41",
+        "10.20.4.40",
+        "10.20.4.42",
+        "10.20.1.12",
+        "10.20.2.20",
+        "10.20.1.10",
+        "10.20.5.50",
+        "10.20.1.11",
+        "10.20.3.30"
+      ],
+      "target_count": 9,
+      "ports": [
+        1,
+        8,
+        15,
+        22,
+        29,
+        36,
+        43,
+        50,
+        57,
+        64,
+        71,
+        78,
+        85,
+        92,
+        99,
+        106,
+        113,
+        120,
+        127,
+        134
+      ],
+      "signature": "TCP SYN sweep across multiple ports",
+      "category": "reconnaissance",
+      "cohesion": 1.0,
+      "disposition": "suppress",
+      "reason": "AUTHORIZED_SCANNER",
+      "explanation": "all 2 source(s) are registered scanners: secops-vuln-mgmt (weekly authenticated vulnerability scan)",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.4.41",
+          "hostname": "fs01",
+          "os": "windows Server 2019",
+          "role": "file server",
+          "criticality": 4,
+          "internet_facing": false,
+          "business_unit": "IT",
+          "listening_services": [
+            "445/tcp smb Windows SMB",
+            "3389/tcp rdp Remote Desktop Services"
+          ]
+        },
+        {
+          "ip": "10.20.4.40",
+          "hostname": "dc01",
+          "os": "windows Server 2022",
+          "role": "domain controller",
+          "criticality": 5,
+          "internet_facing": false,
+          "business_unit": "IT",
+          "listening_services": [
+            "53/tcp dns Microsoft DNS",
+            "88/tcp kerberos Microsoft Kerberos",
+            "389/tcp ldap Active Directory",
+            "445/tcp smb Windows SMB",
+            "3389/tcp rdp Remote Desktop Services"
+          ]
+        },
+        {
+          "ip": "10.20.4.42",
+          "hostname": "iis01",
+          "os": "windows Server 2022",
+          "role": "intranet",
+          "criticality": 2,
+          "internet_facing": false,
+          "business_unit": "IT",
+          "listening_services": [
+            "443/tcp https Microsoft IIS 10",
+            "3389/tcp rdp Remote Desktop Services"
+          ]
+        },
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        },
+        {
+          "ip": "10.20.2.20",
+          "hostname": "app01",
+          "os": "linux RHEL 9",
+          "role": "student records API",
+          "criticality": 4,
+          "internet_facing": true,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "8443/tcp https Apache Tomcat 9 (struts2 application)"
+          ]
+        },
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.5.50",
+          "hostname": "bastion01",
+          "os": "linux Ubuntu 24.04",
+          "role": "SSH bastion",
+          "criticality": 5,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.6"
+          ]
+        },
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.3.30",
+          "hostname": "db01",
+          "os": "linux RHEL 9",
+          "role": "records database",
+          "criticality": 5,
+          "internet_facing": false,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "5432/tcp postgresql PostgreSQL 16"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "benign": 1600
+      }
+    },
+    {
+      "id": "MA-0008",
+      "count": 356,
+      "rules": [
+        "ET SCAN Nessus User-Agent observed"
+      ],
+      "severity": "low",
+      "first_seen": "2026-10-26T00:36:18.363000+00:00",
+      "last_seen": "2026-10-26T02:23:45.888000+00:00",
+      "sources": [
+        "10.0.5.10"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "10.0.5.0/24"
+      ],
+      "targets": [
+        "10.20.1.12",
+        "10.20.2.20",
+        "10.20.1.10",
+        "10.20.1.11"
+      ],
+      "target_count": 4,
+      "ports": [
+        80,
+        443,
+        8443
+      ],
+      "signature": "HTTP requests with a vulnerability scanner user agent",
+      "category": "reconnaissance",
+      "cohesion": 1.0,
+      "disposition": "suppress",
+      "reason": "AUTHORIZED_SCANNER",
+      "explanation": "all 1 source(s) are registered scanners: secops-vuln-mgmt (weekly authenticated vulnerability scan)",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 4,
+      "target_assets": [
+        {
+          "ip": "10.20.1.12",
+          "hostname": "web03",
+          "os": "linux Debian 12",
+          "role": "staff portal",
+          "criticality": 2,
+          "internet_facing": true,
+          "business_unit": "IT",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 9.2",
+            "443/tcp https Apache httpd 2.4"
+          ]
+        },
+        {
+          "ip": "10.20.2.20",
+          "hostname": "app01",
+          "os": "linux RHEL 9",
+          "role": "student records API",
+          "criticality": 4,
+          "internet_facing": true,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "8443/tcp https Apache Tomcat 9 (struts2 application)"
+          ]
+        },
+        {
+          "ip": "10.20.1.10",
+          "hostname": "web01",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        },
+        {
+          "ip": "10.20.1.11",
+          "hostname": "web02",
+          "os": "linux Ubuntu 22.04",
+          "role": "public website",
+          "criticality": 3,
+          "internet_facing": true,
+          "business_unit": "Marketing",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.9",
+            "80/tcp http nginx 1.24",
+            "443/tcp https nginx 1.24"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "benign": 356
+      }
+    },
+    {
+      "id": "MA-0009",
+      "count": 53,
+      "rules": [
+        "Configuration file modified on database server"
+      ],
+      "severity": "medium",
+      "first_seen": "2026-10-26T01:08:50.010000+00:00",
+      "last_seen": "2026-10-26T03:08:27.406000+00:00",
+      "sources": [
+        "10.40.0.5"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "10.40.0.0/24"
+      ],
+      "targets": [
+        "10.20.3.30"
+      ],
+      "target_count": 1,
+      "ports": [
+        22
+      ],
+      "signature": "postgresql.conf modified by an administrative session",
+      "category": "change",
+      "cohesion": 1.0,
+      "disposition": "suppress",
+      "reason": "MAINTENANCE_WINDOW",
+      "explanation": "every target was in a maintenance window: CHG-20431 PostgreSQL minor upgrade and reboot",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.3.30",
+          "hostname": "db01",
+          "os": "linux RHEL 9",
+          "role": "records database",
+          "criticality": 5,
+          "internet_facing": false,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "5432/tcp postgresql PostgreSQL 16"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "benign": 53
+      }
+    },
+    {
+      "id": "MA-0010",
+      "count": 53,
+      "rules": [
+        "PostgreSQL service stopped unexpectedly"
+      ],
+      "severity": "medium",
+      "first_seen": "2026-10-26T01:12:12.230000+00:00",
+      "last_seen": "2026-10-26T01:23:55.571000+00:00",
+      "sources": [
+        "10.40.0.5"
+      ],
+      "source_count": 1,
+      "source_subnets": [
+        "10.40.0.0/24"
+      ],
+      "targets": [
+        "10.20.3.30"
+      ],
+      "target_count": 1,
+      "ports": [
+        5432
+      ],
+      "signature": "postgres service state changed to stopped",
+      "category": "availability",
+      "cohesion": 1.0,
+      "disposition": "suppress",
+      "reason": "MAINTENANCE_WINDOW",
+      "explanation": "every target was in a maintenance window: CHG-20431 PostgreSQL minor upgrade and reboot",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 5,
+      "target_assets": [
+        {
+          "ip": "10.20.3.30",
+          "hostname": "db01",
+          "os": "linux RHEL 9",
+          "role": "records database",
+          "criticality": 5,
+          "internet_facing": false,
+          "business_unit": "Registry",
+          "listening_services": [
+            "22/tcp ssh OpenSSH 8.7",
+            "5432/tcp postgresql PostgreSQL 16"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "benign": 53
+      }
+    },
+    {
+      "id": "MA-0012",
+      "count": 178,
+      "rules": [
+        "ET WEB_SPECIFIC_APPS Apache Struts2 OGNL injection attempt"
+      ],
+      "severity": "high",
+      "first_seen": "2026-10-26T09:00:12.223000+00:00",
+      "last_seen": "2026-10-26T10:59:47.731000+00:00",
+      "sources": [
+        "10.40.0.1",
+        "10.40.0.7",
+        "10.40.0.5",
+        "10.40.0.13",
+        "10.40.0.9",
+        "10.40.0.12",
+        "10.40.0.8",
+        "10.40.0.6",
+        "10.40.0.10",
+        "10.40.0.2"
+      ],
+      "source_count": 14,
+      "source_subnets": [
+        "10.40.0.0/24"
+      ],
+      "targets": [
+        "10.20.4.42"
+      ],
+      "target_count": 1,
+      "ports": [
+        443
+      ],
+      "signature": "HTTP request matching Struts2 OGNL expression pattern",
+      "category": "exploit",
+      "cohesion": 1.0,
+      "disposition": "suppress",
+      "reason": "STRUCTURAL_FP",
+      "explanation": "attack cannot succeed on any of the 1 target(s) [struts]: needs struts but iis01 does not run it",
+      "priority": 0.0,
+      "flags": [],
+      "max_criticality": 2,
+      "target_assets": [
+        {
+          "ip": "10.20.4.42",
+          "hostname": "iis01",
+          "os": "windows Server 2022",
+          "role": "intranet",
+          "criticality": 2,
+          "internet_facing": false,
+          "business_unit": "IT",
+          "listening_services": [
+            "443/tcp https Microsoft IIS 10",
+            "3389/tcp rdp Remote Desktop Services"
+          ]
+        }
+      ],
+      "unknown_targets": [],
+      "source_assets": [],
+      "verdict": null,
+      "labels": {
+        "false_positive": 178
+      }
+    }
+  ]
+}

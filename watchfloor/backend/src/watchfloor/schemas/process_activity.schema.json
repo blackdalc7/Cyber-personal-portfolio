@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://watchfloor.local/schemas/process_activity.schema.json",
+  "title": "OCSF 1.4.0 Process Activity [1007] (Watchfloor subset)",
+  "allOf": [
+    {
+      "$ref": "base_event.schema.json"
+    }
+  ],
+  "type": "object",
+  "required": [
+    "process",
+    "device"
+  ],
+  "properties": {
+    "class_uid": {
+      "const": 1007
+    },
+    "category_uid": {
+      "const": 1
+    },
+    "activity_id": {
+      "enum": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        99
+      ]
+    },
+    "process": {
+      "$ref": "base_event.schema.json#/$defs/process"
+    },
+    "status_id": {
+      "type": "integer",
+      "enum": [
+        0,
+        1,
+        2,
+        99
+      ]
+    }
+  }
+}

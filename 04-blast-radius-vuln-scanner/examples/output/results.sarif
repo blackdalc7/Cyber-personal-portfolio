@@ -1,0 +1,875 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "blast-radius-vuln-scanner",
+          "version": "1.0.0",
+          "semanticVersion": "1.0.0",
+          "informationUri": "https://www.first.org/epss/",
+          "rules": [
+            {
+              "id": "CVE-2021-42013",
+              "name": "CVE202142013",
+              "shortDescription": {
+                "text": "CVE-2021-42013 in Apache httpd 2.4.49"
+              },
+              "fullDescription": {
+                "text": "Incomplete fix for CVE-2021-41773 in Apache HTTP Server 2.4.49 and 2.4.50; path traversal and remote code execution."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2021-42013",
+              "help": {
+                "text": "See CVE-2021-42013 on NVD. Patch or mitigate Apache httpd 2.4.49.",
+                "markdown": "[CVE-2021-42013](https://nvd.nist.gov/vuln/detail/CVE-2021-42013). CVSS 9.8 (3.1)."
+              },
+              "properties": {
+                "security-severity": "9.8",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-22",
+                  "cisa-kev"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2020-1938",
+              "name": "CVE20201938",
+              "shortDescription": {
+                "text": "CVE-2020-1938 in Apache Jserv"
+              },
+              "fullDescription": {
+                "text": "Ghostcat: the Apache Tomcat AJP connector trusts incoming connections, allowing file read and, with file upload, remote code execution."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2020-1938",
+              "help": {
+                "text": "See CVE-2020-1938 on NVD. Patch or mitigate Apache Jserv.",
+                "markdown": "[CVE-2020-1938](https://nvd.nist.gov/vuln/detail/CVE-2020-1938). CVSS 9.8 (3.1)."
+              },
+              "properties": {
+                "security-severity": "9.8",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-269",
+                  "cisa-kev"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2021-41773",
+              "name": "CVE202141773",
+              "shortDescription": {
+                "text": "CVE-2021-41773 in Apache httpd 2.4.49"
+              },
+              "fullDescription": {
+                "text": "Path traversal and file disclosure in Apache HTTP Server 2.4.49; can lead to remote code execution when CGI is enabled."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2021-41773",
+              "help": {
+                "text": "See CVE-2021-41773 on NVD. Patch or mitigate Apache httpd 2.4.49.",
+                "markdown": "[CVE-2021-41773](https://nvd.nist.gov/vuln/detail/CVE-2021-41773). CVSS 7.5 (3.1)."
+              },
+              "properties": {
+                "security-severity": "7.5",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-22",
+                  "cisa-kev"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2017-7494",
+              "name": "CVE20177494",
+              "shortDescription": {
+                "text": "CVE-2017-7494 in Samba smbd 4.5.9"
+              },
+              "fullDescription": {
+                "text": "SambaCry: Samba 3.5.0 to 4.6.4 lets a client with write access upload and load a shared library, giving remote code execution."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2017-7494",
+              "help": {
+                "text": "See CVE-2017-7494 on NVD. Patch or mitigate Samba smbd 4.5.9.",
+                "markdown": "[CVE-2017-7494](https://nvd.nist.gov/vuln/detail/CVE-2017-7494). CVSS 9.8 (3.1)."
+              },
+              "properties": {
+                "security-severity": "9.8",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-94",
+                  "cisa-kev"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2022-0543",
+              "name": "CVE20220543",
+              "shortDescription": {
+                "text": "CVE-2022-0543 in Redis key-value store 5.0.7"
+              },
+              "fullDescription": {
+                "text": "Lua sandbox escape in Debian-packaged Redis allows remote code execution."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2022-0543",
+              "help": {
+                "text": "See CVE-2022-0543 on NVD. Patch or mitigate Redis key-value store 5.0.7.",
+                "markdown": "[CVE-2022-0543](https://nvd.nist.gov/vuln/detail/CVE-2022-0543). CVSS 10.0 (3.1)."
+              },
+              "properties": {
+                "security-severity": "10.0",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-862",
+                  "cisa-kev"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2019-9193",
+              "name": "CVE20199193",
+              "shortDescription": {
+                "text": "CVE-2019-9193 in PostgreSQL DB 9.6.0"
+              },
+              "fullDescription": {
+                "text": "COPY TO/FROM PROGRAM in PostgreSQL 9.3 to 11.2 lets superusers run operating-system commands (disputed: documented feature)."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2019-9193",
+              "help": {
+                "text": "See CVE-2019-9193 on NVD. Patch or mitigate PostgreSQL DB 9.6.0.",
+                "markdown": "[CVE-2019-9193](https://nvd.nist.gov/vuln/detail/CVE-2019-9193). CVSS 7.2 (3.1)."
+              },
+              "properties": {
+                "security-severity": "7.2",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-78"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2011-2523",
+              "name": "CVE20112523",
+              "shortDescription": {
+                "text": "CVE-2011-2523 in vsftpd 2.3.4"
+              },
+              "fullDescription": {
+                "text": "vsftpd 2.3.4 downloaded between 2011-06-30 and 2011-07-03 contains a backdoor that opens a shell on port 6200."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2011-2523",
+              "help": {
+                "text": "See CVE-2011-2523 on NVD. Patch or mitigate vsftpd 2.3.4.",
+                "markdown": "[CVE-2011-2523](https://nvd.nist.gov/vuln/detail/CVE-2011-2523). CVSS 9.8 (3.1)."
+              },
+              "properties": {
+                "security-severity": "9.8",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-78"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2016-10009",
+              "name": "CVE201610009",
+              "shortDescription": {
+                "text": "CVE-2016-10009 in OpenSSH 7.2p2 Ubuntu 4ubuntu2.10"
+              },
+              "fullDescription": {
+                "text": "Untrusted search path in ssh-agent in OpenSSH before 7.4 allows remote code execution via a forwarded agent socket."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2016-10009",
+              "help": {
+                "text": "See CVE-2016-10009 on NVD. Patch or mitigate OpenSSH 7.2p2 Ubuntu 4ubuntu2.10.",
+                "markdown": "[CVE-2016-10009](https://nvd.nist.gov/vuln/detail/CVE-2016-10009). CVSS 7.3 (3.1)."
+              },
+              "properties": {
+                "security-severity": "7.3",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-426"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2018-1058",
+              "name": "CVE20181058",
+              "shortDescription": {
+                "text": "CVE-2018-1058 in PostgreSQL DB 9.6.0"
+              },
+              "fullDescription": {
+                "text": "Search-path handling in PostgreSQL lets a user with CREATE privilege run code as another user."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2018-1058",
+              "help": {
+                "text": "See CVE-2018-1058 on NVD. Patch or mitigate PostgreSQL DB 9.6.0.",
+                "markdown": "[CVE-2018-1058](https://nvd.nist.gov/vuln/detail/CVE-2018-1058). CVSS 8.8 (3.1)."
+              },
+              "properties": {
+                "security-severity": "8.8",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-94"
+                ],
+                "precision": "high"
+              }
+            },
+            {
+              "id": "CVE-2016-6210",
+              "name": "CVE20166210",
+              "shortDescription": {
+                "text": "CVE-2016-6210 in OpenSSH 7.2p2 Ubuntu 4ubuntu2.10"
+              },
+              "fullDescription": {
+                "text": "OpenSSH before 7.3 allows user enumeration through a timing side channel."
+              },
+              "helpUri": "https://nvd.nist.gov/vuln/detail/CVE-2016-6210",
+              "help": {
+                "text": "See CVE-2016-6210 on NVD. Patch or mitigate OpenSSH 7.2p2 Ubuntu 4ubuntu2.10.",
+                "markdown": "[CVE-2016-6210](https://nvd.nist.gov/vuln/detail/CVE-2016-6210). CVSS 5.9 (3.1)."
+              },
+              "properties": {
+                "security-severity": "5.9",
+                "tags": [
+                  "security",
+                  "vulnerability",
+                  "CWE-200"
+                ],
+                "precision": "high"
+              }
+            }
+          ]
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": []
+        }
+      ],
+      "results": [
+        {
+          "ruleId": "CVE-2021-42013",
+          "ruleIndex": 0,
+          "level": "error",
+          "rank": 77.8,
+          "message": {
+            "text": "CVE-2021-42013 on web01 (10.10.1.10:80/tcp, Apache httpd 2.4.49). Priority 77.8: EPSS 0.943, CISA KEV, CVSS 9.8, exposure internet, blast radius 4 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.1.10:80/tcp",
+                  "fullyQualifiedName": "web01/10.10.1.10:80/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "bd75ddeb7cddba25791d4eefce5108ee504313edfd38100f8b6aa20594887a01"
+          },
+          "properties": {
+            "host": "10.10.1.10",
+            "port": 80,
+            "protocol": "tcp",
+            "asset": "web01",
+            "criticality": 3,
+            "epss": 0.943,
+            "epssPercentile": 0.9995,
+            "kev": true,
+            "kevRansomware": false,
+            "likelihood": 0.943,
+            "exposure": "internet",
+            "blastRadiusScore": 10.5,
+            "chokepoint": 1.0,
+            "secondaryTargets": [
+              "app01 (10.10.2.20) hop 1 via 8080/CVE-2020-1938",
+              "db01 (10.10.3.30) hop 2 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 2 via 445/CVE-2017-7494",
+              "cache01 (10.10.2.21) hop 2 via 6379/CVE-2022-0543"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2020-1938",
+          "ruleIndex": 1,
+          "level": "error",
+          "rank": 75.9,
+          "message": {
+            "text": "CVE-2020-1938 on app01 (10.10.2.20:8009/tcp, Apache Jserv). Priority 75.9: EPSS 0.944, CISA KEV, CVSS 9.8, exposure chained, blast radius 3 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 23
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.2.20:8009/tcp",
+                  "fullyQualifiedName": "app01/10.10.2.20:8009/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "09b67b102861cf476266bd8503dc45202da328b7959e5cfd878508e215c4a8df"
+          },
+          "properties": {
+            "host": "10.10.2.20",
+            "port": 8009,
+            "protocol": "tcp",
+            "asset": "app01",
+            "criticality": 4,
+            "epss": 0.944,
+            "epssPercentile": 0.9996,
+            "kev": true,
+            "kevRansomware": false,
+            "likelihood": 0.944,
+            "exposure": "chained",
+            "blastRadiusScore": 13.0,
+            "chokepoint": 1.0,
+            "secondaryTargets": [
+              "db01 (10.10.3.30) hop 1 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 1 via 445/CVE-2017-7494",
+              "cache01 (10.10.2.21) hop 1 via 6379/CVE-2022-0543"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2020-1938",
+          "ruleIndex": 1,
+          "level": "error",
+          "rank": 75.9,
+          "message": {
+            "text": "CVE-2020-1938 on app01 (10.10.2.20:8080/tcp, Apache Tomcat 9.0.30). Priority 75.9: EPSS 0.944, CISA KEV, CVSS 9.8, exposure chained, blast radius 3 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 24
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.2.20:8080/tcp",
+                  "fullyQualifiedName": "app01/10.10.2.20:8080/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "97e2e5eba90f8d0a04038e98ec90e5316987e19b84de2d67bf52eb66b0d5d721"
+          },
+          "properties": {
+            "host": "10.10.2.20",
+            "port": 8080,
+            "protocol": "tcp",
+            "asset": "app01",
+            "criticality": 4,
+            "epss": 0.944,
+            "epssPercentile": 0.9996,
+            "kev": true,
+            "kevRansomware": false,
+            "likelihood": 0.944,
+            "exposure": "chained",
+            "blastRadiusScore": 13.0,
+            "chokepoint": 1.0,
+            "secondaryTargets": [
+              "db01 (10.10.3.30) hop 1 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 1 via 445/CVE-2017-7494",
+              "cache01 (10.10.2.21) hop 1 via 6379/CVE-2022-0543"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2021-41773",
+          "ruleIndex": 2,
+          "level": "error",
+          "rank": 59.57,
+          "message": {
+            "text": "CVE-2021-41773 on web01 (10.10.1.10:80/tcp, Apache httpd 2.4.49). Priority 59.6: EPSS 0.944, CISA KEV, CVSS 7.5, exposure internet, blast radius 4 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 9
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.1.10:80/tcp",
+                  "fullyQualifiedName": "web01/10.10.1.10:80/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "c30b3e69245ce7657ba4c4c9287e9dc8f9b5a938ccc209a7348d8eb64c039915"
+          },
+          "properties": {
+            "host": "10.10.1.10",
+            "port": 80,
+            "protocol": "tcp",
+            "asset": "web01",
+            "criticality": 3,
+            "epss": 0.944,
+            "epssPercentile": 0.9997,
+            "kev": true,
+            "kevRansomware": false,
+            "likelihood": 0.944,
+            "exposure": "internet",
+            "blastRadiusScore": 10.5,
+            "chokepoint": 1.0,
+            "secondaryTargets": [
+              "app01 (10.10.2.20) hop 1 via 8080/CVE-2020-1938",
+              "db01 (10.10.3.30) hop 2 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 2 via 445/CVE-2017-7494",
+              "cache01 (10.10.2.21) hop 2 via 6379/CVE-2022-0543"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2017-7494",
+          "ruleIndex": 3,
+          "level": "error",
+          "rank": 55.23,
+          "message": {
+            "text": "CVE-2017-7494 on fs01 (10.10.3.31:445/tcp, Samba smbd 4.5.9). Priority 55.2: EPSS 0.941, CISA KEV, CVSS 9.8, exposure chained, blast radius 1 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 45
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.3.31:445/tcp",
+                  "fullyQualifiedName": "fs01/10.10.3.31:445/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "f83bcb4cbd87bc887eff1908768da54303e141cc4954570fbc82031022e5561a"
+          },
+          "properties": {
+            "host": "10.10.3.31",
+            "port": 445,
+            "protocol": "tcp",
+            "asset": "fs01",
+            "criticality": 5,
+            "epss": 0.941,
+            "epssPercentile": 0.9992,
+            "kev": true,
+            "kevRansomware": false,
+            "likelihood": 0.941,
+            "exposure": "chained",
+            "blastRadiusScore": 5.0,
+            "chokepoint": 0.3333,
+            "secondaryTargets": [
+              "db01 (10.10.3.30) hop 1 via 5432/CVE-2019-9193"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2022-0543",
+          "ruleIndex": 4,
+          "level": "error",
+          "rank": 53.9,
+          "message": {
+            "text": "CVE-2022-0543 on cache01 (10.10.2.21:6379/tcp, Redis key-value store 5.0.7). Priority 53.9: EPSS 0.943, CISA KEV, CVSS 10.0, exposure chained, blast radius 3 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 31
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.2.21:6379/tcp",
+                  "fullyQualifiedName": "cache01/10.10.2.21:6379/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "7ff7b57da8286f45970550d13b2729619e2e493e97a02b549a66cd277364c223"
+          },
+          "properties": {
+            "host": "10.10.2.21",
+            "port": 6379,
+            "protocol": "tcp",
+            "asset": "cache01",
+            "criticality": 3,
+            "epss": 0.943,
+            "epssPercentile": 0.9994,
+            "kev": true,
+            "kevRansomware": false,
+            "likelihood": 0.943,
+            "exposure": "chained",
+            "blastRadiusScore": 14.0,
+            "chokepoint": 0.0,
+            "secondaryTargets": [
+              "db01 (10.10.3.30) hop 1 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 1 via 445/CVE-2017-7494",
+              "app01 (10.10.2.20) hop 1 via 8080/CVE-2020-1938"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2019-9193",
+          "ruleIndex": 5,
+          "level": "warning",
+          "rank": 32.94,
+          "message": {
+            "text": "CVE-2019-9193 on db01 (10.10.3.30:5432/tcp, PostgreSQL DB 9.6.0). Priority 32.9: EPSS 0.620, CVSS 7.2, exposure chained, blast radius 1 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 38
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.3.30:5432/tcp",
+                  "fullyQualifiedName": "db01/10.10.3.30:5432/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "55ed3683b81a8fd2f5c2d70f9fb598a8b78659905543db95271f71f9c8c4f1b9"
+          },
+          "properties": {
+            "host": "10.10.3.30",
+            "port": 5432,
+            "protocol": "tcp",
+            "asset": "db01",
+            "criticality": 5,
+            "epss": 0.62,
+            "epssPercentile": 0.98,
+            "kev": false,
+            "kevRansomware": false,
+            "likelihood": 0.62,
+            "exposure": "chained",
+            "blastRadiusScore": 5.0,
+            "chokepoint": 0.3333,
+            "secondaryTargets": [
+              "fs01 (10.10.3.31) hop 1 via 445/CVE-2017-7494"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2011-2523",
+          "ruleIndex": 6,
+          "level": "note",
+          "rank": 11.26,
+          "message": {
+            "text": "CVE-2011-2523 on legacy-ftp (10.10.4.41:21/tcp, vsftpd 2.3.4). Priority 11.3: EPSS 0.880, CVSS 9.8, exposure internal, blast radius 0 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 59
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.4.41:21/tcp",
+                  "fullyQualifiedName": "legacy-ftp/10.10.4.41:21/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "02eaca2b6f5ecc39175e4d033ad7e26f5a0ac3d1e6db1dc63f2ab3d3de67f27e"
+          },
+          "properties": {
+            "host": "10.10.4.41",
+            "port": 21,
+            "protocol": "tcp",
+            "asset": "legacy-ftp",
+            "criticality": 1,
+            "epss": 0.88,
+            "epssPercentile": 0.995,
+            "kev": false,
+            "kevRansomware": false,
+            "likelihood": 0.88,
+            "exposure": "internal",
+            "blastRadiusScore": 0,
+            "chokepoint": 0.0,
+            "secondaryTargets": [],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2016-10009",
+          "ruleIndex": 7,
+          "level": "note",
+          "rank": 8.48,
+          "message": {
+            "text": "CVE-2016-10009 on web01 (10.10.1.10:22/tcp, OpenSSH 7.2p2 Ubuntu 4ubuntu2.10). Priority 8.5: EPSS 0.034, CVSS 7.3, exposure internal, blast radius 4 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 8
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.1.10:22/tcp",
+                  "fullyQualifiedName": "web01/10.10.1.10:22/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "f611fd03864ce9e98f812f1688a79cd5918c19436dac76ca6c08b7b76e3a12d4"
+          },
+          "properties": {
+            "host": "10.10.1.10",
+            "port": 22,
+            "protocol": "tcp",
+            "asset": "web01",
+            "criticality": 3,
+            "epss": 0.034,
+            "epssPercentile": 0.88,
+            "kev": false,
+            "kevRansomware": false,
+            "likelihood": 0.034,
+            "exposure": "internal",
+            "blastRadiusScore": 10.5,
+            "chokepoint": 1.0,
+            "secondaryTargets": [
+              "app01 (10.10.2.20) hop 1 via 8080/CVE-2020-1938",
+              "db01 (10.10.3.30) hop 2 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 2 via 445/CVE-2017-7494",
+              "cache01 (10.10.2.21) hop 2 via 6379/CVE-2022-0543"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2018-1058",
+          "ruleIndex": 8,
+          "level": "note",
+          "rank": 5.6,
+          "message": {
+            "text": "CVE-2018-1058 on db01 (10.10.3.30:5432/tcp, PostgreSQL DB 9.6.0). Priority 5.6: EPSS 0.012, CVSS 8.8, exposure chained, blast radius 1 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 38
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.3.30:5432/tcp",
+                  "fullyQualifiedName": "db01/10.10.3.30:5432/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "717b75f1af8e326b3abd6cb5bb9fa9a85cbe091e585359a9bb150f15fabe983e"
+          },
+          "properties": {
+            "host": "10.10.3.30",
+            "port": 5432,
+            "protocol": "tcp",
+            "asset": "db01",
+            "criticality": 5,
+            "epss": 0.012,
+            "epssPercentile": 0.78,
+            "kev": false,
+            "kevRansomware": false,
+            "likelihood": 0.012,
+            "exposure": "chained",
+            "blastRadiusScore": 5.0,
+            "chokepoint": 0.3333,
+            "secondaryTargets": [
+              "fs01 (10.10.3.31) hop 1 via 445/CVE-2017-7494"
+            ],
+            "cpeMatch": "cpe"
+          }
+        },
+        {
+          "ruleId": "CVE-2016-6210",
+          "ruleIndex": 9,
+          "level": "note",
+          "rank": 5.39,
+          "message": {
+            "text": "CVE-2016-6210 on web01 (10.10.1.10:22/tcp, OpenSSH 7.2p2 Ubuntu 4ubuntu2.10). Priority 5.4: EPSS 0.021, CVSS 5.9, exposure internal, blast radius 4 secondary target(s)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "examples/lab_scan.xml"
+                },
+                "region": {
+                  "startLine": 8
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "10.10.1.10:22/tcp",
+                  "fullyQualifiedName": "web01/10.10.1.10:22/tcp",
+                  "kind": "resource"
+                }
+              ]
+            }
+          ],
+          "partialFingerprints": {
+            "hostPortCve/v1": "388e51cde652ea864d70327027eec7da4a970fa2a0f7ec60bc31aa0d93352221"
+          },
+          "properties": {
+            "host": "10.10.1.10",
+            "port": 22,
+            "protocol": "tcp",
+            "asset": "web01",
+            "criticality": 3,
+            "epss": 0.021,
+            "epssPercentile": 0.83,
+            "kev": false,
+            "kevRansomware": false,
+            "likelihood": 0.021,
+            "exposure": "internal",
+            "blastRadiusScore": 10.5,
+            "chokepoint": 1.0,
+            "secondaryTargets": [
+              "app01 (10.10.2.20) hop 1 via 8080/CVE-2020-1938",
+              "db01 (10.10.3.30) hop 2 via 5432/CVE-2019-9193",
+              "fs01 (10.10.3.31) hop 2 via 445/CVE-2017-7494",
+              "cache01 (10.10.2.21) hop 2 via 6379/CVE-2022-0543"
+            ],
+            "cpeMatch": "cpe"
+          }
+        }
+      ],
+      "properties": {
+        "entryPoints": [
+          "10.10.1.10"
+        ],
+        "attackPaths": [
+          {
+            "target": "10.10.2.20",
+            "probability": 0.8911,
+            "path": [
+              "internet",
+              "10.10.1.10",
+              "10.10.2.20"
+            ]
+          },
+          {
+            "target": "10.10.3.31",
+            "probability": 0.8386,
+            "path": [
+              "internet",
+              "10.10.1.10",
+              "10.10.2.20",
+              "10.10.3.31"
+            ]
+          },
+          {
+            "target": "10.10.3.30",
+            "probability": 0.5525,
+            "path": [
+              "internet",
+              "10.10.1.10",
+              "10.10.2.20",
+              "10.10.3.30"
+            ]
+          }
+        ],
+        "hostsScanned": 9,
+        "servicesScanned": 11
+      }
+    }
+  ]
+}

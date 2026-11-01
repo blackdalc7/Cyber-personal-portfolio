@@ -1,0 +1,43 @@
+# Invoke-AtomicRedTeam on the Windows endpoint, driven by 07-attack-emulator over WinRM.
+# No Defender exclusions are added: a test Defender blocks is scored "prevented", which is a real result.
+- name: PowerShell Gallery trusted for this install
+  ansible.windows.win_shell: |
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    if (-not (Get-PackageProvider -ListAvailable -Name NuGet -ErrorAction SilentlyContinue)) {
+      Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force | Out-Null
+    }
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+  changed_when: false
+
+- name: Invoke-AtomicRedTeam (pinned)
+  community.windows.win_psmodule:
+    name: invoke-atomicredteam
+    required_version: "{{ invoke_atomicredteam_version }}"
+    state: present
+
+- name: powershell-yaml (needed to read atomic definitions)
+  community.windows.win_psmodule:
+    name: powershell-yaml
+    state: present
+
+- name: Download the atomics at the pinned ref
+  ansible.windows.win_get_url:
+    url: "https://github.com/redcanaryco/atomic-red-team/archive/{{ atomic_red_team_ref }}.zip"
+    dest: 'C:\Watchfloor\atomic-red-team.zip'
+
+- name: Unpack
+  community.windows.win_unzip:
+    src: 'C:\Watchfloor\atomic-red-team.zip'
+    dest: 'C:\Watchfloor\art-src'
+    creates: 'C:\Watchfloor\art-src'
+
+- name: Put the atomics where Invoke-AtomicTest looks by default
+  ansible.windows.win_shell: |
+    $src = Get-ChildItem 'C:\Watchfloor\art-src' -Directory | Select-Object -First 1
+    New-Item -ItemType Directory -Force -Path 'C:\AtomicRedTeam' | Out-Null
+    if (-not (Test-Path 'C:\AtomicRedTeam\atomics')) {
+      Move-Item -Path (Join-Path $src.FullName 'atomics') -Destination 'C:\AtomicRedTeam\atomics'
+      'moved'
+    }
+  register: art_move
+  changed_when: "'moved' in art_move.stdout"

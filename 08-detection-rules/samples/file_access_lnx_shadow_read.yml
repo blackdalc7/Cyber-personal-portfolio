@@ -1,0 +1,33 @@
+# Each sample is a partial OCSF 1.4.0 event; the test loader fills in the envelope (category, type_uid, metadata).
+match:
+  - name: cat reads /etc/shadow (Atomic T1003.008 test 1)
+    event:
+      class_uid: 1001
+      activity_id: 2
+      file: {name: shadow, path: /etc/shadow}
+      actor: {process: {name: cat, pid: 102, cmd_line: /usr/bin/cat /etc/shadow, file: {name: cat, path: /usr/bin/cat}}}
+  - name: an unknown binary in /tmp reading /etc/gshadow
+    event:
+      class_uid: 1001
+      activity_id: 2
+      file: {name: gshadow, path: /etc/gshadow}
+      actor: {process: {name: chkpwd, file: {name: chkpwd, path: /tmp/chkpwd}}}
+nomatch:
+  - name: sudo's PAM helper (the original false positive)
+    event:
+      class_uid: 1001
+      activity_id: 2
+      file: {name: shadow, path: /etc/shadow}
+      actor: {process: {name: unix_chkpwd, file: {name: unix_chkpwd, path: /usr/sbin/unix_chkpwd}}}
+  - name: useradd writing the shadow file is a write, not a read
+    event:
+      class_uid: 1001
+      activity_id: 3
+      file: {name: shadow, path: /etc/shadow}
+      actor: {process: {name: cat, file: {name: cat, path: /usr/bin/cat}}}
+  - name: reading /etc/passwd is fine
+    event:
+      class_uid: 1001
+      activity_id: 2
+      file: {name: passwd, path: /etc/passwd}
+      actor: {process: {name: cat, file: {name: cat, path: /usr/bin/cat}}}

@@ -1,0 +1,17 @@
+# Fictional purple-team exercise. Times are when the red team ran each procedure (UTC).
+# ws02 was in scope but, as the results show, is not forwarding process telemetry.
+name: Q4 discovery and execution exercise
+steps:
+  - {technique: T1033,     host: ws01,  platform: windows, start: "2026-10-26T09:00:00Z", end: "2026-10-26T09:00:10Z", procedure: "whoami /all"}
+  - {technique: T1082,     host: ws01,  platform: windows, start: "2026-10-26T09:01:00Z", end: "2026-10-26T09:01:10Z", procedure: "systeminfo"}
+  - {technique: T1016,     host: ws01,  platform: windows, start: "2026-10-26T09:02:00Z", end: "2026-10-26T09:02:10Z", procedure: "ipconfig /all"}
+  - {technique: T1059.003, host: ws01,  platform: windows, start: "2026-10-26T09:03:00Z", end: "2026-10-26T09:03:10Z", procedure: "cmd.exe /c echo ..."}
+  - {technique: T1059.001, host: ws01,  platform: windows, start: "2026-10-26T09:04:00Z", end: "2026-10-26T09:04:10Z", procedure: "powershell -NoProfile -Command Get-Date"}
+  - {technique: T1083,     host: ws01,  platform: windows, start: "2026-10-26T09:05:00Z", end: "2026-10-26T09:05:10Z", procedure: "cmd.exe /c dir C:\\Users"}
+  - {technique: T1057,     host: ws01,  platform: windows, start: "2026-10-26T09:06:00Z", end: "2026-10-26T09:06:10Z", procedure: "tasklist /v"}
+  - {technique: T1059.004, host: srv01, platform: linux,   start: "2026-10-26T09:10:00Z", end: "2026-10-26T09:10:10Z", procedure: "sh -c 'echo ...'"}
+  - {technique: T1082,     host: srv01, platform: linux,   start: "2026-10-26T09:11:00Z", end: "2026-10-26T09:11:10Z", procedure: "uname -a"}
+  - {technique: T1033,     host: srv01, platform: linux,   start: "2026-10-26T09:12:00Z", end: "2026-10-26T09:12:10Z", procedure: "id"}
+  - {technique: T1016,     host: srv01, platform: linux,   start: "2026-10-26T09:13:00Z", end: "2026-10-26T09:13:10Z", procedure: "ss -tunap"}
+  - {technique: T1083,     host: srv01, platform: linux,   start: "2026-10-26T09:14:00Z", end: "2026-10-26T09:14:10Z", procedure: "ls -la /etc"}
+  - {technique: T1082,     host: ws02,  platform: windows, start: "2026-10-26T09:20:00Z", end: "2026-10-26T09:20:10Z", procedure: "systeminfo"}

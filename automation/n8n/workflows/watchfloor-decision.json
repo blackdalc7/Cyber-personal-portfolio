@@ -1,0 +1,364 @@
+{
+  "name": "Watchfloor: decision follow-up",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "watchfloor-decision",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "id": "850e66df-4c53-570c-b131-8bb9b95f93d1",
+      "name": "02 decision webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "ae6fcaf5-12cc-59ce-8587-bf64644618b8"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Verify 02's signed decision webhook before anything acts on it: secret, fresh timestamp, HMAC over the raw\n// body, and no replays (signatures are remembered for 10 minutes). The webhook node keeps the raw body.\nconst crypto = require('crypto');\nconst secret = $env.DECISION_WEBHOOK_SECRET || '';\nconst item = $input.first();\nconst headers = item.json.headers || {};\n// Only the exact bytes 02 signed can be verified: re-serialising the parsed body changes them (Python writes 1.0,\n// JavaScript writes 1), so without the webhook's rawBody option every request is refused.\nconst raw = item.binary && item.binary.data\n  ? (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8')\n  : null;\nconst ts = String(headers['x-soar-timestamp'] || '');\nconst sig = String(headers['x-soar-signature'] || '');\nconst state = $getWorkflowStaticData('global');\nstate.sigs = state.sigs || {};\nconst now = Date.now() / 1000;\nfor (const [s, t] of Object.entries(state.sigs)) {\n  if (now - t > 600) delete state.sigs[s];\n}\n\nlet valid = false;\nlet reason = '';\nif (secret.length < 32) reason = 'DECISION_WEBHOOK_SECRET is not set';\nelse if (raw === null) reason = 'raw body missing (enable rawBody on the webhook node)';\nelse if (!/^\\d+$/.test(ts) || Math.abs(now - Number(ts)) > 300) reason = 'stale or missing timestamp';\nelse if (!sig.startsWith('sha256=')) reason = 'missing signature';\nelse if (state.sigs[sig]) reason = 'replayed request';\nelse {\n  const expected = crypto.createHmac('sha256', secret).update(`${ts}.${raw}`).digest('hex');\n  const given = Buffer.from(sig.slice(7), 'utf8');\n  const want = Buffer.from(expected, 'utf8');\n  valid = given.length === want.length && crypto.timingSafeEqual(given, want);\n  if (!valid) reason = 'bad signature';\n}\nlet event = null;\nif (valid) {\n  try {\n    event = JSON.parse(raw);\n    state.sigs[sig] = now;\n  } catch (e) {\n    valid = false;\n    reason = 'body is not JSON';\n  }\n}\nreturn [{ json: { valid, reason, event } }];\n"
+      },
+      "id": "41ed7828-a350-516f-9ce1-5bc1b3541c74",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "34173cf5-fa32-50b1-b141-aefd4a302302",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "810c4797-5e9e-52f4-8b07-43a320e700ea",
+      "name": "Signed by 02?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "noData",
+        "options": {
+          "responseCode": 204
+        }
+      },
+      "id": "b36ccf57-3a9e-5156-b3d6-ce3f4ca9b23b",
+      "name": "Accept",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ error: \"invalid signature\" }) }}",
+        "options": {
+          "responseCode": 401
+        }
+      },
+      "id": "ee1e962c-d148-52de-8466-3185cc6dce08",
+      "name": "Refuse",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Decide what follows a decision: an approved containment starts evidence collection in 09 (signed request),\n// and every decision is posted to the team channel if NOTIFY_WEBHOOK_URL is set.\nconst crypto = require('crypto');\nconst ev = $input.first().json.event || {};\nconst inc = ev.incident || {};\nconst who = inc.decided_by || 'someone';\nconst what = `${inc.id} (${inc.title || 'untitled'})`;\nconst TEXT = {\n  'incident.approved': `${who} approved isolating ${inc.host} for ${what}. Collecting evidence now.`,\n  'incident.rejected': `${who} rejected isolation for ${what}. No action taken.`,\n  'incident.remediated': `${inc.host} is isolated for ${what}.`,\n  'incident.failed': `Isolation of ${inc.host} FAILED for ${what}. Check 02's audit trail.`,\n  'incident.expired': `Nobody decided on ${what} in time. The approval expired; escalate.`,\n};\nconst out = {\n  event: ev.event,\n  incident_id: inc.id,\n  host: inc.host,\n  text: TEXT[ev.event] || `${ev.event} for ${what}`,\n  notify: Boolean($env.NOTIFY_WEBHOOK_URL),\n  collect: false,\n};\nconst secret = $env.EVIDENCE_SHARED_SECRET || '';\nif (ev.event === 'incident.approved' && inc.host && inc.id && secret.length >= 32) {\n  const request = {\n    incident_id: inc.id,\n    host: inc.host,\n    requested_by: 'n8n:watchfloor-decision',\n    reason: `Containment approved in 02: ${inc.title || ''}`.slice(0, 500),\n  };\n  if (inc.detected_at) request.around_ms = Math.round(Number(inc.detected_at) * 1000);\n  if (inc.decided_by) request.decided_by = String(inc.decided_by).slice(0, 100);\n  const body = JSON.stringify(request);\n  const ts = String(Math.floor(Date.now() / 1000));\n  Object.assign(out, {\n    collect: true,\n    collect_body: body,\n    collect_ts: ts,\n    collect_sig: 'sha256=' + crypto.createHmac('sha256', secret).update(`${ts}.${body}`).digest('hex'),\n  });\n}\nreturn [{ json: out }];\n"
+      },
+      "id": "173f33cc-5f91-5791-9aae-5ba6237b32b0",
+      "name": "Plan actions",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        880,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "ac859cf0-001a-5cea-b73b-3b01254a5c72",
+              "leftValue": "={{ $json.collect }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "70c41129-6a3b-5b2a-a32c-b75e6ab92022",
+      "name": "Collect evidence?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.EVIDENCE_URL }}/collect",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-SOAR-Timestamp",
+              "value": "={{ $json.collect_ts }}"
+            },
+            {
+              "name": "X-SOAR-Signature",
+              "value": "={{ $json.collect_sig }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ $json.collect_body }}",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "665fe784-0c97-51ec-bc55-183baa14eaa9",
+      "name": "Start collection in 09",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1320,
+        -220
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "continueOnFail": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "3a4c8e39-d340-59b3-9d4b-ab52731a245e",
+              "leftValue": "={{ $('Plan actions').item.json.notify }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "58cb3890-081b-593c-8d27-e14409b51009",
+      "name": "Notify?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        -120
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.NOTIFY_WEBHOOK_URL }}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ text: $('Plan actions').item.json.text, content: $('Plan actions').item.json.text }) }}",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "e9051e90-79f4-5e3e-8613-81244a8c3fae",
+      "name": "Post to channel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        -120
+      ],
+      "continueOnFail": true
+    }
+  ],
+  "connections": {
+    "02 decision webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Signed by 02?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signed by 02?": {
+      "main": [
+        [
+          {
+            "node": "Accept",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Refuse",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accept": {
+      "main": [
+        [
+          {
+            "node": "Plan actions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Plan actions": {
+      "main": [
+        [
+          {
+            "node": "Collect evidence?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect evidence?": {
+      "main": [
+        [
+          {
+            "node": "Start collection in 09",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Start collection in 09": {
+      "main": [
+        [
+          {
+            "node": "Notify?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify?": {
+      "main": [
+        [
+          {
+            "node": "Post to channel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "pinData": {},
+  "tags": [
+    {
+      "name": "watchfloor"
+    },
+    {
+      "name": "soar"
+    },
+    {
+      "name": "dfir"
+    }
+  ],
+  "meta": {
+    "generatedBy": "automation/n8n/build_workflows.py"
+  }
+}

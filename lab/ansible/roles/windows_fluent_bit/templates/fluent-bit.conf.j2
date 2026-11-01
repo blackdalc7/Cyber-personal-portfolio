@@ -1,0 +1,54 @@
+# Managed by Ansible. Sysmon and Security events go to /api/ingest/winlog, 03's alerts to /api/ingest/edr.
+[SERVICE]
+    Flush        2
+    Log_Level    info
+    storage.path C:\Watchfloor\flb-storage
+
+[INPUT]
+    Name           winevtlog
+    Channels       Microsoft-Windows-Sysmon/Operational,Security
+    Tag            winlog
+    Interval_Sec   1
+    Read_Existing_Events Off
+    String_Inserts On
+    Render_Event_As_XML Off
+    DB             C:\Watchfloor\flb-winlog.sqlite
+    storage.type   filesystem
+
+[INPUT]
+    Name           tail
+    Tag            edr
+    Path           {{ edr_output_dir }}\alerts.ndjson
+    Parser         json
+    DB             C:\Watchfloor\flb-edr.sqlite
+    storage.type   filesystem
+
+# Security log is noisy: keep only the logon events the mapper understands.
+[FILTER]
+    Name    grep
+    Match   winlog
+    Logical_Op or
+    Regex   EventID ^(1|3|11)$
+    Regex   EventID ^462[45]$
+
+[OUTPUT]
+    Name         http
+    Match        winlog
+    Host         {{ wf_hub_url | urlsplit('hostname') }}
+    Port         {{ wf_hub_url | urlsplit('port') | default(80, true) }}
+    URI          /api/ingest/winlog
+    Format       json_lines
+    Json_date_key false
+    Header       Authorization Bearer ${WF_INGEST_TOKEN}
+    Retry_Limit  10
+
+[OUTPUT]
+    Name         http
+    Match        edr
+    Host         {{ wf_hub_url | urlsplit('hostname') }}
+    Port         {{ wf_hub_url | urlsplit('port') | default(80, true) }}
+    URI          /api/ingest/edr
+    Format       json_lines
+    Json_date_key false
+    Header       Authorization Bearer ${WF_INGEST_TOKEN}
+    Retry_Limit  10

@@ -1,0 +1,36 @@
+- name: Fluent Bit Helm repository
+  ansible.builtin.command: helm repo add fluent https://fluent.github.io/helm-charts
+  register: repo
+  changed_when: "'has been added' in repo.stdout"
+  failed_when: repo.rc != 0 and 'already exists' not in repo.stderr
+
+- name: Namespace
+  ansible.builtin.command: kubectl create namespace logging
+  register: ns
+  changed_when: ns.rc == 0
+  failed_when: ns.rc != 0 and 'AlreadyExists' not in ns.stderr
+
+- name: Ingest token as a Secret (no_log keeps it out of Ansible output)
+  ansible.builtin.shell: |
+    set -eu
+    kubectl -n logging create secret generic wf-ingest --from-literal=token="$TOKEN" \
+      --dry-run=client -o yaml | kubectl apply -f -
+  environment:
+    TOKEN: "{{ wf_ingest_token }}"
+  no_log: true
+  changed_when: true
+
+- name: Render values
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/../k8s/fluent-bit/values.yaml.j2"
+    dest: /opt/watchfloor/fluent-bit-values.yaml
+    mode: "0644"
+  vars:
+    wf_hub_host: "{{ wf_hub_url | urlsplit('hostname') }}"
+    wf_hub_port: "{{ wf_hub_url | urlsplit('port') | default(80, true) }}"
+
+- name: Install or upgrade Fluent Bit
+  ansible.builtin.command: >
+    helm upgrade --install fluent-bit fluent/fluent-bit --namespace logging
+    --version {{ fluent_bit_chart_version }} -f /opt/watchfloor/fluent-bit-values.yaml --wait --timeout 10m
+  changed_when: true

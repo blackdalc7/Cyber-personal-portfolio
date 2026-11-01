@@ -1,0 +1,38 @@
+# ---- Watchfloor endpoints (the hub binds to the host-only address; see deploy/.env HUB_BIND) ----
+wf_hub_url: "http://{{ lab_net_prefix }}.1:8000"
+# Bearer token for POST /api/ingest/*. Pass with -e wf_ingest_token=... or an Ansible vault; never commit it.
+wf_ingest_token: "{{ lookup('ansible.builtin.env', 'WF_INGEST_TOKEN') }}"
+# 01's syslog listener (optional extra path for Linux auth logs)
+wf_syslog_host: "{{ lab_net_prefix }}.1"
+wf_syslog_port: 5514
+
+# ---- Kubernetes ----
+microk8s_channel: "1.33/stable"
+tetragon_chart_version: "1.5.0"
+fluent_bit_chart_version: "0.53.0"
+atomic_namespace: "atomic"
+
+# ---- Atomic Red Team (pinned) ----
+# A release tag or commit of redcanaryco/atomic-red-team and of Invoke-AtomicRedTeam.
+atomic_red_team_ref: "master"
+invoke_atomicredteam_version: "2.2.0"
+
+# ---- Windows sensors ----
+# Pin Sysmon and its config by checksum. Fill both with the values you verified; the play refuses empty ones.
+sysmon_zip_url: "https://download.sysinternals.com/files/Sysmon.zip"
+sysmon_zip_sha256: ""
+sysmon_config_url: "https://raw.githubusercontent.com/SwiftOnSecurity/sysmon-config/master/sysmonconfig-export.xml"
+sysmon_config_sha256: ""
+fluent_bit_windows_version: "4.0.3"
+fluent_bit_windows_sha256: ""
+
+# ---- Velociraptor client (config comes from the server: deploy/velociraptor writes client.config.yaml) ----
+velociraptor_client_msi_url: ""
+velociraptor_client_msi_sha256: ""
+velociraptor_client_config_src: "{{ playbook_dir }}/../../deploy/velociraptor/client.config.yaml"
+
+# ---- 03 EDR canary ----
+edr_repo_src: "{{ playbook_dir }}/../../03-edr-canary-process-tree"
+edr_install_dir: 'C:\Watchfloor\edr-canary'
+edr_output_dir: 'C:\ProgramData\EdrCanary'
+edr_watch_paths: 'C:\Share\Finance'

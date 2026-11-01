@@ -1,0 +1,173 @@
+{
+  "name": "Detection coverage: Q4 discovery and execution exercise",
+  "versions": {
+    "layer": "4.5",
+    "navigator": "5.1.0",
+    "attack": "16"
+  },
+  "domain": "enterprise-attack",
+  "description": "Sigma-validated detection coverage 50.0% (telemetry 87.5%).",
+  "sorting": 3,
+  "hideDisabled": false,
+  "techniques": [
+    {
+      "techniqueID": "T1082",
+      "tactic": "discovery",
+      "score": 0,
+      "color": "#de2d26",
+      "comment": "TELEMETRY_GAP",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "systeminfo"
+        },
+        {
+          "name": "procedure",
+          "value": "uname -a"
+        },
+        {
+          "name": "procedure",
+          "value": "systeminfo"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1057",
+      "tactic": "discovery",
+      "score": 25,
+      "color": "#fdd0a2",
+      "comment": "NO_CONTENT",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "tasklist /v"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1016",
+      "tactic": "discovery",
+      "score": 50,
+      "color": "#fd8d3c",
+      "comment": "DETECTION_GAP",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "ipconfig /all"
+        },
+        {
+          "name": "procedure",
+          "value": "ss -tunap"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1083",
+      "tactic": "discovery",
+      "score": 50,
+      "color": "#fd8d3c",
+      "comment": "DETECTION_GAP",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "cmd.exe /c dir C:\\Users"
+        },
+        {
+          "name": "procedure",
+          "value": "ls -la /etc"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1033",
+      "tactic": "discovery",
+      "score": 100,
+      "color": "#31a354",
+      "comment": "DETECTED",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "whoami /all"
+        },
+        {
+          "name": "procedure",
+          "value": "id"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.001",
+      "tactic": "execution",
+      "score": 100,
+      "color": "#31a354",
+      "comment": "DETECTED",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "powershell -NoProfile -Command Get-Date"
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.003",
+      "tactic": "execution",
+      "score": 100,
+      "color": "#31a354",
+      "comment": "DETECTED",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "cmd.exe /c echo ..."
+        }
+      ]
+    },
+    {
+      "techniqueID": "T1059.004",
+      "tactic": "execution",
+      "score": 100,
+      "color": "#31a354",
+      "comment": "DETECTED",
+      "enabled": true,
+      "metadata": [
+        {
+          "name": "procedure",
+          "value": "sh -c 'echo ...'"
+        }
+      ]
+    }
+  ],
+  "gradient": {
+    "colors": [
+      "#de2d26",
+      "#fd8d3c",
+      "#31a354"
+    ],
+    "minValue": 0,
+    "maxValue": 100
+  },
+  "legendItems": [
+    {
+      "label": "Detected",
+      "color": "#31a354"
+    },
+    {
+      "label": "Detection Gap",
+      "color": "#fd8d3c"
+    },
+    {
+      "label": "No Content",
+      "color": "#fdd0a2"
+    },
+    {
+      "label": "Telemetry Gap",
+      "color": "#de2d26"
+    }
+  ]
+}

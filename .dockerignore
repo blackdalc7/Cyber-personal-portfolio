@@ -1,0 +1,14 @@
+# Root build context (watchfloor/Dockerfile builds from here so it can see packages/).
+.git
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+**/.ruff_cache
+**/.coverage
+**/.env
+**/lake/
+**/dist
+**/dist-demo
+**/test-results
+**/playwright-report
+lab/.vagrant

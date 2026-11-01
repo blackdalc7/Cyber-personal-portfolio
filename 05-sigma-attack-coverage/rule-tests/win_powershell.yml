@@ -1,0 +1,11 @@
+rule: 685258d2-03ff-4331-86e2-6709c212ce81
+match:
+- Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+  CommandLine: powershell -NoProfile -Command Get-Date
+- Image: C:\Program Files\PowerShell\7\pwsh.exe
+  CommandLine: pwsh /noprofile /command x
+no_match:
+- Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+  CommandLine: powershell -NoProfile
+- Image: C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe
+  CommandLine: powershell -File a.ps1

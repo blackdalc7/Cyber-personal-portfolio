@@ -1,0 +1,4 @@
+- name: Restart velociraptor
+  ansible.windows.win_service:
+    name: Velociraptor
+    state: restarted

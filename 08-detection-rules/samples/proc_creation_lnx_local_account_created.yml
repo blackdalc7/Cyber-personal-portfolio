@@ -1,0 +1,23 @@
+match:
+  - name: useradd from the Atomic runner
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: useradd, cmd_line: /usr/sbin/useradd -M -N -r -s /bin/bash -c evil_account art,
+                file: {name: useradd, path: /usr/sbin/useradd}}
+  - name: adduser
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: adduser, cmd_line: adduser --disabled-password bob, file: {name: adduser, path: /usr/sbin/adduser}}
+nomatch:
+  - name: the shell that called it
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: sh, cmd_line: "/bin/sh -c \"useradd art\"", file: {name: sh, path: /bin/sh}}
+  - name: useradd exiting is not a creation
+    event:
+      class_uid: 1007
+      activity_id: 2
+      process: {name: useradd, file: {name: useradd, path: /usr/sbin/useradd}}

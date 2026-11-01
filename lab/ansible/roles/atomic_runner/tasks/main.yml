@@ -1,0 +1,15 @@
+- name: Render the Atomic runner manifest
+  ansible.builtin.template:
+    src: "{{ playbook_dir }}/../k8s/atomic-runner/atomic-runner.yaml.j2"
+    dest: /opt/watchfloor/atomic-runner.yaml
+    mode: "0644"
+
+- name: Apply it
+  ansible.builtin.command: kubectl apply -f /opt/watchfloor/atomic-runner.yaml
+  register: apply
+  changed_when: "'created' in apply.stdout or 'configured' in apply.stdout"
+
+- name: Wait until the atomics are installed
+  ansible.builtin.command: >
+    kubectl -n {{ atomic_namespace }} rollout status deployment/atomic-runner --timeout=15m
+  changed_when: false

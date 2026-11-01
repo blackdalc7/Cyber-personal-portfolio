@@ -1,0 +1,55 @@
+id: ssh-bruteforce-to-persistence
+title: SSH brute force to persistence
+summary: >-
+  An internet host guesses the admin password on web01, logs in, reads /etc/shadow with sudo
+  and creates a backdoor account. Three hours later a second source sprays common accounts.
+provenance: >-
+  01-realtime-ai-siem tests/fixtures/auth.log replayed through 01's real pipeline (offline
+  summariser), mapped to OCSF. The final alert chain was sent to 02's real SoarService state machine.
+hosts: [web01]
+simulated_parts:
+  - "Analyst approval click in 02 (approver analyst.dana, 4 min 10 s after the incident opened)"
+  - "Isolation ran 02's mock_isolate.py in dry-run mode"
+stages:
+  - id: brute-force
+    name: Password guessing
+    tactic: Credential Access
+    techniques: [T1110.001]
+    start: "2026-10-26T11:00:00Z"
+    host: web01
+    description: 203.0.113.66 fails SSH logins for admin.
+  - id: valid-account
+    name: Login with stolen password
+    tactic: Initial Access
+    techniques: [T1078]
+    start: "2026-10-26T11:04:59Z"
+    host: web01
+    description: The same source logs in successfully as admin.
+  - id: sudo
+    name: Sudo to read /etc/shadow
+    tactic: Privilege Escalation
+    techniques: [T1548.003]
+    start: "2026-10-26T11:06:59Z"
+    host: web01
+    description: admin runs cat /etc/shadow through sudo.
+  - id: shadow-read
+    name: Password hashes read from /etc/shadow
+    tactic: Credential Access
+    techniques: [T1003.008]
+    start: "2026-10-26T11:06:59Z"
+    host: web01
+    description: The sudo command line is cat /etc/shadow. 01 has no rule for this; 08 adds one.
+  - id: backdoor-account
+    name: Backdoor account created
+    tactic: Persistence
+    techniques: [T1136.001]
+    start: "2026-10-26T11:08:59Z"
+    host: web01
+    description: useradd creates svc-backup with a login shell.
+  - id: password-spray
+    name: Password spray
+    tactic: Credential Access
+    techniques: [T1110.003]
+    start: "2026-10-26T14:00:00Z"
+    host: web01
+    description: 198.51.100.23 tries one password against many accounts.

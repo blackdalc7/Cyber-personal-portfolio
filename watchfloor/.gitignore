@@ -1,0 +1,39 @@
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Runtime data
+data/
+out/
+*.sqlite
+*.sqlite3
+*.db
+pester-results.xml
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Watchfloor
+lake/
+node_modules/
+frontend/dist/
+frontend/dist-demo/
+frontend/test-results/
+frontend/playwright-report/
+tests/e2e/test-results/

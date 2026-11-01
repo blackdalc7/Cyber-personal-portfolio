@@ -1,0 +1,26 @@
+title: Linux Shell Executing an Inline Command
+id: 8bb49bae-66d3-44ab-8bf8-063118149a12
+status: test
+description: Detects a POSIX shell started with -c and a command string, as used by web shells, cron payloads and remote execution.
+references:
+    - https://attack.mitre.org/techniques/T1059/004/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.execution
+    - attack.t1059.004
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection:
+        Image|endswith:
+            - '/sh'
+            - '/bash'
+            - '/dash'
+            - '/zsh'
+        CommandLine|contains: ' -c '
+    condition: selection
+falsepositives:
+    - Package manager hooks and many shell scripts; tune by parent process
+level: informational

@@ -1,0 +1,25 @@
+title: Crontab replaced from a file
+id: 49fbd086-a1bf-4f2e-bc1d-07557ee4129a
+status: stable
+description: >
+  "crontab FILE" swaps the whole crontab for the contents of a file, which is how scripted persistence installs a
+  job. Listing (-l), editing (-e) and removing (-r) are excluded.
+references:
+  - https://attack.mitre.org/techniques/T1053/003/
+author: Watchfloor portfolio
+date: 2026-10-01
+tags:
+  - attack.persistence
+  - attack.execution
+  - attack.t1053.003
+logsource:
+  product: linux
+  category: process_creation
+detection:
+  selection:
+    Image|endswith: /crontab
+    CommandLine|re: 'crontab\s+(-u\s+\S+\s+)?[^-\s]\S*\s*$'
+  condition: selection
+falsepositives:
+  - Configuration management that installs crontabs from files
+level: high

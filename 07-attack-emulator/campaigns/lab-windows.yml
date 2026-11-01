@@ -1,0 +1,45 @@
+# Windows techniques on lab-win01 over WinRM (Sysmon + the 03 EDR canary + Defender left ON).
+# A test Defender blocks is scored "prevented". Tests are picked by name; check them with
+#   Invoke-AtomicTest T1059.001 -ShowDetailsBrief
+name: Lab Windows (lab-win01)
+description: >
+  Execution, masquerading, persistence, discovery and credential dumping on a disposable Windows VM with its
+  protections enabled, so the run measures prevention as well as detection.
+settle_s: 20
+targets:
+  - name: win01
+    executor: winrm
+    hostname: lab-win01
+    address: 192.168.56.20
+tests:
+  - technique: T1059.001
+    name: Encoded PowerShell
+    tactic: execution
+    target: win01
+    test_names: ["ATHPowerShellCommandLineParameter -EncodedCommand parameter variations"]
+    get_prereqs: true
+    telemetry_match: encodedcommand
+  - technique: T1036.003
+    name: Masquerade as lsass.exe
+    tactic: defense-evasion
+    target: win01
+    test_names: ["Masquerading as Windows LSASS process"]
+    telemetry_match: lsass.exe
+  - technique: T1053.005
+    name: Scheduled task at startup
+    tactic: persistence
+    target: win01
+    test_names: ["Scheduled Task Startup Script"]
+    telemetry_match: schtasks
+  - technique: T1087.001
+    name: Enumerate local accounts
+    tactic: discovery
+    target: win01
+    test_names: ["Enumerate all accounts on Windows (Local)"]
+    telemetry_match: "net "
+  - technique: T1003.001
+    name: LSASS dump via comsvcs.dll
+    tactic: credential-access
+    target: win01
+    test_names: ["Dump LSASS.exe Memory using comsvcs.dll"]
+    telemetry_match: comsvcs

@@ -1,0 +1,36 @@
+# Which Sigma rules are expected to fire for each ATT&CK technique.
+# A technique can list rules for several platforms; only the rule whose logsource.product
+# matches an exercise step's platform is expected for that step.
+techniques:
+  - id: T1059.001
+    name: "Command and Scripting Interpreter: PowerShell"
+    tactic: execution
+    expected_rules: [685258d2-03ff-4331-86e2-6709c212ce81]
+  - id: T1059.003
+    name: "Command and Scripting Interpreter: Windows Command Shell"
+    tactic: execution
+    expected_rules: [7190ed3f-8657-4c1b-96fd-353776fb15d2]
+  - id: T1059.004
+    name: "Command and Scripting Interpreter: Unix Shell"
+    tactic: execution
+    expected_rules: [8bb49bae-66d3-44ab-8bf8-063118149a12]
+  - id: T1082
+    name: System Information Discovery
+    tactic: discovery
+    expected_rules: [465bc6ad-fbad-481a-8010-30c9feeb855f, d17b9ff4-4fc4-4332-a199-88205b1f8280]
+  - id: T1033
+    name: System Owner/User Discovery
+    tactic: discovery
+    expected_rules: [ce753259-9469-4fd9-9727-fd242d084d4f, 3a716fb3-5411-4aa5-ba64-622ad4294336]
+  - id: T1016
+    name: System Network Configuration Discovery
+    tactic: discovery
+    expected_rules: [2eb114e7-c7a8-4190-af38-14dd2ff3e9b8, 0b60d776-1703-4d6c-9eb8-41762a498f17]
+  - id: T1083
+    name: File and Directory Discovery
+    tactic: discovery
+    expected_rules: [f8f9fdc3-8a11-4da3-8f06-a1caf91af849, 68774ec8-0948-441c-8617-00360766b886]
+  - id: T1057
+    name: Process Discovery
+    tactic: discovery
+    expected_rules: []

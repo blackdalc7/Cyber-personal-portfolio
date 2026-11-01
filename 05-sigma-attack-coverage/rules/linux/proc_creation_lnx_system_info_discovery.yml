@@ -1,0 +1,29 @@
+title: Linux System Information Discovery
+id: d17b9ff4-4fc4-4332-a199-88205b1f8280
+status: test
+description: Detects uname, hostnamectl and lsb_release, and reads of os-release or /proc/version, used to fingerprint the kernel and distribution.
+references:
+    - https://attack.mitre.org/techniques/T1082/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1082
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_tools:
+        Image|endswith:
+            - '/uname'
+            - '/hostnamectl'
+            - '/lsb_release'
+    selection_files:
+        Image|endswith: '/cat'
+        CommandLine|contains:
+            - '/etc/os-release'
+            - '/proc/version'
+    condition: 1 of selection_*
+falsepositives:
+    - Monitoring agents and login banners
+level: informational

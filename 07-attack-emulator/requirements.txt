@@ -1,0 +1,5 @@
+httpx>=0.27,<1
+PyYAML>=6.0,<7
+python-dotenv>=1.0,<2
+pywinrm>=0.5,<1
+paramiko>=3.4,<5

@@ -1,0 +1,11 @@
+rule: 68774ec8-0948-441c-8617-00360766b886
+match:
+- Image: /usr/bin/ls
+  CommandLine: ls -la /etc
+- Image: /usr/bin/find
+  CommandLine: find /home -name '*.kdbx'
+no_match:
+- Image: /usr/bin/ls
+  CommandLine: ls -la
+- Image: /usr/bin/cat
+  CommandLine: cat /etc/passwd

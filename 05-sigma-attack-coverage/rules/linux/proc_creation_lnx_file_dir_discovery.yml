@@ -1,0 +1,28 @@
+title: Linux Listing of Sensitive Directories
+id: 68774ec8-0948-441c-8617-00360766b886
+status: test
+description: Detects ls or find run against /etc, /root or home directories, used to locate credentials and configuration files.
+references:
+    - https://attack.mitre.org/techniques/T1083/
+author: Threat Response Portfolio
+date: 2026-10-26
+tags:
+    - attack.discovery
+    - attack.t1083
+logsource:
+    category: process_creation
+    product: linux
+detection:
+    selection_img:
+        Image|endswith:
+            - '/ls'
+            - '/find'
+    selection_path:
+        CommandLine|contains:
+            - ' /etc'
+            - ' /root'
+            - ' /home'
+    condition: all of selection_*
+falsepositives:
+    - Administrators and backup jobs
+level: low

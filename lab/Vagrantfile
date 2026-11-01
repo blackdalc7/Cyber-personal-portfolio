@@ -1,0 +1,66 @@
+# -*- mode: ruby -*-
+# Watchfloor detection lab: one Ubuntu node (microK8s + Tetragon + Atomic runner pod) and one Windows 11 endpoint
+# (Sysmon + 03 EDR canary + Fluent Bit + Velociraptor client), on the host-only network 192.168.56.0/24.
+#
+#   vagrant up --provider=virtualbox      (or --provider=hyperv on Windows hosts)
+#   vagrant provision                     re-runs Ansible
+#
+# Sized for a 64 GB workstation: 8 GB + 8 GB leaves room for the Watchfloor stack and a local LLM.
+# The VMs are lab targets. Do not bridge them to a real network.
+
+LAB_NET = ENV.fetch("LAB_NET_PREFIX", "192.168.56")
+UBUNTU_BOX = ENV.fetch("LAB_UBUNTU_BOX", "bento/ubuntu-24.04")
+WINDOWS_BOX = ENV.fetch("LAB_WINDOWS_BOX", "gusztavvargadr/windows-11")
+HUB_URL = ENV.fetch("WF_HUB_URL", "http://#{LAB_NET}.1:8000")
+
+Vagrant.configure("2") do |config|
+  config.vm.box_check_update = false
+
+  config.vm.define "lab-k8s", primary: true do |k8s|
+    k8s.vm.box = UBUNTU_BOX
+    k8s.vm.hostname = "lab-k8s"
+    k8s.vm.network "private_network", ip: "#{LAB_NET}.10"
+    k8s.vm.provider "virtualbox" do |vb|
+      vb.name = "watchfloor-lab-k8s"
+      vb.memory = 8192
+      vb.cpus = 4
+    end
+    k8s.vm.provider "hyperv" do |hv|
+      hv.vmname = "watchfloor-lab-k8s"
+      hv.memory = 8192
+      hv.cpus = 4
+    end
+  end
+
+  config.vm.define "lab-win01" do |win|
+    win.vm.box = WINDOWS_BOX
+    win.vm.hostname = "lab-win01"
+    win.vm.guest = :windows
+    win.vm.communicator = "winrm"
+    win.winrm.transport = :plaintext
+    win.winrm.basic_auth_only = true
+    win.vm.boot_timeout = 900
+    win.vm.network "private_network", ip: "#{LAB_NET}.20"
+    win.vm.provider "virtualbox" do |vb|
+      vb.name = "watchfloor-lab-win01"
+      vb.memory = 8192
+      vb.cpus = 4
+      vb.gui = false
+    end
+    win.vm.provider "hyperv" do |hv|
+      hv.vmname = "watchfloor-lab-win01"
+      hv.memory = 8192
+      hv.cpus = 4
+    end
+
+    # Provision both machines from the last VM so Ansible sees the whole inventory in one run.
+    win.vm.provision "ansible" do |ansible|
+      ansible.playbook = "ansible/site.yml"
+      ansible.inventory_path = "ansible/inventory.yml"
+      ansible.limit = "all"
+      ansible.compatibility_mode = "2.0"
+      ansible.extra_vars = { wf_hub_url: HUB_URL, lab_net_prefix: LAB_NET }
+      ansible.raw_arguments = ["--diff"]
+    end
+  end
+end

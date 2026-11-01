@@ -1,0 +1,22 @@
+match:
+  - name: crontab installed from a file (Atomic T1053.003 test 1)
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: crontab, cmd_line: /usr/bin/crontab /tmp/persistevil, file: {name: crontab, path: /usr/bin/crontab}}
+  - name: for another user
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: crontab, cmd_line: crontab -u www-data jobs.txt, file: {name: crontab, path: /usr/bin/crontab}}
+nomatch:
+  - name: listing
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: crontab, cmd_line: /usr/bin/crontab -l, file: {name: crontab, path: /usr/bin/crontab}}
+  - name: editing interactively
+    event:
+      class_uid: 1007
+      activity_id: 1
+      process: {name: crontab, cmd_line: crontab -u root -e, file: {name: crontab, path: /usr/bin/crontab}}

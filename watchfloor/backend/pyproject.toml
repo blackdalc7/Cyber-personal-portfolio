@@ -1,0 +1,22 @@
+[project]
+name = "watchfloor"
+version = "1.0.0"
+description = "OCSF event spine, Parquet/DuckDB lake and FastAPI hub that join the portfolio projects into one detection-and-response loop"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.scripts]
+watchfloor = "watchfloor.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "../tests/backend"]
+testpaths = ["../tests/backend"]
+addopts = "-q --strict-markers"
+
+[tool.coverage.run]
+source = ["src/watchfloor"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 85
+show_missing = true
