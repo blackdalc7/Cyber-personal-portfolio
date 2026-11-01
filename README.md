@@ -1,5 +1,7 @@
 # Threat Response Engineering Portfolio
 
+[![CI](https://github.com/blackdalc7/Cyber-personal-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/blackdalc7/Cyber-personal-portfolio/actions/workflows/ci.yml) [![Pages](https://github.com/blackdalc7/Cyber-personal-portfolio/actions/workflows/pages.yml/badge.svg)](https://blackdalc7.github.io/Cyber-personal-portfolio/)
+
 Ten security operations projects and the platform that joins them into one loop: **emulate → detect → correlate → triage → contain → collect evidence → explain → measure**.
 
 Each numbered project lives in its own folder and stays self-contained: its own source, tests, documentation, dependencies, `.env.example`, licence, lint config and CI workflow. You can read and run any one of them alone, or publish a single folder as its own repository. **Watchfloor** is the shared spine and console that connects them, and `deploy/` runs the whole thing with one `docker compose`.
@@ -31,6 +33,22 @@ Each numbered project lives in its own folder and stays self-contained: its own 
 | [Deploy](deploy/) | One compose file with profiles: core, automation, detect, dfir, ai, batch | |
 | [aegis-ui](packages/aegis-ui/) | The design system shared by the Watchfloor console and Driftwatch | 10 |
 | [Driftwatch](https://github.com/blackdalc7/DriftWatch-Project) | Continuous security validation for a small lab: signed, benign agent tests scored against Elastic, plus configuration drift detection. Self-contained with its own CI; published as its own repository | 70 backend |
+
+## What is validated, and how
+
+Test coverage shows the code paths run. It does not prove a detection works on a real network, so each capability is labelled by the strongest evidence behind it.
+
+| Capability | Validation evidence | Level |
+|---|---|---|
+| Detection logic: 01 streaming rules, 08 Sigma rules, 05 coverage scoring, 06 clustering | Offline pytest suites with an 85% coverage gate, plus per-rule positive and negative samples in 08. Run on every push in [CI](https://github.com/blackdalc7/Cyber-personal-portfolio/actions/workflows/ci.yml) | Unit tested |
+| Emulate → detect → score loop (07 → hub → 08 → 07) | `07-attack-emulator/scripts/purple_loop.py` runs the real code of every piece in one process and is a CI job | Replay tested |
+| Replay scenarios in the console | Two scenarios in `watchfloor/datasets/scenarios`, each with a `provenance` and `simulated_parts` list. Sensor records are constructed in Tetragon / Sysmon / ETW format, not captured from a live host | Replay, partly simulated |
+| SOAR approval and isolation (02) | Real HTTP loop with genuinely signed Slack payloads; isolation runs `mock_isolate.py` in dry-run mode | Integration tested, isolation mocked |
+| Windows endpoint collection (03) | Pester suite with mocked kernel32 calls and a recorded-format ETW fixture; `Invoke-SafeSimulation.ps1 -Mode Live` exists but has no committed lab capture yet | Unit tested, live not yet verified |
+| Lab attacks via kubectl / WinRM / SSH (07), lab VMs (`lab/`) | Executors unit-tested with fakes; Ansible syntax-checked. Not run against real VMs yet | Not yet verified live |
+| Velociraptor + Hayabusa collection (09) | Fake Velociraptor server checks every query is parameterised; gRPC wiring against a stubbed channel | Mocked |
+| n8n playbooks (`automation/`) | Code-node logic and signatures tested; workflow exports checked for freshness. Not imported into a live n8n | Unit tested |
+| Claude API calls (01, 06, 10) | Mocked clients test request shape, refusals and errors. Committed transcripts and eval results come from the offline provider | Mocked |
 
 ## How they connect
 
