@@ -14,14 +14,14 @@ COPY watchfloor/frontend/ watchfloor/frontend/
 RUN cd watchfloor/frontend && npm run build
 
 # ---- Python wheels, so the runtime image carries no build tooling ----
-FROM python:3.12-slim AS wheels
+FROM python:3.15-slim AS wheels
 ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
 WORKDIR /build
 COPY watchfloor/backend/requirements.txt .
 RUN pip wheel --wheel-dir /wheels -r requirements.txt
 
 # ---- runtime ----
-FROM python:3.12-slim
+FROM python:3.15-slim
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1 PYTHONPATH=/app/src \
     WF_LAKE_DIR=/lake WF_UI_DIR=/app/ui/dist WF_SCENARIOS_DIR=/app/datasets/scenarios
 WORKDIR /app
