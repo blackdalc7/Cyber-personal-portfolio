@@ -93,7 +93,8 @@ def to_epoch_ms(value: str | datetime | int | float | None) -> int:
     # Python < 3.11 accepts at most 6 fractional digits.
     if "." in text:
         head, _, tail = text.partition(".")
-        digits = "".join(ch for ch in tail if ch.isdigit())
+        # Only the leading run of digits is the fraction; the rest is the UTC offset.
+        digits = tail[: len(tail) - len(tail.lstrip("0123456789"))]
         rest = tail[len(digits):]
         text = f"{head}.{digits[:6]}{rest}"
     dt = datetime.fromisoformat(text)
