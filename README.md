@@ -151,7 +151,7 @@ The key is read from `ANTHROPIC_API_KEY` in `.env` (git-ignored) and never logge
 
 - **No placeholders.** Every code path is implemented and tested, with an 85% coverage gate per Python project (actual 89–99%). Where something could not be run in the build environment (the lab VMs, a live Velociraptor server, a real n8n import, a Claude API call), the project's README says so in its Limits section.
 - **Secure by design.** Secrets only from `.env` (git-ignored); every signed hop has its own secret; untrusted input is parsed defensively; SQL and VQL are always parameterised; LLM tools are read-only and their output is checked. Containers run as non-root with read-only filesystems.
-- **CI.** ruff and pytest on Python 3.10 and 3.13, Sigma rule sample tests, a true-threat recall gate (06), an analyst eval gate (10), the end-to-end purple loop, n8n export freshness and signature tests, console unit, type and build checks, Ansible syntax, Pester and PSScriptAnalyzer, Docker builds, gitleaks and pip-audit.
+- **CI.** ruff and pytest on Python 3.10 and 3.13 (3.11 and 3.13 for 08, which needs pySigma 2.x), Sigma rule sample tests, a true-threat recall gate (06), an analyst eval gate (10), the end-to-end purple loop, n8n export freshness and signature tests, console unit, type and build checks, Ansible syntax, Pester and PSScriptAnalyzer, Docker builds, gitleaks and pip-audit.
 - **Defensive only.** Emulation runs only in an isolated lab behind CIDR and context allowlists and an explicit opt-in. No project contains exploit code or payloads, and every active response needs a human in the loop.
 
 See [SECURITY.md](SECURITY.md), [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ARCHITECTURE_DEFENSE.md](docs/ARCHITECTURE_DEFENSE.md).

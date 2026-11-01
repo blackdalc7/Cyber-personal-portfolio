@@ -2,7 +2,7 @@
 name = "detection-rules"
 version = "1.0.0"
 description = "Sigma rules for the Watchfloor OCSF lake: a pySigma OCSF pipeline, a DuckDB backend, rule tests and a streaming runner"
-requires-python = ">=3.10"
+requires-python = ">=3.11"  # pySigma 2.x needs 3.11
 license = { text = "MIT" }
 
 [project.scripts]

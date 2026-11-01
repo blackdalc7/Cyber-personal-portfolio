@@ -38,6 +38,11 @@ jobs:
           - 10-ai-analyst-mcp
           - watchfloor/backend
         python: ["3.10", "3.13"]
+        # pySigma 2.x needs Python 3.11, so 08 tests on 3.11 instead of 3.10.
+        exclude:
+          - {project: 08-detection-rules, python: "3.10"}
+        include:
+          - {project: 08-detection-rules, python: "3.11"}
     defaults:
       run:
         working-directory: ${{ matrix.project }}
