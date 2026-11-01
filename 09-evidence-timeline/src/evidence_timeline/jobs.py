@@ -31,6 +31,7 @@ HOST = re.compile(r"^[A-Za-z0-9][A-Za-z0-9.-]{0,252}$")
 
 @dataclass(frozen=True)
 class CollectRequest:
+    """A validated request to collect evidence from one host for one incident."""
     incident_id: str
     host: str
     around_ms: int | None = None
@@ -49,6 +50,7 @@ class CollectRequest:
 
 @dataclass
 class Job:
+    """Status of one incident's collection, as reported by ``GET /jobs/{incident_id}``."""
     incident_id: str
     host: str
     status: str = "queued"  # queued | running | done | failed

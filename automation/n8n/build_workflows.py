@@ -85,6 +85,7 @@ def workflow(name: str, nodes: list[dict[str, Any]], connections: dict[str, Any]
 
 
 def alert_intake() -> dict[str, Any]:
+    """The alert-intake workflow: every minute, send new hub findings to 02 as signed alerts."""
     w = "alert-intake"
     nodes = [
         node(w, "Every minute", "scheduleTrigger", 1.2, (0, 0),
@@ -128,6 +129,7 @@ def _if(w: str, name: str, left: str, position: tuple[int, int]) -> dict[str, An
 
 
 def decision() -> dict[str, Any]:
+    """The decision workflow: verify 02's signed decision, plan the approved actions and post them to chat."""
     w = "decision"
     nodes = [
         node(w, "02 decision webhook", "webhook", 2, (0, 0), {
@@ -185,6 +187,7 @@ def render() -> dict[str, str]:
 
 
 def main() -> int:
+    """Write the workflow exports, or with ``--check`` exit 1 if any committed export is stale."""
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--check", action="store_true", help="fail if workflows/ differs from the sources")
     args = ap.parse_args()

@@ -21,6 +21,7 @@ log = logging.getLogger("ai_analyst.watch")
 
 @dataclass
 class Watcher:
+    """Investigates new and changed incidents, skipping ones already done and backing off after failures."""
     box: Toolbox
     server: MCPServer
     provider: Any

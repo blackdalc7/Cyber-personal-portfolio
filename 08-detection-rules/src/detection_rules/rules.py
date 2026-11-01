@@ -22,6 +22,7 @@ class RuleError(ValueError):
 
 @dataclass(frozen=True)
 class CompiledRule:
+    """A Sigma rule compiled to DuckDB SQL, with the metadata findings and the index need."""
     id: str
     title: str
     status: str
@@ -36,10 +37,12 @@ class CompiledRule:
 
     @property
     def severity_id(self) -> int:
+        """OCSF severity id for the rule's Sigma level (medium when unknown)."""
         return LEVEL_SEVERITY.get(self.level, 3)
 
     @property
     def stem(self) -> str:
+        """The rule's file name without its extension, which names its samples."""
         return Path(self.path).stem
 
 
@@ -48,6 +51,7 @@ def _enum_name(value: Any, default: str) -> str:
 
 
 def compile_file(path: Path, root: Path, backend: DuckDBBackend | None = None) -> CompiledRule:
+    """Compile one Sigma rule file with ``backend``; raise ``RuleError`` unless it holds exactly one valid rule."""
     backend = backend or DuckDBBackend()
     text = Path(path).read_text(encoding="utf-8")
     try:

@@ -40,6 +40,7 @@ def _get(row: dict[str, Any], *names: str) -> Any:
 
 
 def to_rows(records: list[dict[str, Any]], host: str) -> list[dict[str, Any]]:
+    """Convert Hayabusa CSV or JSONL records into timeline rows, skipping any without a time or rule title."""
     out = []
     for r in records:
         t = parse_time(_get(r, "Timestamp", "timestamp", "EventTime"))

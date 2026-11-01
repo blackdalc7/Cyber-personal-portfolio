@@ -56,6 +56,7 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 
 def cmd_run(args: argparse.Namespace, settings: Settings) -> int:
+    """Run a campaign (after the lab safety checks unless ``--dry-run``), score it and write the outputs."""
     campaign = load_campaign(args.campaign)
     if not args.dry_run:
         for note in check_campaign(campaign, settings, confirm=args.confirm_lab):

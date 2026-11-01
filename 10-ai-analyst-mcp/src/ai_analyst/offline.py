@@ -22,6 +22,7 @@ def _parent(t: str) -> str:
 
 
 class OfflineProvider:
+    """Deterministic rule-based analyst: calls the same tools a model would and cites what they returned."""
     name = "offline"
     model = "rules-v1"
 

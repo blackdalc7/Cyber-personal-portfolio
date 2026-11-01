@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 from conftest import campaign_doc
 
@@ -16,7 +18,7 @@ def test_defaults_and_env(settings):
     assert d.kube_contexts == ("microk8s",) and not d.ssh_trust_lab_hostkeys and d.ssh_key is None
     s = Settings.from_env({"EMU_SSH_KEY": "/k", "EMU_SSH_TRUST_LAB_HOSTKEYS": "yes",
                            "LAB_KUBE_CONTEXTS": "a, b", "LAB_ALLOWED_CIDRS": "10.9.0.0/16, fd00::/64"})
-    assert s.ssh_trust_lab_hostkeys and str(s.ssh_key) == "/k" and s.kube_contexts == ("a", "b")
+    assert s.ssh_trust_lab_hostkeys and s.ssh_key == Path("/k") and s.kube_contexts == ("a", "b")
 
 
 @pytest.mark.parametrize("env, msg", [

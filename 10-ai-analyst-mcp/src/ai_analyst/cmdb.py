@@ -145,6 +145,7 @@ class Cmdb:
             return [dict(r) for r in self._db.execute(sql, params).fetchall()]
 
     def asset(self, *, ip: str | None = None, hostname: str | None = None) -> dict[str, Any] | None:
+        """The asset with this IP (or host name), with its services and maintenance windows, or ``None``."""
         if ip:
             rows = self._rows("SELECT * FROM assets WHERE ip = ?", (ip,))
         elif hostname:

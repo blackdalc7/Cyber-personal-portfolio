@@ -1,4 +1,4 @@
-# 10 · AI Analyst (MCP over DuckDB and the CMDB)
+# 10 · AI analyst (MCP over DuckDB and the CMDB)
 
 > Part of the [Threat Response Engineering portfolio](../README.md). Reads the [Watchfloor](../watchfloor/README.md) lake and [06](../06-alert-clustering-fp-reducer/README.md)'s CMDB; its transcripts appear on the console's Analyst page and on every incident.
 

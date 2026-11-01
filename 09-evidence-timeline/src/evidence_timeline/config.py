@@ -44,6 +44,7 @@ def check_artifact(name: str) -> str:
 
 @dataclass(frozen=True)
 class Settings:
+    """Runtime settings, read from ``EVIDENCE_*`` environment variables (and ``.env``) by ``from_env``."""
     shared_secret: str = field(default="", repr=False)
     out_dir: Path = Path("evidence")
     mode: str = "velociraptor"  # velociraptor | local
@@ -63,6 +64,7 @@ class Settings:
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None, dotenv: bool = True) -> Settings:
+        """Build settings from ``env`` (default ``os.environ``), raising ``ConfigError`` on invalid values."""
         if env is None:
             if dotenv:
                 load_dotenv(override=False)

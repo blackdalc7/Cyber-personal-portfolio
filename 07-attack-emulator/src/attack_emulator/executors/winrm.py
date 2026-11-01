@@ -1,3 +1,5 @@
+"""Executor for Windows lab VMs over WinRM (pywinrm)."""
+
 from __future__ import annotations
 
 from typing import Any

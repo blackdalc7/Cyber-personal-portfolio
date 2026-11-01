@@ -68,6 +68,7 @@ def _rows(rows: list[dict[str, Any]], limit: int) -> dict[str, Any]:
 
 
 def incident_view(doc: dict[str, Any]) -> dict[str, Any]:
+    """Flatten an OCSF Incident Finding into the fields the analyst sees."""
     un = doc.get("unmapped") or {}
     timing = un.get("timing") or {}
     labels = (doc.get("metadata") or {}).get("labels") or []
@@ -126,6 +127,7 @@ class Toolbox:
         return {"incidents": clip(views[:n]), "returned": min(len(views), n), "truncated": len(views) > n}
 
     def get_incident(self, incident_id: str) -> dict[str, Any]:
+        """An incident's latest state, its status history and the detection findings on its host around it."""
         history = self.incident_history(incident_id)
         if not history:
             raise ToolError(f"no incident {incident_id}")
@@ -147,6 +149,7 @@ class Toolbox:
     # -- events ------------------------------------------------------------------------------------------------
     def search_events(self, hostname: str | None, since_ms: int, until_ms: int, class_uid: int | None = None,
                       text: str | None = None, limit: int = 50) -> dict[str, Any]:
+        """Events in a bounded window, optionally filtered by host, OCSF class and a text match."""
         self._window(since_ms, until_ms)
         where, params = ["time >= ?", "time <= ?"], [since_ms, until_ms]
         if hostname:
@@ -167,6 +170,7 @@ class Toolbox:
 
     def get_findings(self, hostname: str | None = None, technique: str | None = None, since_ms: int | None = None,
                      until_ms: int | None = None, min_severity: int = 0, limit: int = 50) -> dict[str, Any]:
+        """Detection findings, optionally filtered by host, ATT&CK technique, time and minimum severity."""
         where, params = ["class_uid = ?", "severity_id >= ?"], [DETECTION_FINDING, min_severity]
         if hostname:
             where.append("hostname = ?")
@@ -187,6 +191,7 @@ class Toolbox:
         return _rows(rows, n)
 
     def process_ancestry(self, hostname: str, pid: int, at_ms: int | None = None) -> dict[str, Any]:
+        """Walk a process's parent chain (up to 12 levels) as it was at ``at_ms``, plus its direct children."""
         at = at_ms if at_ms is not None else 4_102_444_800_000
         sql = ("SELECT time, process_pid, parent_pid, process_name, cmd_line, user_name FROM events "
                "WHERE class_uid = ? AND activity_id = 1 AND hostname = ? AND process_pid = ? AND time <= ? "
@@ -213,6 +218,7 @@ class Toolbox:
 
     def auth_summary(self, since_ms: int, until_ms: int, hostname: str | None = None, src_ip: str | None = None,
                      limit: int = 50) -> dict[str, Any]:
+        """Authentication attempts in a window, grouped by source IP, user and outcome."""
         self._window(since_ms, until_ms)
         where, params = ["class_uid = ?", "time >= ?", "time <= ?"], [AUTHENTICATION, since_ms, until_ms]
         if hostname:

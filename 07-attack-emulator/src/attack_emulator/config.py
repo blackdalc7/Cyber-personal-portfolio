@@ -30,6 +30,7 @@ def _num(env: Mapping[str, str], name: str, default: float, minimum: float = 0) 
 
 @dataclass(frozen=True)
 class Settings:
+    """Runtime settings, read from ``EMU_*`` environment variables (and ``.env``) by ``from_env``."""
     hub_url: str = "http://127.0.0.1:8000"
     hub_token: str = ""
     ingest_token: str = ""
@@ -50,6 +51,7 @@ class Settings:
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None, dotenv: bool = True) -> Settings:
+        """Build settings from ``env`` (default ``os.environ``), raising ``ConfigError`` on invalid values."""
         if env is None:
             if dotenv:
                 load_dotenv(override=False)

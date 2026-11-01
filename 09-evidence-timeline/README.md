@@ -1,4 +1,4 @@
-# 09 · Evidence Timeline (Velociraptor + Hayabusa)
+# 09 · Evidence timeline (Velociraptor + Hayabusa)
 
 > Part of the [Threat Response Engineering portfolio](../README.md). Started by n8n after a human approves containment in [02](../02-hitl-soar-bot/README.md).
 

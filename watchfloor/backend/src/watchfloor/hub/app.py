@@ -57,6 +57,7 @@ HOST_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9.\-]{0,252}$")
 
 
 class IsolationRequest(BaseModel):
+    """Body of ``POST /api/actions/isolation-request``: the host to isolate and why."""
     host: str = Field(min_length=1, max_length=253, pattern=HOST_RE.pattern)
     reason: str = Field(min_length=3, max_length=500)
     indicator_ip: str | None = Field(None, max_length=45)
@@ -231,6 +232,7 @@ def create_app(settings: Settings, lake: LakeReader | None = None, bus: EventBus
 
     @app.post("/api/ingest/{source}")
     async def ingest(source: str, request: Request) -> dict[str, Any]:
+        """Map raw records from one source to OCSF and publish them; unmappable records are counted as rejected."""
         if not settings.ingest_token:
             raise HTTPException(403, "ingest disabled: set WF_INGEST_TOKEN")
         if not _check(settings.ingest_token, request.headers.get("Authorization")):

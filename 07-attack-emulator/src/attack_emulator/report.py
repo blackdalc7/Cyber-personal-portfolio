@@ -66,6 +66,7 @@ def navigator_layer(doc: dict[str, Any]) -> dict[str, Any]:
 
 
 def markdown(doc: dict[str, Any]) -> str:
+    """Render a run document as a Markdown report, with a gap list for telemetry-only and missed techniques."""
     s = doc["summary"]
     lines = [f"# Emulation run {doc['run_id']}", "", f"Campaign: **{doc['campaign']}**", "",
              f"Detection coverage **{s['detection_coverage']}%**, telemetry coverage {s['telemetry_coverage']}% "

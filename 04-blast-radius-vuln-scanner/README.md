@@ -1,4 +1,4 @@
-# 04 · Blast-Radius Vulnerability Scanner
+# 04 · Blast-radius vulnerability scanner
 
 > Part of the [Threat Response Engineering portfolio](../README.md). This folder is self-contained and can also be published as its own repository.
 

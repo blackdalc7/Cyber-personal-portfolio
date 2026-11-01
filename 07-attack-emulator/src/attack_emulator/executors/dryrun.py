@@ -1,3 +1,5 @@
+"""Executor that records the commands it would run and runs none of them."""
+
 from __future__ import annotations
 
 from ..campaign import AtomicTest, Target

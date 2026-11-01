@@ -41,6 +41,7 @@ def load_cases(root: Path) -> list[dict[str, Any]]:
 
 
 def run_case(case: dict[str, Any], provider: Any, cmdb_seed: Path, max_calls: int = 16) -> dict[str, Any]:
+    """Run one eval case on a throwaway lake and CMDB, and grade the provider's analysis against its expectations."""
     exp = case.get("expect") or {}
     with tempfile.TemporaryDirectory(prefix="analyst-eval-") as tmp:
         write_lake(read_ndjson(case["dir"] / "events.ndjson"), Path(tmp) / "lake")

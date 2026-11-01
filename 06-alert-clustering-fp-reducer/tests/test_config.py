@@ -1,5 +1,7 @@
 """Tests for environment-based settings."""
 
+from pathlib import Path
+
 import pytest
 
 from alert_triage.config import ConfigError, Settings
@@ -24,7 +26,7 @@ def test_key_enables_anthropic_and_overrides():
     )
     assert s.llm_provider == "anthropic" and s.algorithm == "kmeans" and s.dbscan_eps == 0.2
     assert s.time_window_s == 600 and isinstance(s.time_window_s, int) and s.llm_effort == "high"
-    assert str(s.db_path) == "/tmp/x.db"
+    assert s.db_path == Path("/tmp/x.db")
 
 
 def test_explicit_offline_wins_over_key():

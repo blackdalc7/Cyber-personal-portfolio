@@ -1,3 +1,5 @@
+"""Executor for the Kubernetes lab target, through ``kubectl exec`` into the Atomic runner pod."""
+
 from __future__ import annotations
 
 import subprocess

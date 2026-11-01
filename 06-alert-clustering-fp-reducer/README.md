@@ -1,4 +1,4 @@
-# 06 · AI-Driven Alert Clustering & False-Positive Reducer
+# 06 · Alert clustering and false-positive reducer
 
 > Part of the [Threat Response Engineering portfolio](../README.md). This folder is self-contained and can also be published as its own repository.
 

@@ -26,6 +26,7 @@ log = logging.getLogger("detection_rules")
 
 
 class Sink(Protocol):
+    """Where a cycle's new findings go."""
     def send(self, findings: list[dict[str, Any]]) -> None: ...
 
 
@@ -49,6 +50,7 @@ class HubSink:
 
 
 class PrintSink:
+    """Writes each finding as one NDJSON line, for ``--dry-run``."""
     def __init__(self, write: Callable[[str], Any] = print) -> None:
         self._write = write
 
@@ -59,11 +61,13 @@ class PrintSink:
 
 @dataclass
 class State:
+    """The runner's progress between cycles: the last window end and the findings already sent."""
     watermark: int | None = None
     emitted: dict[str, int] = field(default_factory=dict)  # finding uid -> source event time
 
     @classmethod
     def load(cls, path: Path) -> State:
+        """Read state from ``path``, starting fresh if it is missing or unreadable."""
         try:
             doc = json.loads(Path(path).read_text(encoding="utf-8"))
         except FileNotFoundError:
@@ -74,6 +78,7 @@ class State:
         return cls(watermark=doc.get("watermark"), emitted=dict(doc.get("emitted") or {}))
 
     def save(self, path: Path) -> None:
+        """Write state to ``path`` atomically (temp file, then rename)."""
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         tmp = path.with_suffix(".tmp")
@@ -83,6 +88,7 @@ class State:
 
 @dataclass
 class CycleResult:
+    """Counts and errors from one pass of every rule over the lake."""
     since: int
     until: int
     hits: int = 0
@@ -93,6 +99,7 @@ class CycleResult:
 
 def run_cycle(rules: Iterable[CompiledRule], con: duckdb.DuckDBPyConnection, sink: Sink, state: State, *,
               now_ms: int, lookback_s: int, overlap_s: int, max_per_rule: int = 200) -> CycleResult:
+    """Run every rule over the window since the last watermark and send findings not sent before."""
     since = (state.watermark - overlap_s * 1000) if state.watermark is not None else now_ms - lookback_s * 1000
     res = CycleResult(since=since, until=now_ms)
     new: list[tuple[str, int, dict[str, Any]]] = []

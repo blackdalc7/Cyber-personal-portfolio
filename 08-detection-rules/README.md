@@ -1,4 +1,4 @@
-# 08 · Detection Rules (Sigma → OCSF → DuckDB)
+# 08 · Detection rules (Sigma → OCSF → DuckDB)
 
 > Part of the [Threat Response Engineering portfolio](../README.md). Runs over the [Watchfloor](../watchfloor/README.md) lake.
 

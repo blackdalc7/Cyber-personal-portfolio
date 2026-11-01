@@ -32,6 +32,7 @@ def _int(env: Mapping[str, str], name: str, default: int, minimum: int, maximum:
 
 @dataclass(frozen=True)
 class Settings:
+    """Runtime settings, read from ``ANALYST_*`` environment variables (and ``.env``) by ``from_env``."""
     lake_dir: Path = Path("lake")
     cmdb_path: Path = Path("examples/cmdb.sqlite")
     cmdb_seed: Path | None = None  # used to build a throwaway CMDB when cmdb_path does not exist
@@ -48,6 +49,7 @@ class Settings:
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None, dotenv: bool = True) -> Settings:
+        """Build settings from ``env`` (default ``os.environ``), raising ``ConfigError`` on invalid values."""
         if env is None:
             if dotenv:
                 load_dotenv(override=False)

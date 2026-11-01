@@ -20,6 +20,7 @@ log = logging.getLogger("attack_emulator")
 
 @dataclass
 class Cell:
+    """The scored result of one technique on one target: one cell of the coverage matrix."""
     technique: str
     name: str
     tactic: str
@@ -42,6 +43,7 @@ class Cell:
 
 @dataclass
 class RunResult:
+    """Every cell from one campaign run."""
     run_id: str
     campaign: str
     started: int
@@ -67,6 +69,7 @@ def _cell(test: AtomicTest, campaign: Campaign, res: ExecResult, outcome: str, o
 def run_campaign(campaign: Campaign, settings: Settings, executors: dict[str, Executor], hub: HubClient | None, *,
                  run_id: str, only: set[str] | None = None, sleep: Callable[[float], None] | None = None,
                  clock: Callable[[], float] | None = None) -> RunResult:
+    """Run each test in order, wait for the hub to show a finding or telemetry, and score it."""
     sleep = sleep or time.sleep
     clock = clock or time.time
     started = int(clock() * 1000)

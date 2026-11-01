@@ -17,6 +17,7 @@ def finding_uid(rule_id: str, event_uid: str) -> str:
 
 
 def to_finding(rule: CompiledRule, hit: dict[str, Any], *, now_ms: int) -> dict[str, Any]:
+    """Turn one matched lake row into an OCSF Detection Finding (class 2004) attributed to ``rule``."""
     uid = finding_uid(rule.id, str(hit["uid"]))
     attacks = []
     for tid in rule.techniques:

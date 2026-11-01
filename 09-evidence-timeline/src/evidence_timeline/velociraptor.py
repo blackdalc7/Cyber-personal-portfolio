@@ -30,6 +30,7 @@ class VelociraptorError(RuntimeError):
 
 
 class QueryFn(Protocol):
+    """Runs one VQL query with ``env`` variables and returns its rows."""
     def __call__(self, vql: str, env: dict[str, str], max_rows: int = ...) -> list[dict[str, Any]]: ...
 
 
@@ -64,6 +65,7 @@ def grpc_query(api_config: Path, timeout_s: int = 600) -> QueryFn:
 
 
 class Velociraptor:
+    """Finds a host's client, schedules artifact collections and fetches their results over the API."""
     def __init__(self, query: QueryFn, *, poll_s: float = 10.0, sleep: Callable[[float], None] = time.sleep,
                  clock: Callable[[], float] = time.time) -> None:
         self._q = query
@@ -72,6 +74,7 @@ class Velociraptor:
         self._clock = clock
 
     def find_client(self, host: str) -> str:
+        """Client id of the most recently seen client whose hostname matches ``host``."""
         rows = self._q(FIND_CLIENT, {"Host": host})
         h = host.lower()
         exact = [r for r in rows if str(r.get("hostname") or "").lower() == h
@@ -82,6 +85,7 @@ class Velociraptor:
         return str(exact[0]["client_id"])
 
     def collect(self, client_id: str, artifacts: list[str], timeout_s: int) -> str:
+        """Schedule a collection of ``artifacts`` on the client and return its flow id."""
         rows = self._q(COLLECT, {"ClientId": client_id, "Artifacts": ",".join(artifacts), "Timeout": str(timeout_s)})
         flow = (rows[0].get("flow") if rows else None) or {}
         flow_id = flow.get("flow_id") if isinstance(flow, dict) else None
@@ -104,6 +108,7 @@ class Velociraptor:
             self._sleep(self._poll)
 
     def results(self, client_id: str, flow_id: str, artifact: str, max_rows: int) -> list[dict[str, Any]]:
+        """Rows one artifact returned in a finished flow, at most ``max_rows``."""
         return self._q(RESULTS, {"ClientId": client_id, "FlowId": flow_id, "Artifact": artifact}, max_rows=max_rows)
 
     def collect_all(self, host: str, artifacts: list[str], timeout_s: int, max_rows: int

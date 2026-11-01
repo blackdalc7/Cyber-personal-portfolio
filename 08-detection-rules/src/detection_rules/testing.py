@@ -19,6 +19,7 @@ WINDOW = (0, 2**62)  # tests ignore time
 
 @dataclass(frozen=True)
 class RuleTestResult:
+    """Expected and actual hit counts for one rule sample."""
     rule_id: str
     name: str
     expected: int

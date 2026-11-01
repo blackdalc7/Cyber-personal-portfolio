@@ -32,6 +32,7 @@ HERE = Path(__file__).resolve().parents[2]
 
 @dataclass(frozen=True)
 class Settings:
+    """Runtime settings, read from ``RULES_*`` environment variables (and ``.env``) by ``from_env``."""
     rules_dir: Path = HERE / "rules"
     samples_dir: Path = HERE / "samples"
     build_dir: Path = HERE / "build"
@@ -45,6 +46,7 @@ class Settings:
 
     @classmethod
     def from_env(cls, env: Mapping[str, str] | None = None, dotenv: bool = True) -> Settings:
+        """Build settings from ``env`` (default ``os.environ``), raising ``ConfigError`` on invalid values."""
         if env is None:
             if dotenv:
                 load_dotenv(override=False)

@@ -49,6 +49,7 @@ class AnthropicProvider:
         self.max_turns = max_turns
 
     def run(self, session: ToolSession, system: str, task: str, incident_id: str) -> None:
+        """Run the tool-use loop with Claude until it submits an analysis, or raise ``ProviderError``."""
         tools = [{"name": t["name"], "description": t["description"], "input_schema": t["input_schema"]}
                  for t in session.tool_specs()]
         messages: list[dict[str, Any]] = [{"role": "user", "content": task}]
@@ -107,6 +108,7 @@ class OllamaProvider:
         self.max_turns = max_turns
 
     def run(self, session: ToolSession, system: str, task: str, incident_id: str) -> None:
+        """Run the tool-use loop with the Ollama model until it submits an analysis, or raise ``ProviderError``."""
         tools = [{"type": "function", "function": {"name": t["name"], "description": t["description"],
                                                    "parameters": t["input_schema"]}} for t in session.tool_specs()]
         messages: list[dict[str, Any]] = [{"role": "system", "content": system}, {"role": "user", "content": task}]

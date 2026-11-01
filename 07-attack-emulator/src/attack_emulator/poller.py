@@ -19,6 +19,7 @@ def technique_matches(wanted: str, seen: str) -> bool:
 
 
 class HubClient:
+    """Minimal read client for the Watchfloor hub's findings, events and health endpoints."""
     def __init__(self, base_url: str, token: str = "", client: httpx.Client | None = None) -> None:
         self._base = base_url.rstrip("/")
         self._headers = {"Authorization": f"Bearer {token}"} if token else {}
@@ -52,6 +53,7 @@ class HubClient:
 
 @dataclass
 class Observation:
+    """What the hub showed for one technique during its scoring window."""
     outcome: str  # detected | telemetry_only | missed | error
     ttd_ms: int | None = None
     findings: list[dict[str, Any]] = field(default_factory=list)

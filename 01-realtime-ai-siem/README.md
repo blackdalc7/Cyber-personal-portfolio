@@ -1,4 +1,4 @@
-# 01 · Real-Time AI-SIEM
+# 01 · Real-time AI-SIEM
 
 > Part of the [Threat Response Engineering portfolio](../README.md). This folder is self-contained and can also be published as its own repository.
 

@@ -25,6 +25,7 @@ def sign(secret: str, body: bytes, timestamp: int | None = None) -> tuple[str, s
 
 
 class Verifier:
+    """Checks SOAR request signatures: HMAC-SHA256 over ``timestamp.body``, bounded clock skew, no replays."""
     def __init__(self, secret: str, clock: Callable[[], float] = time.time) -> None:
         self._secret = secret
         self._clock = clock
@@ -32,6 +33,7 @@ class Verifier:
         self._lock = threading.Lock()
 
     def verify(self, body: bytes, timestamp: str | None, signature: str | None) -> bool:
+        """True only for a correct signature with a fresh timestamp that has not been seen before."""
         if not self._secret or not timestamp or not signature or not signature.startswith("sha256="):
             return False
         try:

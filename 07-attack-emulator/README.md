@@ -1,4 +1,4 @@
-# 07 · Attack Emulator
+# 07 · Attack emulator
 
 > Part of the [Threat Response Engineering portfolio](../README.md). Runs on its own; scores against [Watchfloor](../watchfloor/README.md).
 

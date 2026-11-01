@@ -1,3 +1,5 @@
+"""Executor for Linux lab VMs over SSH (paramiko)."""
+
 from __future__ import annotations
 
 from pathlib import Path

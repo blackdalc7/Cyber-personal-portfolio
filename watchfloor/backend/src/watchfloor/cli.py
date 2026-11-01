@@ -66,6 +66,7 @@ def cmd_ingest(args: argparse.Namespace, settings: Settings) -> int:
 
 
 def cmd_adapters(args: argparse.Namespace, settings: Settings) -> int:
+    """Poll every configured source (SIEM, EDR, triage queue, SOAR) and publish its new events to the bus."""
     from .adapters import AdapterState, NdjsonTailer, QueueFileWatcher, SoarPoller
 
     bus = _bus(settings)

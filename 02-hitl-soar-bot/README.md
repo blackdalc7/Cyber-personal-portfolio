@@ -1,4 +1,4 @@
-# 02 · HitL SOAR Bot
+# 02 · Human-in-the-loop SOAR bot
 
 > Part of the [Threat Response Engineering portfolio](../README.md). This folder is self-contained and can also be published as its own repository.
 

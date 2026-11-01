@@ -22,6 +22,7 @@ MAX_BODY = 16 * 1024
 
 
 class CollectBody(BaseModel):
+    """JSON body of a signed ``POST /collect`` request from the SOAR bot."""
     incident_id: str = Field(pattern=INCIDENT_ID.pattern)
     host: str = Field(pattern=HOST.pattern)
     around_ms: int | None = Field(default=None, ge=0)
@@ -32,6 +33,7 @@ class CollectBody(BaseModel):
 
 
 def create_app(settings: Settings, store: JobStore | None = None, verifier: Verifier | None = None) -> FastAPI:
+    """Build the collector's FastAPI app; every request except ``/healthz`` must carry a valid HMAC signature."""
     app = FastAPI(title="Evidence timeline", version="1.0.0", docs_url=None, redoc_url=None, openapi_url=None)
     jobs = store or JobStore(settings)
     verify = verifier or Verifier(settings.shared_secret)

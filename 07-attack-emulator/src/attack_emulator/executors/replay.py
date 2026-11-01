@@ -46,6 +46,7 @@ def rebase(events: list[dict[str, Any]], *, start_ms: int, hostname: str, run_la
 
 
 class ReplayExecutor:
+    """Posts a technique's recorded OCSF events to the hub instead of running anything, so CI can score a campaign."""
     def __init__(self, hub_url: str, ingest_token: str, fixtures: Path, run_id: str,
                  client: httpx.Client | None = None) -> None:
         if not ingest_token:
@@ -57,6 +58,7 @@ class ReplayExecutor:
         self._client = client or httpx.Client(timeout=15.0)
 
     def run(self, test: AtomicTest, target: Target) -> ExecResult:
+        """Rebase the technique's fixture onto now and the target host, then post it to the hub's ingest API."""
         start = now_ms()
         try:
             events = rebase(load_fixture(self._fixtures, test.technique), start_ms=start, hostname=target.hostname,

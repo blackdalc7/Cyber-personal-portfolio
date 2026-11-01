@@ -35,6 +35,7 @@ class CampaignError(ValueError):
 
 @dataclass(frozen=True)
 class Target:
+    """A lab machine a campaign may run on, and the executor that reaches it."""
     name: str
     executor: str
     hostname: str
@@ -47,6 +48,7 @@ class Target:
 
 @dataclass(frozen=True)
 class AtomicTest:
+    """One Atomic Red Team technique to run on a target, with the tests, inputs and limits to use."""
     technique: str
     name: str
     tactic: str
@@ -62,6 +64,7 @@ class AtomicTest:
 
     @property
     def key(self) -> str:
+        """Stable id for this test selection, such as ``T1059.001#1,2``."""
         sel = (",".join(map(str, self.test_numbers)) or ",".join(g[:8] for g in self.test_guids)
                or ",".join(self.test_names) or "all")
         return f"{self.technique}#{sel}"
@@ -69,6 +72,7 @@ class AtomicTest:
 
 @dataclass(frozen=True)
 class Campaign:
+    """A validated campaign file: its targets and the ordered tests to run on them."""
     name: str
     description: str
     targets: dict[str, Target]
@@ -77,6 +81,7 @@ class Campaign:
 
     @property
     def live(self) -> bool:
+        """True when any target runs real commands (WinRM, SSH or kubectl) rather than dry-run or replay."""
         return any(t.executor in LIVE_EXECUTORS for t in self.targets.values())
 
 
@@ -173,6 +178,7 @@ def _test(raw: Any, i: int, targets: dict[str, Target]) -> AtomicTest:
 
 
 def parse_campaign(doc: Any) -> Campaign:
+    """Validate a loaded campaign document and build a ``Campaign``, raising ``CampaignError`` on any problem."""
     if not isinstance(doc, dict):
         raise CampaignError("campaign must be a mapping")
     name = _str(doc, "name", "campaign")

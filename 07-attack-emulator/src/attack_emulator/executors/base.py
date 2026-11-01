@@ -1,3 +1,5 @@
+"""Shared result type and protocol for the executors, plus detection of outputs that mean "prevented"."""
+
 from __future__ import annotations
 
 import re
@@ -28,6 +30,7 @@ def is_prevented(rc: int, stdout: str, stderr: str) -> bool:
 
 @dataclass
 class ExecResult:
+    """What happened when an executor ran (or failed to run) one atomic test."""
     started_ms: int
     ended_ms: int
     rc: int
@@ -39,10 +42,12 @@ class ExecResult:
     error: str | None = None
 
     def tail(self, n: int = 2000) -> dict[str, str]:
+        """The last ``n`` characters of stdout and stderr, for the run document."""
         return {"stdout": self.stdout[-n:], "stderr": self.stderr[-n:]}
 
 
 class Executor(Protocol):
+    """Interface every executor implements: run a test, clean it up, release connections."""
     def run(self, test: AtomicTest, target: Target) -> ExecResult: ...
 
     def cleanup(self, test: AtomicTest, target: Target) -> ExecResult | None: ...

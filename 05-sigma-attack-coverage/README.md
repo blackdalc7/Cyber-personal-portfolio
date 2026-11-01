@@ -1,4 +1,4 @@
-# 05 · Sigma-Validated ATT&CK Detection Coverage
+# 05 · Sigma ATT&CK coverage
 
 > Part of the [Threat Response Engineering portfolio](../README.md). This folder is self-contained and can also be published as its own repository.
 

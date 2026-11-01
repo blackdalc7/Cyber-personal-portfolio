@@ -54,6 +54,7 @@ class ProviderError(RuntimeError):
 
 
 class Provider(Protocol):
+    """A model (or the offline rules) that investigates through a ``ToolSession`` and submits one analysis."""
     name: str
     model: str
 
