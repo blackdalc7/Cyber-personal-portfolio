@@ -4,4 +4,4 @@ httpx>=0.27,<1
 pyvelociraptor>=0.1.10,<1
 grpcio>=1.60,<2
 PyYAML>=6.0,<7
-python-dotenv>=1.0,<2
+python-dotenv>=1.2.4,<2
