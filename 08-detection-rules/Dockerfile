@@ -1,5 +1,5 @@
 # detection-rules: Sigma rules over the Watchfloor lake. Runs as an unprivileged user with a read-only lake mount.
-FROM python:3.12-slim AS base
+FROM python:3.15-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 WORKDIR /app
 COPY requirements.txt .
