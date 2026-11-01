@@ -1,6 +1,6 @@
 -r requirements.txt
 pytest>=8,<10
 pytest-cov>=5,<8
-ruff>=0.6,<1
+ruff>=0.17.3,<1
 jsonschema>=4.21,<5
 pyarrow>=16
