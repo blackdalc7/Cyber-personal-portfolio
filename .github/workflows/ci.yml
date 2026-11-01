@@ -75,7 +75,8 @@ jobs:
         if: matrix.project == '08-detection-rules'
         run: |
           PYTHONPATH=src python -m detection_rules build
-          git diff --exit-code -- build/
+          # The index carries a build timestamp, so only content changes count as stale.
+          git diff --exit-code -I '"generated":' -- build/
       - name: Analyst eval gate (triage and prompt injection, offline provider)
         if: matrix.project == '10-ai-analyst-mcp'
         run: PYTHONPATH=src python -m ai_analyst eval --min-pass-rate 1.0
@@ -304,4 +305,7 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install pip-audit
-      - run: pip-audit --requirement ${{ matrix.project }}/requirements.txt --strict
+      # Two advisories with no fixed release yet, reviewed and accepted:
+      # PYSEC-2026-2858 paramiko allows SHA-1 RSA signatures (07 only talks SSH to the isolated lab).
+      # PYSEC-2026-2447 diskcache unpickles its cache (08's cache dir is local and not attacker-writable).
+      - run: pip-audit --requirement ${{ matrix.project }}/requirements.txt --strict --ignore-vuln PYSEC-2026-2858 --ignore-vuln PYSEC-2026-2447
