@@ -55,22 +55,22 @@ export interface StressInput {
 
 export interface StressReading {
   score: number; // 0..100
-  cups: number; // coffee required, 0..6
+  cups: number; // legacy 0..6 scale kept for older callers
   level: "zen" | "caffeinated" | "jittery" | "on-fire" | "sleeping-under-desk";
   label: string;
   quip: string;
 }
 
 const LEVELS: { max: number; level: StressReading["level"]; label: string; quip: string }[] = [
-  { max: 15, level: "zen", label: "Zen", quip: "Queue empty. Suspicious, but enjoy it." },
-  { max: 40, level: "caffeinated", label: "Mildly caffeinated", quip: "One flat white and a healthy sense of paranoia." },
-  { max: 65, level: "jittery", label: "Jittery", quip: "Third espresso. Typing faster than the attacker." },
-  { max: 85, level: "on-fire", label: "On fire", quip: "Alerts arriving faster than coffee can be brewed." },
-  { max: 101, level: "sleeping-under-desk", label: "Sleeping under the desk", quip: "Page the on-call. And their mum." },
+  { max: 15, level: "zen", label: "Low", quip: "Queue is quiet. Use the time for rule tuning." },
+  { max: 40, level: "caffeinated", label: "Moderate", quip: "Normal working load." },
+  { max: 65, level: "jittery", label: "Elevated", quip: "Queue is growing. Prioritise by severity." },
+  { max: 85, level: "on-fire", label: "High", quip: "Alerts are arriving faster than they are closed." },
+  { max: 101, level: "sleeping-under-desk", label: "Critical", quip: "Escalate to the on-call lead." },
 ];
 
 /**
- * The Analyst Stress Index. Joke name, real signal: it is a saturating blend of alert rate, open incidents,
+ * Analyst workload index: a saturating blend of alert rate, open incidents,
  * critical findings and approval latency, each normalised so one runaway input cannot pin the gauge alone.
  */
 export function analystStress(input: StressInput): StressReading {
@@ -83,32 +83,34 @@ export function analystStress(input: StressInput): StressReading {
   return { score, cups: Math.min(6, Math.round(score / 16)), level: band.level, label: band.label, quip: band.quip };
 }
 
-const EMPTY_QUIPS = [
-  "0 alerts found. Either the firewall is working, or it's unplugged.",
-  "Nothing here. The attackers are either very good or on holiday.",
-  "Empty. Like the coffee pot at 3am.",
-  "No data. Have you tried turning the sensor off and on again?",
-  "Silence on the wire. Enjoy it, it never lasts.",
-  "Nothing to see. Which is exactly what a good rootkit would say.",
+const EMPTY_MESSAGES = [
+  "No records in this view yet.",
+  "Nothing has been recorded for this view.",
+  "This view is empty for the selected data.",
 ];
 
-/** A stable quip for a given key, so the same empty state does not change its joke on every render. */
-export function quipFor(key: string, quips = EMPTY_QUIPS): string {
+/**
+ * A stable empty-state message for a given key, so the same view always shows the same sentence.
+ * (Kept as `quipFor` for backwards compatibility with earlier consoles.)
+ */
+export function quipFor(key: string, messages = EMPTY_MESSAGES): string {
   let h = 0;
   for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) | 0;
-  return quips[Math.abs(h) % quips.length];
+  return messages[Math.abs(h) % messages.length];
 }
 
+/** Plain guidance shown under an error, chosen by `quipFor(message, ERROR_QUIPS)`. */
 export const ERROR_QUIPS = [
-  "Something broke. It wasn't the intern this time.",
-  "The request went out and never came back. Like my last pull request.",
-  "Error. Blame DNS; it is always DNS.",
+  "Check that the hub is running and reachable, then reload.",
+  "The request did not complete. Reload to try again.",
+  "If this persists, check the browser console and the hub logs.",
 ];
 
+/** Status lines shown while an isolation request is being sent to the SOAR bot. */
 export const ISOLATION_QUIPS = [
-  "Isolating host... let's hope it's not the CEO's laptop.",
-  "Pulling the virtual network cable. Gently.",
-  "Quarantine requested. The host has been sent to its room.",
+  "Requesting isolation. A human approver must still confirm it.",
+  "Sending the isolation request to the SOAR bot.",
+  "Isolation requested. Waiting for the approval card.",
 ];
 
 /** Split a terminal command line into words, honouring single and double quotes. */

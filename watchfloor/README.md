@@ -10,7 +10,7 @@ contain, collect evidence, explain, score) in one React dashboard.
 | | |
 |---|---|
 | ![Scenario playback](docs/img/playback.png) | ![Incident](docs/img/incident.png) |
-| ![Terminal palette](docs/img/terminal.png) | ![Konami: green phosphor](docs/img/phosphor.png) |
+| ![Command line](docs/img/terminal.png) | ![Konami: green-screen preview](docs/img/phosphor.png) |
 | ![ATT&CK coverage](docs/img/coverage.png) | ![Exposure what-if](docs/img/exposure.png) |
 | ![AI analyst transcripts](docs/img/analyst.png) | |
 
@@ -29,9 +29,10 @@ contain, collect evidence, explain, score) in one React dashboard.
 * **A hub API** (FastAPI) for events, findings, incidents, process trees, scenario scoring, coverage, exposure
   what-if, rules, evidence and AI transcripts, plus a live SSE stream and a token-protected ingest endpoint for
   Fluent Bit and the detection runner.
-* **A console** (React 19, TypeScript, Tailwind 4, motion, ECharts, Cytoscape) built on the shared
-  [`@portfolio/aegis-ui`](../packages/aegis-ui) design system, also used by Driftwatch. Seven pages: watch floor,
-  scenario playback, incidents, ATT&CK coverage, exposure graph, detection rules and the analyst engine.
+* **A console** (React 19, TypeScript, Tailwind 4, motion, ECharts, Cytoscape) built on the
+  [`@portfolio/aegis-ui`](../packages/aegis-ui) design system, whose rules are written down in
+  [`DESIGN.md`](../packages/aegis-ui/DESIGN.md). Seven pages: watch floor, scenario playback, incidents,
+  ATT&CK coverage, exposure graph, detection rules and the analyst engine.
 * **Replay mode.** `export-demo` runs the real query code over the recorded datasets and writes static JSON, so the
   same UI runs on GitHub Pages with no backend. The badge in the header says LIVE or REPLAY DEMO.
 
@@ -48,23 +49,23 @@ contain, collect evidence, explain, score) in one React dashboard.
 
 ## The console
 
-* **Terminal first.** Ctrl K (or `/`) opens a zsh-style terminal: `/cd coverage`, `/ls incidents`,
-  `/play maldoc-to-ransomware`, `/incident INC-2026`, `/hunt T1110.001`, `/stress`, `/isolate web01 --reason "..."`,
-  with Tab completion and history. Typing plain text jumps to pages, scenarios and incidents. A slim icon rail and
-  number keys 1 to 7 remain for mouse and keyboard users.
+* **Two themes.** The default is the dark obsidian console (zinc-950, neon used only to encode meaning, Geist and
+  JetBrains Mono). Light mode in Settings switches to a cream paper theme with Newsreader headings. Both share the
+  same layout: sections divided by rules rather than boxed cards, and a page header that states where each page's
+  data came from. The full rules are in [`DESIGN.md`](../packages/aegis-ui/DESIGN.md).
+* **Keyboard first.** Ctrl K (or `/`) opens a command line: `/cd coverage`, `/ls incidents`,
+  `/play maldoc-to-ransomware`, `/incident INC-2026`, `/hunt T1110.001`, `/workload`, `/isolate web01 --reason "..."`,
+  with Tab completion and history. Typing plain text jumps to pages, scenarios and incidents. The numbered page
+  index in the left column and number keys 1 to 7 cover mouse and keyboard users.
 * **High friction where it matters.** "Request isolation" (on an incident, or `/isolate`) is a hold-to-confirm
   button. It does not isolate anything: it asks 02 to post an approval card, so a second human still has to click
   Approve in Slack or Discord. The hub only enables it with `WF_ACTIONS_ENABLED`, a hub token and 02's shared
   secret; in the replay demo it is simulated and says so.
-* **AI as an engine, not a chatbot.** Analyst verdicts appear as inline ghost annotations on the incident, with a
-  "why?" sheet listing the quoted tool results; the Analyst page shows the tool-call trace like `strace`.
-* **Tactile details.** Animated counters for MTTA/MTTR and coverage, a text-scramble reveal on summaries and
-  traces, hex-glitch hovers on critical buttons, ASCII and hexdump loaders, draggable topologies with context cards,
-  CRT scanlines on charts, and the Analyst Stress Index (a real blend of alert rate, open incidents, criticals and
-  approval latency, rendered as a caffeine gauge).
-* **Easter eggs.** ↑ ↑ ↓ ↓ ← → ← → B A turns the console into a 1993 green-phosphor terminal for 10 seconds.
-  Settings → "Advanced compliance telemetry (do not touch)" simulates a defaced SOC console as a tabletop prompt.
-  Both are cosmetic and reversible; neither touches data or actions.
+* **AI as an engine, not a chatbot.** Analyst verdicts appear as marginal notes on the incident, with a
+  "Show evidence" sheet listing the quoted tool results; the Analyst page shows the tool-call trace like `strace`.
+* **Opt-in drills.** The Konami code (↑ ↑ ↓ ↓ ← → ← → B A) shows a ten-second green-screen preview, and
+  Settings, "Tabletop drill", shows what a defaced console looks like. Both are cosmetic and reversible; neither
+  touches data or actions.
 
 ## The scenario game
 

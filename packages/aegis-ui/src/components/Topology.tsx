@@ -22,12 +22,12 @@ export interface TopoEdge {
 function tokens() {
   const css = getComputedStyle(document.documentElement);
   const v = (n: string) => css.getPropertyValue(n).trim();
-  return { ink: v("--ae-ink"), muted: v("--ae-muted"), line: v("--ae-line-bright"), panel: v("--ae-panel-solid"),
-    cyan: v("--ae-cyan"), amber: v("--ae-amber"), crimson: v("--ae-crimson"), green: v("--ae-green") };
+  return { ink: v("--ae-ink"), muted: v("--ae-muted"), line: v("--ae-muted"), panel: v("--ae-paper"),
+    accent: v("--ae-accent"), warn: v("--ae-warn"), bad: v("--ae-bad"), good: v("--ae-good") };
 }
 
 /**
- * Interactive topology (Cytoscape): drag nodes to rearrange, scroll to zoom, click a node to open a glass context
+ * Interactive topology (Cytoscape): drag nodes to rearrange, scroll to zoom, click a node to open a context
  * card rendered by `renderContext`. Restyles itself when the theme or a hidden mode changes.
  */
 export function Topology({ nodes, edges, height = 380, direction = "TB", roots, renderContext, onSelect, ariaLabel, className }: {
@@ -60,20 +60,19 @@ export function Topology({ nodes, edges, height = 380, direction = "TB", roots, 
           .map((e, i) => ({ data: { ...e, id: e.id ?? `e${i}` }, classes: [e.hot && "hot", e.dim && "dim"].filter(Boolean).join(" ") })),
       ],
       style: [
-        { selector: "node", style: { label: "data(label)", "font-size": 10, "font-family": "JetBrains Mono, monospace", color: c.ink,
+        { selector: "node", style: { label: "data(label)", "font-size": 10, "font-family": "IBM Plex Mono, monospace", color: c.ink,
           "text-valign": "bottom", "text-margin-y": 6, "background-color": c.panel, "border-width": 1.5, "border-color": c.muted,
-          shape: "round-rectangle", width: 22, height: 22 } },
-        { selector: "node.flagged", style: { "border-color": c.crimson, "background-color": c.crimson, "border-width": 2,
-          "underlay-color": c.crimson, "underlay-opacity": 0.25, "underlay-padding": 6 } },
-        { selector: "node.internet", style: { shape: "diamond", "border-color": c.amber, "background-color": c.amber } },
-        { selector: "node.crown", style: { shape: "star", "border-color": c.cyan, width: 30, height: 30 } },
+          shape: "rectangle", width: 22, height: 22 } },
+        { selector: "node.flagged", style: { "border-color": c.bad, "background-color": c.bad, "border-width": 2 } },
+        { selector: "node.internet", style: { shape: "diamond", "border-color": c.warn, "background-color": c.warn } },
+        { selector: "node.crown", style: { shape: "star", "border-color": c.accent, width: 30, height: 30 } },
         { selector: "node.dim", style: { opacity: 0.3 } },
-        { selector: "node:selected", style: { "border-color": c.cyan, "border-width": 3, "underlay-color": c.cyan, "underlay-opacity": 0.3, "underlay-padding": 8 } },
-        { selector: "node:grabbed", style: { "underlay-color": c.cyan, "underlay-opacity": 0.4 } },
+        { selector: "node:selected", style: { "border-color": c.accent, "border-width": 3 } },
+        { selector: "node:grabbed", style: { "border-color": c.accent } },
         { selector: "edge", style: { width: 1, "line-color": c.line, "target-arrow-color": c.line, "target-arrow-shape": "triangle",
-          "curve-style": "bezier", label: "data(label)", "font-size": 8, "font-family": "JetBrains Mono, monospace", color: c.muted,
+          "curve-style": "bezier", label: "data(label)", "font-size": 8, "font-family": "IBM Plex Mono, monospace", color: c.muted,
           "text-rotation": "autorotate", "text-background-color": c.panel, "text-background-opacity": 1, "text-background-padding": "2px" } },
-        { selector: "edge.hot", style: { width: 2, "line-color": c.crimson, "target-arrow-color": c.crimson, "line-style": "solid" } },
+        { selector: "edge.hot", style: { width: 2, "line-color": c.bad, "target-arrow-color": c.bad, "line-style": "solid" } },
         { selector: "edge.dim", style: { opacity: 0.25, "line-style": "dashed" } },
       ],
       layout: {
@@ -91,14 +90,14 @@ export function Topology({ nodes, edges, height = 380, direction = "TB", roots, 
 
   return (
     <div className={cn("relative", className)}>
-      <div ref={ref} style={{ height }} className="w-full border border-line bg-black/20" role="img" aria-label={ariaLabel} />
+      <div ref={ref} style={{ height }} className="w-full border-y border-line" role="img" aria-label={ariaLabel} />
       <div className="pointer-events-none absolute left-2 top-2 font-mono text-[10px] text-muted">drag nodes · scroll to zoom · click for context</div>
       <button type="button" onClick={() => cyRef.current?.fit(undefined, 18)}
-        className="absolute right-2 top-2 border border-line bg-panel-solid/80 px-2 py-0.5 font-mono text-[10px] text-muted hover:text-cyan">fit</button>
+        className="absolute right-2 top-2 border border-line bg-bg px-2 py-0.5 font-mono text-[11px] text-muted hover:text-ink">fit</button>
       <AnimatePresence>
         {sel && renderContext && (
-          <motion.div key={sel} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 12 }}
-            className="ae-glass absolute bottom-2 right-2 w-[min(320px,80%)] p-3 text-sm">
+          <motion.div key={sel} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.12 }}
+            className="ae-surface absolute bottom-2 right-2 w-[min(320px,80%)] p-3 text-sm">
             <button type="button" aria-label="Close context" onClick={() => { setSel(null); cyRef.current?.$(":selected").unselect(); }}
               className="absolute right-2 top-1 font-mono text-xs text-muted hover:text-ink">×</button>
             {renderContext(sel)}

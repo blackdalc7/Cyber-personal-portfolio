@@ -1,12 +1,16 @@
 # @portfolio/aegis-ui
 
-The shared design system for **Watchfloor** and **Driftwatch**: *Aegis* structure (zinc-950, 1px zinc-800 lines,
-glass panels, functional colour only) with *Carbon & Neon* character (carbon weave, CRT scanlines, mono telemetry,
-neon accents used sparingly) and a layer of lab humour that never gets in the way of the data.
+The design system behind the Watchfloor console: **Aegis Editorial**. Warm paper and graphite ink with a single
+cobalt accent, Newsreader headings over IBM Plex Sans and Plex Mono, sections divided by rules instead of boxed
+cards, square corners, and hover states that swap colour instantly. The binding rules (palette, type, layout,
+interaction and copy) are in [DESIGN.md](DESIGN.md).
+
+Driftwatch keeps its own copy of the earlier version of this package under `driftwatch/packages/aegis-ui`, so
+changes here only affect Watchfloor.
 
 ## Install
 
-The package is source-distributed (TypeScript + CSS); the consuming Vite app compiles it.
+The package is source-distributed (TypeScript and CSS); the consuming Vite app compiles it.
 
 ```jsonc
 // app/package.json
@@ -19,7 +23,7 @@ The package is source-distributed (TypeScript + CSS); the consuming Vite app com
 ```css
 /* app/src/index.css */
 @import "tailwindcss";
-@import "@portfolio/aegis-ui/theme.css";   /* tokens, utilities, modes; @source scans the package for classes */
+@import "@portfolio/aegis-ui/theme.css";   /* tokens, base type, utilities and hidden modes; @source scans the package */
 ```
 
 ```ts
@@ -34,57 +38,49 @@ resolve: { dedupe: ["react", "react-dom", "motion", "cytoscape", "@radix-ui/reac
            "react-dom": ["./node_modules/@types/react-dom"], "motion/react": ["./node_modules/motion/react"] }
 ```
 
-Fonts: load Geist and JetBrains Mono (Google Fonts) in `index.html`.
+Fonts: load Newsreader (500, 600), IBM Plex Sans (400, 500, 600) and IBM Plex Mono (400, 500) from Google Fonts
+in `index.html`.
 
 ## Tokens
 
-| Tailwind colour | CSS var | Meaning |
-|---|---|---|
-| `bg`, `panel`, `panel-2`, `line`, `ink`, `muted` | `--ae-*` | obsidian base, glass, 1px frames, text |
-| `cyan` (`accent`) | `--ae-cyan` | active, scanning, focus |
-| `crimson` (`bad`), `crit` | `--ae-crimson` | breach, isolate, destructive |
-| `amber` (`warn`) | `--ae-amber` | drift, warning |
-| `green` (`good`) | `--ae-green` | terminal, OK |
-| `status-prevented`, `status-detected`, `status-missed`, `status-error`, `status-drift`, `status-remediated`, `status-telemetry`, `status-skipped` | `--ae-status-*` | shared result states (`STATUS` map in TS) |
+Components use these semantic Tailwind names only. Each maps to a CSS variable in `src/theme.css`, so the paper
+theme, the darkroom theme (`data-theme="dark"`) and the hidden modes restyle everything from one file.
 
-Utilities: `ae-glass`, `ae-ticks` (bright corner ticks), `ae-scanlines`, `ae-neon-text`, `ae-empty-radial`,
-`ae-caret`, `ae-live`, `ae-in`. `data-theme="light"` gives a daylight variant.
+| Tailwind colour | CSS variable | Meaning |
+|---|---|---|
+| `bg` | `--ae-paper` | page background (raw canvas) |
+| `panel-solid` | `--ae-surface` | dialogs and popovers |
+| `panel-2` | `--ae-sunken` | code blocks, selected and hovered rows |
+| `ink`, `muted` | `--ae-ink`, `--ae-muted` | graphite text, secondary text |
+| `line`, `rule` | `--ae-line`, `--ae-rule` | hairlines between rows, strong rules above sections |
+| `accent` | `--ae-accent` | links, focus, current selection (cobalt) |
+| `good`, `warn`, `bad`, `crit` | `--ae-good` ... | result colours only, always with a text label |
+| `status-*` | `--ae-status-*` | shared result states (the `STATUS` map in TypeScript), derived from the above |
+
+Utilities: `ae-section` (rule on top, no box), `ae-surface` (solid ruled dialog surface), `ae-label` (small mono
+metadata), plus `ae-live`, `ae-in` and `ae-caret` for the few state-change animations.
 
 ## Components
 
 | Export | What it does |
 |---|---|
-| `TerminalPalette` + `useTerminalHotkey` | zsh-style Ctrl/Cmd+K (or `/`) terminal: async commands, Tab completion, history, inline hold-to-confirm steps, fuzzy "cd" suggestions, and built-ins (`help`, `clear`, `whoami`, `sudo`, `rm -rf /`, `hack`) |
-| `HoldToConfirm` | destructive actions fire only after a `duration` ms hold (mouse, touch or Space/Enter); `disabled` + `disabledReason` tooltip |
-| `SlideToExecute` | "slide to isolate": drag the knob to the end; a red gradient blooms as it travels; `disabled`/`disabledReason`, keyboard → ×4 |
-| `DataWaterfall` | muted, blurred canvas of falling telemetry lines behind a page (decorative, aria-hidden, off with reduced motion) |
-| `TextScramble` | cryptographic left-to-right reveal for logs and AI text |
-| `GlitchText` | hex-cycling hover/focus effect for critical button labels |
-| `CountUp` | animated number counters (MTTR, coverage) with a `format` function |
-| `AsciiLoader`, `HexCascade` | ASCII spinner with sarcastic status lines; falling hexdump for long waits |
-| `StressGauge` | the Analyst Stress Index and caffeine requirement (`analystStress()` is a tested pure function) |
-| `GhostAnnotation` | AI output as inline ghost text with a dashed rail and a "why?" evidence sheet. No chat UI. |
-| `Topology` | Cytoscape graph: drag nodes, zoom, click for a glass context card (`renderContext`) |
-| `Panel`, `Button`, `Kbd`, `StatusBadge`, `SnarkyEmpty`, `SnarkyError` | shadcn-style primitives (`cva`, `cn`) |
-| `ModeProvider`, `useModes`, `useKonami` | ↑↑↓↓←→←→BA turns the UI into a green-phosphor 1993 terminal for 10 s; "deface" simulates a compromised console |
-| `SettingsSheet` | theme, phosphor test and, at the bottom under a boring heading, the deface toggle |
+| `Panel` | a page section: strong top rule, serif heading, optional subtitle and actions |
+| `Button`, `buttonVariants` | ruled buttons; hover inverts to ink on paper. No transitions, scaling or glow |
+| `Kbd`, `StatusBadge` | keyboard key; a result state as glyph plus label in its colour |
+| `EmptyState`, `ErrorNotice` | one factual sentence for an empty view; what failed plus guidance for an error |
+| `TerminalPalette` + `useTerminalHotkey` | Ctrl/Cmd+K (or `/`) command line: async commands, Tab completion, history, inline hold-to-confirm steps and "jump to" suggestions. Built-ins: `help`, `clear`, `whoami`, `exit` |
+| `HoldToConfirm` | destructive actions fire only after a `duration` ms hold (mouse, touch or Space/Enter); `disabled` + `disabledReason` |
+| `SlideToExecute` | "slide to isolate": drag the knob to the end; a solid fill tracks progress; keyboard → ×4 |
+| `AsciiLoader`, `HexCascade` | a quiet "Loading" line with a blinking underscore, announced to screen readers |
+| `GhostAnnotation` | AI output as a marginal note with source, confidence, citation check and a "Show evidence" sheet. No chat UI |
+| `Topology` | Cytoscape graph: drag nodes, zoom, click for a context card (`renderContext`) |
+| `ModeProvider`, `useModes`, `useKonami` | opt-in cosmetic modes: a ten-second green-screen preview (Konami code) and a "simulate console compromise" tabletop drill |
+| `SettingsSheet` | theme switch, the phosphor preview and the tabletop drill |
 
-Everything honours `prefers-reduced-motion`: scrambles, glitches, counters and flicker are skipped.
-
-## Hidden features (so nobody has to discover them in a demo)
-
-* **Konami code** anywhere outside a text field: green phosphor, scanlines and CRT vignette for 10 seconds.
-* **Deface mode** (Settings → "Advanced compliance telemetry (do not touch)"): skull, glitching red headings,
-  and an explicit "simulation only, nothing was changed" line. Esc or a click restores.
-* **Terminal jokes**: `sudo` reports you to yourself, `rm -rf /` is refused, `hack` hacks the planet, unknown
-  commands hint at the Konami code.
-* **Empty states** pick a stable quip per screen ("0 alerts found. Either the firewall is working, or it's
-  unplugged.").
-
-All of it is cosmetic. None of it can trigger an action, change data or bypass an approval.
+Everything honours `prefers-reduced-motion`.
 
 ## Tests
 
 ```bash
-npm install && npm test && npm run typecheck   # pure logic: scramble, Konami, stress index, parser, completion
+npm install && npm test && npm run typecheck   # pure logic: Konami, workload index, parser, completion, hexdump
 ```

@@ -80,21 +80,21 @@ export function ModeProvider({ children, product = "the SOC" }: { children: Reac
       <AnimatePresence>
         {mode === "phosphor" && (
           <motion.div key="phosphor" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="pointer-events-none fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 border border-green bg-black/80 px-4 py-2 font-mono text-xs text-green"
+            className="ae-surface pointer-events-none fixed bottom-4 left-1/2 z-[9999] -translate-x-1/2 px-4 py-2 font-mono text-xs text-ink"
             role="status">
-            {">"} CONNECT 2400 BAUD · ACCESS GRANTED · reverting in 10s<span className="ae-caret" />
+            Phosphor preview. Reverting in 10 seconds.<span className="ae-caret" />
           </motion.div>
         )}
         {deface && (
           <motion.div key="deface" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 p-6" role="dialog" aria-modal="true"
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#140504]/95 p-6" role="dialog" aria-modal="true"
             aria-label="Deface mode simulation" onClick={() => setDeface(false)}>
-            <div className="max-w-xl text-center font-mono text-[#ff2a2a]">
-              <pre className="mx-auto inline-block text-left text-[10px] leading-tight sm:text-xs" style={{ animation: "ae-glitch 0.9s steps(2) infinite" }}>{SKULL}</pre>
-              <p className="mt-4 text-2xl font-bold tracking-widest" style={{ animation: "ae-glitch 0.5s steps(2) infinite" }}>
+            <div className="max-w-xl text-center font-mono text-[#ff6b5e]">
+              <pre className="mx-auto inline-block text-left text-[10px] leading-tight sm:text-xs">{SKULL}</pre>
+              <p className="mt-4 text-2xl font-bold tracking-widest">
                 H4CK3D BY TH3 1NT3RN</p>
               <p className="mt-2 text-sm">all your logs are belong to us. {product} has been 0wn3d.</p>
-              <p className="mt-6 text-xs text-[#ffb4b4]">
+              <p className="mt-6 font-sans text-sm text-[#f3d9d5]">
                 Simulation only. This is what a compromised console looks like, so you know to trust nothing on it.
                 Nothing was changed. Click anywhere or press Esc to restore.</p>
             </div>

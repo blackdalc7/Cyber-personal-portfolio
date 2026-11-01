@@ -1,49 +1,49 @@
-// Watchfloor's page vocabulary, built on the shared Aegis design system (packages/aegis-ui).
+// Watchfloor's page vocabulary, built on the shared Aegis Editorial design system (packages/aegis-ui/DESIGN.md).
 import {
-  AsciiLoader, CountUp, Panel, SnarkyEmpty, SnarkyError, StatusBadge, Button as AeButton, cn,
+  AsciiLoader, EmptyState, ErrorNotice, Panel, StatusBadge, Button as AeButton, cn, quipFor,
 } from "@portfolio/aegis-ui";
 import type { ReactNode } from "react";
 import type { CoverageOutcome } from "../api/types";
 import { severityName } from "../lib/logic";
 
-export function Card({ title, actions, children, className, subtitle, scanlines }: {
-  title?: ReactNode; subtitle?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string; scanlines?: boolean;
+/** A page section (strong top rule, serif heading). Named Card for continuity with earlier pages. */
+export function Card({ title, actions, children, className, subtitle }: {
+  title?: ReactNode; subtitle?: ReactNode; actions?: ReactNode; children: ReactNode; className?: string;
 }) {
-  return <Panel title={title} subtitle={subtitle} actions={actions} className={className} scanlines={scanlines}>{children}</Panel>;
+  return <Panel title={title} subtitle={subtitle} actions={actions} className={className}>{children}</Panel>;
 }
 
-const TONE = { default: "text-ink", good: "text-green", warn: "text-amber", bad: "text-crimson" } as const;
+const TONE = { default: "text-ink", good: "text-good", warn: "text-warn", bad: "text-bad" } as const;
 
-/** KPI tile. Pass a number (plus optional `format`) to get an animated counter; any other node renders as-is. */
+/** A key figure: short rule above, mono label, serif value, optional one-line note. Numbers render as-is. */
 export function Kpi({ label, value, hint, tone = "default", format }: {
   label: string; value: ReactNode | number | null; hint?: ReactNode; tone?: keyof typeof TONE; format?: (n: number) => string;
 }) {
+  const shown = value === null ? "n/a" : typeof value === "number" ? (format ? format(value) : value.toLocaleString("en-GB")) : value;
   return (
-    <div className="ae-glass ae-ticks px-4 py-3">
-      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">{label}</div>
-      <div className={cn("mt-1 font-mono text-2xl font-semibold tabular-nums", TONE[tone], tone !== "default" && "ae-neon-text")}>
-        {typeof value === "number" || value === null ? <CountUp value={value} format={format} /> : value}
-      </div>
-      {hint && <div className="mt-0.5 truncate text-xs text-muted">{hint}</div>}
+    <div className="min-w-0 border-t border-line pt-2">
+      <div className="ae-label">{label}</div>
+      <div className={cn("mt-1 font-serif text-[1.75rem] font-medium leading-none tabular-nums", TONE[tone])}>{shown}</div>
+      {hint && <div className="mt-1.5 truncate text-[12px] text-muted">{hint}</div>}
     </div>
   );
 }
 
 const SEV_CLASS: Record<string, string> = {
-  critical: "border-crit/60 bg-crit/15 text-crit",
-  high: "border-crimson/50 bg-crimson/10 text-crimson",
-  medium: "border-amber/50 bg-amber/10 text-amber",
-  low: "border-cyan/40 bg-cyan/5 text-cyan",
-  info: "border-line text-muted",
-  unknown: "border-line text-muted",
+  critical: "bg-crit text-bg",
+  high: "text-bad border-bad",
+  medium: "text-warn border-warn",
+  low: "text-accent border-accent",
+  info: "text-muted border-line",
+  unknown: "text-muted border-line",
 };
 
+/** Severity as a small ruled label. Critical is the only filled one, so it stands out without colour alone. */
 export function Severity({ id }: { id: number | null | undefined }) {
   const name = severityName(id);
   return (
-    <span className={cn("inline-flex items-center border px-1.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider",
-      SEV_CLASS[name] ?? SEV_CLASS.unknown)}>
-      {name === "critical" && <span aria-hidden="true" className="mr-1 h-1.5 w-1.5 animate-pulse bg-crit" />}
+    <span className={cn("inline-flex shrink-0 items-center border px-1.5 font-mono text-[11px] leading-5",
+      SEV_CLASS[name] ?? SEV_CLASS.unknown, name === "critical" && "border-crit")}>
       {name}
     </span>
   );
@@ -53,24 +53,28 @@ export function OutcomeChip({ outcome }: { outcome: CoverageOutcome }) {
   return <StatusBadge status={outcome} />;
 }
 
+/** Plain metadata tag: hairline frame, no fill. */
 export function Tag({ children, mono }: { children: ReactNode; mono?: boolean }) {
   return (
-    <span className={cn("inline-flex items-center border border-line bg-black/20 px-1.5 py-0.5 text-[11px] text-muted", mono && "font-mono")}>
+    <span className={cn("inline-flex items-center border border-line px-1.5 text-[11px] leading-5 text-muted", mono && "font-mono")}>
       {children}
     </span>
   );
 }
 
-export function Button({ children, onClick, variant = "default", disabled, title, ariaLabel, glitch }: {
+export function Button({ children, onClick, variant = "default", disabled, title, ariaLabel }: {
   children?: ReactNode; onClick?: () => void; variant?: "default" | "primary" | "ghost" | "danger"; disabled?: boolean;
-  title?: string; ariaLabel?: string; glitch?: string;
+  title?: string; ariaLabel?: string;
 }) {
   return (
-    <AeButton variant={variant} onClick={onClick} disabled={disabled} title={title} aria-label={ariaLabel} glitch={glitch}>
+    <AeButton variant={variant} onClick={onClick} disabled={disabled} title={title} aria-label={ariaLabel}>
       {children}
     </AeButton>
   );
 }
+
+/** Link styled as a primary action (used for "Play" style calls to action). */
+export const actionLinkClass = "inline-flex items-center gap-1.5 border border-accent bg-accent px-3 py-1.5 text-[13px] font-medium text-bg hover:border-ink hover:bg-ink";
 
 export function Loading({ label }: { label?: string }) {
   return <AsciiLoader label={label} />;
@@ -78,7 +82,7 @@ export function Loading({ label }: { label?: string }) {
 
 export function ErrorBox({ error }: { error: unknown }) {
   const message = error instanceof Error ? error.message : String(error);
-  return <SnarkyError error={error}>{message.startsWith("401") && <TokenForm />}</SnarkyError>;
+  return <ErrorNotice error={error}>{message.startsWith("401") ? <TokenForm /> : <p className="mt-1 text-[13px] text-muted">{quipFor(message)}</p>}</ErrorNotice>;
 }
 
 /** The hub asks for WF_HUB_TOKEN; keep it in this browser only and reload. */
@@ -94,26 +98,37 @@ function TokenForm() {
   };
   return (
     <form className="mt-3 flex gap-2" onSubmit={(e) => { e.preventDefault(); save(e.currentTarget); }}>
-      <input name="token" type="password" autoComplete="off" placeholder="hub token (WF_HUB_TOKEN)" aria-label="Hub token"
-        className="flex-1 border border-line bg-black/40 px-3 py-1.5 font-mono text-ink outline-none focus:border-cyan" />
-      <button type="submit" className="border border-cyan bg-cyan/10 px-3 py-1.5 font-mono text-xs uppercase text-cyan">auth</button>
+      <input name="token" type="password" autoComplete="off" placeholder="Hub token (WF_HUB_TOKEN)" aria-label="Hub token"
+        className="flex-1 border border-rule bg-panel-solid px-3 py-1.5 font-mono text-sm text-ink outline-none focus:border-accent" />
+      <button type="submit" className="border border-rule px-3 py-1.5 text-[13px] hover:bg-ink hover:text-bg">Save token</button>
     </form>
   );
 }
 
+/**
+ * Empty state. A plain-string child becomes the message itself; richer children are shown as guidance under a
+ * stable default sentence (chosen by `quipKey`).
+ */
 export function Empty({ children, quipKey = "empty" }: { children?: ReactNode; quipKey?: string }) {
-  return <SnarkyEmpty quipKey={quipKey}>{children}</SnarkyEmpty>;
+  if (typeof children === "string") return <EmptyState message={children} />;
+  return <EmptyState message={quipFor(quipKey)}>{children}</EmptyState>;
 }
 
+/**
+ * Asymmetric page header: serif title on the left seven columns, the standfirst (what the page shows and where the
+ * data came from) on the right five, closed by a strong rule. `kicker` is a small section label above the title.
+ */
 export function PageHeader({ title, children, actions, kicker }: { title: string; children?: ReactNode; actions?: ReactNode; kicker?: string }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-cyan/80">{kicker ?? "watchfloor"} //</div>
-        <h1 className="mt-1 text-2xl font-semibold tracking-tight">{title}</h1>
-        {children && <p className="mt-1.5 max-w-3xl text-sm text-muted">{children}</p>}
+    <header className="mb-8 border-b border-rule pb-5">
+      <div className="grid gap-x-10 gap-y-3 lg:grid-cols-12">
+        <div className="lg:col-span-7">
+          {kicker && <div className="ae-label mb-2">{kicker}</div>}
+          <h1 className="text-[2.25rem] font-semibold text-ink">{title}</h1>
+        </div>
+        {children && <p className="max-w-prose text-[14px] leading-relaxed text-muted lg:col-span-5 lg:pt-3">{children}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
-    </div>
+      {actions && <div className="mt-4 flex flex-wrap items-center gap-2">{actions}</div>}
+    </header>
   );
 }

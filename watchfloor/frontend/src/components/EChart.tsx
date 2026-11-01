@@ -6,8 +6,8 @@ export function chartColors() {
   const css = getComputedStyle(document.documentElement);
   const v = (name: string) => css.getPropertyValue(name).trim();
   return {
-    ink: v("--ae-ink"), muted: v("--ae-muted"), line: v("--ae-line-bright"), panel: v("--ae-panel-solid"),
-    accent: v("--ae-cyan"), good: v("--ae-green"), warn: v("--ae-amber"), bad: v("--ae-crimson"), crit: v("--ae-crit"),
+    ink: v("--ae-ink"), muted: v("--ae-muted"), line: v("--ae-line"), panel: v("--ae-paper"),
+    accent: v("--ae-accent"), good: v("--ae-good"), warn: v("--ae-warn"), bad: v("--ae-bad"), crit: v("--ae-crit"),
   };
 }
 
@@ -31,8 +31,8 @@ export function EChart({ option, height = 240, ariaLabel, onClick }: {
   }, []);
 
   useEffect(() => {
-    chart.current?.setOption({ backgroundColor: "transparent", animationDuration: 500,
-      textStyle: { fontFamily: "JetBrains Mono, ui-monospace, monospace" }, ...option }, true);
+    chart.current?.setOption({ backgroundColor: "transparent", animationDuration: 200, animationEasing: "linear",
+      textStyle: { fontFamily: "IBM Plex Mono, ui-monospace, monospace" }, ...option }, true);
   }, [option]);
 
   useEffect(() => {

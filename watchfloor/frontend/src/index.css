@@ -1,11 +1,3 @@
 @import "tailwindcss";
-/* Aegis x Carbon & Neon: shared tokens, glass, scanlines, Konami and deface modes (packages/aegis-ui). */
+/* Aegis Editorial: palette tokens, type, sections and the opt-in hidden modes (packages/aegis-ui, see DESIGN.md). */
 @import "@portfolio/aegis-ui/theme.css";
-
-/* Watchfloor-only touches */
-.wf-grid-bg {
-  background-image:
-    linear-gradient(to right, rgb(255 255 255 / 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(255 255 255 / 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
-}

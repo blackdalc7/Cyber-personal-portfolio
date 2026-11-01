@@ -1,20 +1,20 @@
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from "motion/react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { cn } from "../lib/cn";
-import { GlitchText } from "./GlitchText";
 
-type Tone = "crimson" | "cyan" | "amber";
+/** Semantic tone of a high-friction control: `bad` for destructive actions, `warn` for risky ones. */
+export type Tone = "bad" | "warn" | "accent";
 const TONE: Record<Tone, { ring: string; fill: string; text: string }> = {
-  crimson: { ring: "border-crimson/70", fill: "bg-crimson/30", text: "text-crimson" },
-  cyan: { ring: "border-cyan/70", fill: "bg-cyan/25", text: "text-cyan" },
-  amber: { ring: "border-amber/70", fill: "bg-amber/25", text: "text-amber" },
+  bad: { ring: "border-bad", fill: "bg-bad/20", text: "text-bad" },
+  warn: { ring: "border-warn", fill: "bg-warn/20", text: "text-warn" },
+  accent: { ring: "border-accent", fill: "bg-accent/20", text: "text-accent" },
 };
 
 /**
  * High-friction confirmation: the action fires only after the button is held for `duration` ms
  * (mouse, touch, or Space/Enter held down). Releasing early drains the bar. Use for anything destructive.
  */
-export function HoldToConfirm({ label, onConfirm, duration = 1500, tone = "crimson", disabled, disabledReason, holdingLabel = "Keep holding…", icon, className }: {
+export function HoldToConfirm({ label, onConfirm, duration = 1500, tone = "bad", disabled, disabledReason, holdingLabel = "Keep holding…", icon, className }: {
   label: string; onConfirm: () => void | Promise<void>; duration?: number; tone?: Tone; disabled?: boolean;
   disabledReason?: string; holdingLabel?: string; icon?: ReactNode; className?: string;
 }) {
@@ -60,23 +60,22 @@ export function HoldToConfirm({ label, onConfirm, duration = 1500, tone = "crims
       onPointerDown={start} onPointerUp={cancel} onPointerLeave={cancel} onPointerCancel={cancel}
       onKeyDown={(e) => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); start(); } }}
       onKeyUp={(e) => { if (e.key === " " || e.key === "Enter") cancel(); }}
-      whileTap={disabled ? undefined : { scale: 0.98 }}
-      className={cn("relative inline-flex select-none items-center gap-2 overflow-hidden border px-4 py-2 font-mono text-sm uppercase tracking-wider",
-        t.ring, t.text, "bg-black/30 disabled:cursor-not-allowed disabled:opacity-40", className)}>
+      className={cn("relative inline-flex select-none items-center gap-2 overflow-hidden border px-4 py-2 text-[13px] font-medium",
+        t.ring, t.text, "disabled:cursor-not-allowed disabled:opacity-40", className)}>
       <motion.span aria-hidden="true" className={cn("absolute inset-y-0 left-0", t.fill)} style={{ width }} />
       <span className="relative flex items-center gap-2">
         {icon}
-        {busy ? "Executing…" : holding ? holdingLabel : <GlitchText text={label} />}
+        {busy ? "Executing…" : holding ? holdingLabel : label}
       </span>
     </motion.button>
   );
 }
 
 /**
- * "Slide to isolate": drag the knob all the way right to execute. A red gradient blooms out of the knob as it
- * travels, so the gesture feels heavier the closer it gets. Keyboard: focus the knob and press → four times.
+ * "Slide to isolate": drag the knob all the way right to execute. A solid fill tracks the knob as it
+ * travels, so progress is always visible. Keyboard: focus the knob and press → four times.
  */
-export function SlideToExecute({ label, onExecute, tone = "crimson", disabled, disabledReason, className, doneLabel = "Sent" }: {
+export function SlideToExecute({ label, onExecute, tone = "bad", disabled, disabledReason, className, doneLabel = "Sent" }: {
   label: string; onExecute: () => void | Promise<void>; tone?: Tone; disabled?: boolean; disabledReason?: string;
   className?: string; doneLabel?: string;
 }) {
@@ -85,11 +84,8 @@ export function SlideToExecute({ label, onExecute, tone = "crimson", disabled, d
   const [max, setMax] = useState(200);
   const [state, setState] = useState<"idle" | "busy" | "done">("idle");
   const t = TONE[tone];
-  const rgb = tone === "crimson" ? "255 59 92" : tone === "amber" ? "255 178 36" : "34 228 255";
-  const bloom = useTransform(x, (v) => {
-    const p = max > 0 ? Math.min(1, v / max) : 0;
-    return `radial-gradient(circle at ${v + 22}px 50%, rgb(${rgb} / ${0.15 + 0.5 * p}) 0px, rgb(${rgb} / ${0.08 + 0.25 * p}) ${30 + p * max}px, transparent ${60 + p * max * 1.4}px)`;
-  });
+  // A solid fill grows behind the knob as it travels, so progress is visible without gradients or glow.
+  const fillWidth = useTransform(x, (v) => `${v + 44}px`);
   const labelOpacity = useTransform(x, (v) => 1 - Math.min(0.8, v / Math.max(max, 1)));
   useEffect(() => {
     const el = track.current;
@@ -105,23 +101,23 @@ export function SlideToExecute({ label, onExecute, tone = "crimson", disabled, d
       try {
         await onExecute();
         setState("done");
-        window.setTimeout(() => { setState("idle"); animate(x, 0, { type: "spring", stiffness: 300, damping: 30 }); }, 2200);
+        window.setTimeout(() => { setState("idle"); animate(x, 0, { duration: 0.18, ease: "easeOut" }); }, 2200);
       } catch {
         setState("idle");
-        animate(x, 0, { type: "spring", stiffness: 400, damping: 30 });
+        animate(x, 0, { duration: 0.15, ease: "easeOut" });
       }
       return;
     }
-    animate(x, 0, { type: "spring", stiffness: 400, damping: 30 });
+    animate(x, 0, { duration: 0.15, ease: "easeOut" });
   };
   const off = disabled || state !== "idle";
   return (
     <div ref={track} title={disabled ? disabledReason : undefined}
-      className={cn("relative h-11 min-w-[240px] select-none overflow-hidden border bg-black/40", t.ring, disabled && "opacity-40", className)}>
-      <motion.div aria-hidden="true" className="absolute inset-0" style={{ background: bloom }} />
+      className={cn("relative h-11 min-w-[240px] select-none overflow-hidden border", t.ring, disabled && "opacity-40", className)}>
+      <motion.div aria-hidden="true" className={cn("absolute inset-y-0 left-0", t.fill)} style={{ width: fillWidth }} />
       <motion.span style={{ opacity: labelOpacity }}
-        className={cn("pointer-events-none absolute inset-0 flex items-center justify-center pl-8 font-mono text-[11px] uppercase tracking-[0.25em]", t.text)}>
-        {state === "busy" ? "executing…" : state === "done" ? doneLabel : <>{label} »»</>}
+        className={cn("pointer-events-none absolute inset-0 flex items-center justify-center pl-8 text-[13px] font-medium", t.text)}>
+        {state === "busy" ? "executing…" : state === "done" ? doneLabel : <>{label}</>}
       </motion.span>
       <motion.button type="button" aria-label={`${label}: slide to execute`} disabled={off}
         drag={off ? false : "x"} dragConstraints={{ left: 0, right: max }} dragElastic={0} dragMomentum={false}

@@ -5,19 +5,20 @@ import { useState, type ReactNode } from "react";
 import { Cog } from "./icons";
 import { useModes } from "./Modes";
 
+/** A labelled on/off switch: a ruled track with a square thumb that moves instantly. */
 function Toggle({ id, checked, onChange, label, hint }: { id: string; checked: boolean; onChange: (v: boolean) => void; label: string; hint?: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 py-2">
-      <label htmlFor={id} className="text-sm">{label}{hint && <span className="block text-[11px] text-muted">{hint}</span>}</label>
+    <div className="flex items-center justify-between gap-4 py-3">
+      <label htmlFor={id} className="text-sm">{label}{hint && <span className="block text-[12px] text-muted">{hint}</span>}</label>
       <Switch.Root id={id} checked={checked} onCheckedChange={onChange}
-        className="relative h-5 w-9 shrink-0 border border-line bg-black/40 data-[state=checked]:border-cyan data-[state=checked]:bg-cyan/20">
-        <Switch.Thumb className="block h-3.5 w-3.5 translate-x-0.5 bg-muted transition data-[state=checked]:translate-x-[18px] data-[state=checked]:bg-cyan" />
+        className="relative h-5 w-9 shrink-0 border border-rule data-[state=checked]:bg-ink">
+        <Switch.Thumb className="block h-3.5 w-3.5 translate-x-0.5 bg-ink data-[state=checked]:translate-x-[18px] data-[state=checked]:bg-bg" />
       </Switch.Root>
     </div>
   );
 }
 
-/** Settings sheet. The deface toggle sits at the very bottom under a deliberately boring heading. */
+/** Settings sheet: theme, plus the opt-in cosmetic drills at the bottom under a plain heading. */
 export function SettingsSheet({ theme, onTheme, children, version }: {
   theme: "dark" | "light"; onTheme: (t: "dark" | "light") => void; children?: ReactNode; version?: string;
 }) {
@@ -25,27 +26,27 @@ export function SettingsSheet({ theme, onTheme, children, version }: {
   const [open, setOpen] = useState(false);
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger aria-label="Settings" title="Settings" className="p-2 text-muted hover:text-cyan"><Cog className="h-4 w-4" /></Dialog.Trigger>
+      <Dialog.Trigger aria-label="Settings" title="Settings" className="p-2 text-muted hover:text-ink"><Cog className="h-4 w-4" /></Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-ink/40" />
         <Dialog.Content asChild aria-describedby={undefined}>
-          <motion.div initial={{ x: 40, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
-            className="ae-glass fixed inset-y-0 right-0 z-50 flex w-[min(92vw,380px)] flex-col p-5">
-            <Dialog.Title className="font-mono text-xs uppercase tracking-[0.2em] text-cyan">~/.config/settings</Dialog.Title>
-            <div className="mt-4 divide-y divide-line">
-              <Toggle id="ae-theme" checked={theme === "light"} onChange={(v) => onTheme(v ? "light" : "dark")} label="Daylight mode" hint="for screenshots and people with windows" />
-              <div className="flex items-center justify-between py-2 text-sm">
-                <span>Phosphor test<span className="block text-[11px] text-muted">10 seconds of 1993. there is also a key sequence.</span></span>
-                <button type="button" onClick={() => { phosphor(); setOpen(false); }} className="border border-line px-2 py-1 font-mono text-[11px] text-green hover:border-green">run</button>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.12, ease: "easeOut" }}
+            className="fixed inset-y-0 right-0 z-50 flex w-[min(92vw,380px)] flex-col border-l border-rule bg-panel-solid p-6">
+            <Dialog.Title className="text-2xl font-semibold">Settings</Dialog.Title>
+            <div className="mt-4 divide-y divide-line border-y border-line">
+              <Toggle id="ae-theme" checked={theme === "light"} onChange={(v) => onTheme(v ? "light" : "dark")} label="Light mode" hint="Cream paper and graphite ink. Off returns to the dark console." />
+              <div className="flex items-center justify-between gap-4 py-3 text-sm">
+                <span>Phosphor preview<span className="block text-[12px] text-muted">Ten seconds of a 1990s green-screen terminal. Cosmetic only.</span></span>
+                <button type="button" onClick={() => { phosphor(); setOpen(false); }} className="border border-rule px-2 py-1 text-[12px] hover:bg-ink hover:text-bg">Run</button>
               </div>
               {children}
             </div>
             <div className="mt-auto pt-10">
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">Advanced compliance telemetry (do not touch)</div>
-              <Toggle id="ae-deface" checked={deface} onChange={(v) => { setDeface(v); if (v) setOpen(false); }} label="Simulate console compromise" hint="tabletop drill: what if the SOC itself got owned? Esc restores." />
-              {version && <div className="mt-4 font-mono text-[10px] text-muted">{version}</div>}
+              <h3 className="text-base font-semibold">Tabletop drill</h3>
+              <Toggle id="ae-deface" checked={deface} onChange={(v) => { setDeface(v); if (v) setOpen(false); }} label="Simulate console compromise" hint="Shows what a defaced console looks like. Nothing changes. Esc restores." />
+              {version && <div className="mt-4 ae-label">{version}</div>}
             </div>
-            <Dialog.Close className="absolute right-3 top-3 font-mono text-xs text-muted hover:text-ink">esc</Dialog.Close>
+            <Dialog.Close className="absolute right-4 top-5 text-[13px] text-muted hover:text-ink">Close</Dialog.Close>
           </motion.div>
         </Dialog.Content>
       </Dialog.Portal>

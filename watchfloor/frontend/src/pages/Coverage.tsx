@@ -57,7 +57,7 @@ export default function Coverage() {
     <>
       <PageHeader title="ATT&CK coverage"
         actions={<select value={runId ?? ""} onChange={(e) => { setRunId(e.target.value); setSel(null); }} aria-label="Coverage run"
-          className="border border-line bg-panel-2 px-3 py-1.5 text-sm">
+          className="border border-rule bg-panel-solid px-3 py-1.5 text-sm">
           {runs.data.map((r) => <option key={r.id} value={r.id}>{r.title} ({r.kind})</option>)}
         </select>}>
         Every technique the emulator ran, scored the same way as scenario playback: a finding fired (detected), the
@@ -66,24 +66,24 @@ export default function Coverage() {
       </PageHeader>
       {matrix.error ? <ErrorBox error={matrix.error} /> : !m || !counts ? <Loading /> : (
         <>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
             <Kpi label="Detection coverage" value={`${fmtNumber(m.summary.detection_coverage)}%`} tone={m.summary.detection_coverage >= 75 ? "good" : "warn"} />
             <Kpi label="Detected" value={counts.d} tone="good" hint={counts.p ? `${counts.p} of them prevented` : undefined} />
             <Kpi label="Telemetry only" value={counts.t} tone={counts.t ? "warn" : "default"} hint="rule work needed" />
             <Kpi label="Missed" value={counts.x} tone={counts.x ? "bad" : "default"} hint="sensor work needed" />
           </div>
-          <div className="mt-4 grid gap-4 xl:grid-cols-4">
+          <div className="mt-12 grid gap-x-10 gap-y-10 xl:grid-cols-4">
             <Card className="xl:col-span-3" title={m.title} subtitle="Click a technique for details">
               <div className="flex gap-2 overflow-x-auto pb-2">
                 {columns.map((col) => (
                   <div key={col.tactic} className="w-40 shrink-0">
-                    <div className="mb-2 border-b border-line pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted">{col.tactic.replace(/-/g, " ")}</div>
+                    <div className="mb-2 border-b border-rule pb-1 ae-label capitalize">{col.tactic.replace(/-/g, " ")}</div>
                     <div className="space-y-1.5">
                       {col.cells.map((c, i) => (
                         <button key={`${c.technique}-${i}`} type="button" onClick={() => setSel(c)}
-                          className={clsx("w-full border px-2 py-1.5 text-left transition hover:brightness-125", CELL[c.outcome], sel === c && "ring-2 ring-accent")}>
+                          className={clsx("w-full border px-2 py-1.5 text-left hover:opacity-80", CELL[c.outcome], sel === c && "outline outline-2 outline-offset-1 outline-accent")}>
                           <div className="font-mono text-[11px] font-semibold">{c.technique}</div>
-                          <div className="truncate text-[11px] text-ink/80">{c.name ?? c.test ?? ""}</div>
+                          <div className="truncate text-[11px] text-ink">{c.name ?? c.test ?? ""}</div>
                         </button>
                       ))}
                     </div>
@@ -102,15 +102,15 @@ export default function Coverage() {
                   {!!sel.findings?.length && <ul className="list-disc pl-4 text-xs">{sel.findings.map((f, i) => <li key={i}>{f.title} <Tag>{f.product}</Tag></li>)}</ul>}
                   <p className="text-xs text-muted">{EXPLAIN[sel.outcome] ?? ""}</p>
                 </div>
-              ) : <Empty>Select a technique.</Empty>}
+              ) : <Empty>Select a technique in the matrix to see its details.</Empty>}
             </Card>
           </div>
-          <Card className="mt-4" title="All runs">
+          <Card className="mt-12" title="All runs">
             <table className="w-full text-sm">
-              <thead className="text-left text-[11px] uppercase text-muted"><tr><th className="py-1">Run</th><th>Kind</th><th>Started</th><th className="text-right">Detection</th><th className="text-right">Telemetry</th></tr></thead>
+              <thead className="border-b border-rule text-left ae-label"><tr><th className="py-1">Run</th><th>Kind</th><th>Started</th><th className="text-right">Detection</th><th className="text-right">Telemetry</th></tr></thead>
               <tbody className="divide-y divide-line">
                 {runs.data.map((r) => (
-                  <tr key={r.id} className={clsx(r.id === runId && "bg-accent/5")}>
+                  <tr key={r.id} className={clsx(r.id === runId && "bg-panel-2")}>
                     <td className="py-1.5"><button type="button" className="text-accent hover:underline" onClick={() => setRunId(r.id)}>{r.title}</button></td>
                     <td><Tag>{r.kind}</Tag></td><td className="font-mono text-xs">{r.started ? fmtTime(r.started, true) : "n/a"}</td>
                     <td className="text-right font-mono">{fmtNumber(r.detection_coverage)}%</td>

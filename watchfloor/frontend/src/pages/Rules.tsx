@@ -14,7 +14,7 @@ export default function Rules() {
   if (!list.length) {
     return (
       <>
-        <PageHeader title="Detection rules" kicker="detect" />
+        <PageHeader title="Detection rules" kicker="Detection content" />
         <Empty quipKey="rules">No rules index. Run 08-detection-rules' build and point WF_RULES_INDEX at rules_index.json.</Empty>
       </>
     );
@@ -31,20 +31,20 @@ export default function Rules() {
         Sigma rules from 08, written against OCSF fields and compiled to DuckDB SQL. Every rule ships with a sample that
         must match and one that must not; CI runs both on every change.
       </PageHeader>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
         <Kpi label="Rules" value={list.length} />
         <Kpi label="Techniques covered" value={techniques.size} />
         <Kpi label="Tests passing" value={`${passed}/${tests.length}`} tone={passed === tests.length ? "good" : "bad"} />
         <Kpi label="Tuned rules" value={list.filter((r) => r.tuned_from).length} hint="with a recorded false-positive fix" />
       </div>
-      <div className="mt-4 grid gap-4 xl:grid-cols-5">
+      <div className="mt-12 grid gap-x-10 gap-y-10 xl:grid-cols-5">
         <Card className="xl:col-span-2" title="Rules">
           <ul className="divide-y divide-line">
             {list.map((r) => {
               const ok = r.tests.every((t) => t.passed);
               return (
                 <li key={r.id}>
-                  <button type="button" onClick={() => setSel(r)} className={clsx("flex w-full items-center gap-2 px-1 py-2 text-left text-sm hover:bg-panel-2", cur.id === r.id && "bg-accent/5")}>
+                  <button type="button" onClick={() => setSel(r)} className={clsx("flex w-full items-center gap-2 px-1 py-2 text-left text-sm hover:bg-panel-2", cur.id === r.id && "bg-panel-2")}>
                     {ok ? <CheckCircle2 className="h-4 w-4 shrink-0 text-good" aria-label="tests pass" /> : <XCircle className="h-4 w-4 shrink-0 text-bad" aria-label="tests fail" />}
                     <span className="flex-1 truncate">{r.title}</span>
                     <Tag>{r.level}</Tag>
@@ -57,8 +57,8 @@ export default function Rules() {
         <Card className="xl:col-span-3" title={cur.title} subtitle={<span className="font-mono">{cur.path}</span>}>
           <div className="flex flex-wrap gap-1.5">{cur.techniques.map((t) => <Tag key={t} mono>{t}</Tag>)}<Tag>{cur.status}</Tag><Tag>{cur.logsource}</Tag></div>
           {cur.description && <p className="mt-3 text-sm text-muted">{cur.description}</p>}
-          {cur.tuned_from && <p className="mt-2 bg-warn/10 p-2 text-xs text-warn">Tuning note: {cur.tuned_from}</p>}
-          <h3 className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted">Tests</h3>
+          {cur.tuned_from && <p className="mt-3 border-l-2 border-warn pl-3 text-[13px] text-ink"><span className="font-medium text-warn">Tuning note:</span> {cur.tuned_from}</p>}
+          <h3 className="mt-6 text-base font-semibold">Tests</h3>
           <ul className="mt-1 space-y-1 text-sm">
             {cur.tests.map((t) => (
               <li key={t.name} className="flex items-center gap-2">
@@ -69,7 +69,7 @@ export default function Rules() {
           </ul>
           {cur.queries?.duckdb && (
             <>
-              <h3 className="mt-4 text-xs font-semibold uppercase tracking-wider text-muted">Compiled DuckDB SQL</h3>
+              <h3 className="mt-6 text-base font-semibold">Compiled DuckDB SQL</h3>
               <pre className="mt-1 max-h-64 overflow-auto bg-panel-2 p-3 font-mono text-[11px] leading-relaxed">{cur.queries.duckdb}</pre>
             </>
           )}

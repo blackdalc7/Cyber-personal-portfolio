@@ -2,7 +2,7 @@
   "name": "@portfolio/aegis-ui",
   "version": "1.0.0",
   "private": true,
-  "description": "Aegis x Carbon & Neon: the shared design system for Watchfloor and Driftwatch.",
+  "description": "Aegis Editorial: the paper-and-ink design system for the Watchfloor console.",
   "type": "module",
   "license": "MIT",
   "exports": {

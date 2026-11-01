@@ -43,14 +43,14 @@ export default function Exposure() {
         Project 04's scan of the lab, as a graph from the internet to the crown jewels. Tick a CVE to see which attack
         paths die if it is patched: this is how you pick the fix that removes the most risk.
       </PageHeader>
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
         <Kpi label="Attack paths" value={<span>{result.after}<span className="text-muted">/{result.before}</span></span>} tone={result.after ? "bad" : "good"} hint="still open" />
         <Kpi label="Crown jewels reachable" value={result.reachable.length} tone={result.reachable.length ? "bad" : "good"} hint={result.reachable.join(", ") || "none"} />
         <Kpi label="Patched (what-if)" value={patched.size} hint="CVEs ticked below" />
         <Kpi label="Entry points" value={data.entry_points.length} hint={data.entry_points.join(", ")} />
       </div>
-      <div className="mt-4 grid gap-4 xl:grid-cols-3">
-        <Card className="xl:col-span-2" scanlines title="Attack graph" subtitle="Red edges are open paths. Stars are crown jewels, the diamond is the internet.">
+      <div className="mt-12 grid gap-x-10 gap-y-10 xl:grid-cols-3">
+        <Card className="xl:col-span-2" title="Attack graph" subtitle="Red edges are open paths. Stars are crown jewels, the diamond is the internet.">
           <Topology nodes={graph.nodes} edges={graph.edges} direction="LR" roots={["internet"]} ariaLabel="Attack path graph" height={440}
             renderContext={(id) => {
               const node = data.graph.nodes.find((n) => n.id === id);
@@ -62,22 +62,22 @@ export default function Exposure() {
                   <div className="flex flex-wrap gap-1">{(node.cves ?? []).map((c) => (
                     <Tag key={c.cve} mono>{patched.has(c.cve) ? <s>{c.cve}</s> : c.cve}</Tag>))}{node.exposure && <Tag>{node.exposure}</Tag>}</div>
                   <p className="font-mono text-[11px] text-muted">{paths.length ? `on ${paths.length} open attack path(s)` : "not on any open path"}
-                    {crown.has(id) && <span className="text-cyan"> · crown jewel</span>}</p>
+                    {crown.has(id) && <span className="text-accent"> · crown jewel</span>}</p>
                 </div>
               );
             }} />
         </Card>
-        <Card title="What if we patch…" subtitle="Ordered by 04's priority score (CVSS, EPSS, KEV, blast radius)">
+        <Card title="What if we patch" subtitle="Ordered by 04's priority score (CVSS, EPSS, KEV, blast radius)">
           <ul className="max-h-[440px] space-y-1 overflow-y-auto">
             {cves.map((f) => (
               <li key={f.cve}>
                 <label className="flex cursor-pointer items-center gap-2 px-2 py-1.5 text-sm hover:bg-panel-2">
-                  <input type="checkbox" checked={patched.has(f.cve)} onChange={() => toggle(f.cve)} className="accent-[var(--ae-cyan)]" />
+                  <input type="checkbox" checked={patched.has(f.cve)} onChange={() => toggle(f.cve)} className="accent-[var(--ae-accent)]" />
                   <span className="flex-1">
                     <span className="font-mono text-xs">{f.cve}</span>
                     <span className="block text-[11px] text-muted">{f.asset} · port {f.port} · CVSS {f.cvss} · EPSS {(f.epss * 100).toFixed(1)}%</span>
                   </span>
-                  {f.kev && <span className="rounded bg-crit/15 px-1.5 text-[10px] font-semibold text-crit">KEV</span>}
+                  {f.kev && <span className="bg-crit px-1.5 font-mono text-[11px] leading-5 text-bg" title="On the CISA Known Exploited Vulnerabilities list">KEV</span>}
                   {f.chokepoint > 0 && <Tag>chokepoint</Tag>}
                 </label>
               </li>

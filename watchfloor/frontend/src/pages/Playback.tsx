@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { ChevronLeft, Lightbulb, Pause, Play, RotateCcw, SkipForward } from "lucide-react";
+import { ChevronLeft, Pause, Play, RotateCcw, SkipForward } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import type { Row, StageScore } from "../api/types";
@@ -93,10 +93,10 @@ export default function Playback() {
             {playing ? "Pause" : finished ? "Replay" : "Play"}
           </Button>
           <Button onClick={() => { setCursor(bounds.end); setPlaying(false); }} ariaLabel="Skip to end"><SkipForward className="h-4 w-4" /> End</Button>
-          <div className="flex border border-line bg-panel-2 p-0.5" role="group" aria-label="Playback speed">
+          <div className="flex border border-rule" role="group" aria-label="Playback speed">
             {SPEEDS.map((s) => (
               <button key={s} type="button" onClick={() => setSpeed(s)} aria-pressed={speed === s}
-                className={clsx("px-2 py-1 font-mono text-xs", speed === s ? "bg-accent text-bg" : "text-muted hover:text-ink")}>
+                className={clsx("px-2 py-1 font-mono text-xs", speed === s ? "bg-ink text-bg" : "text-muted hover:text-ink")}>
                 {s}×
               </button>
             ))}
@@ -105,23 +105,23 @@ export default function Playback() {
         {data.summary}
       </PageHeader>
 
-      <Card className="mb-4" scanlines title={<span className="font-mono text-cyan">{fmtTime(now, true)}</span>}
+      <Card className="mb-10" title={<span className="font-mono text-ink">{fmtTime(now, true)}</span>}
         subtitle={`${visible.length} of ${data.events.length} events replayed · space bar plays and pauses`}>
         <KillChain scores={scores} now={now} bounds={bounds} selected={selected} onSelect={setSelected} />
         <input type="range" min={bounds.start} max={bounds.end} step={1000} value={now} aria-label="Scenario time"
           onChange={(e) => { setPlaying(false); setCursor(Number(e.target.value)); }}
-          className="mt-3 w-full accent-[var(--ae-cyan)]" />
-        <div className="mt-1 h-1 overflow-hidden rounded bg-panel-2"><div className="h-full bg-accent" style={{ width: `${pct}%` }} /></div>
+          className="mt-3 w-full accent-[var(--ae-accent)]" />
+        <div className="mt-1 h-0.5 overflow-hidden bg-line"><div className="h-full bg-ink" style={{ width: `${pct}%` }} /></div>
       </Card>
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-x-6 gap-y-6 md:grid-cols-4">
         <Kpi label="Stages detected" value={`${board.detected}/${board.total}`} tone={board.pct >= 75 ? "good" : "warn"} hint={`${board.pct}% detection coverage`} />
         <Kpi label="Telemetry only" value={board.telemetryOnly} tone={board.telemetryOnly ? "warn" : "default"} hint="seen, but no alert" />
         <Kpi label="Missed" value={board.missed} tone={board.missed && finished ? "bad" : "default"} hint={finished ? "no data at all" : "or not reached yet"} />
-        <Kpi label="Mean time to detect" value={fmtDuration(board.meanTtdS)} hint="stage start → first finding" />
+        <Kpi label="Mean time to detect" value={fmtDuration(board.meanTtdS)} hint="stage start to first finding" />
       </div>
 
-      <div className="mt-4 grid gap-4 xl:grid-cols-5">
+      <div className="mt-12 grid gap-x-10 gap-y-10 xl:grid-cols-5">
         <Card className="xl:col-span-3" title="Event feed" subtitle="Newest first. Findings are highlighted.">
           <ul className="max-h-[420px] divide-y divide-line overflow-y-auto" aria-live="polite">
             {feed.map((e) => <FeedRow key={e.uid} e={e} />)}
@@ -164,11 +164,11 @@ function KillChain({ scores, now, bounds, selected, onSelect }: {
           <li key={s.stage}>
             <button type="button" onClick={() => onSelect(selected === s.stage ? null : s.stage)}
               title={`${s.tactic}: ${s.name} (${fmtTime(s.start)})`}
-              className={clsx("ae-in h-full w-full border px-2 py-2 text-left transition", tone,
-                selected === s.stage && "ring-2 ring-accent", reached && s.outcome === "detected" && "wf-live")}>
-              <div className="text-[10px] uppercase tracking-wider opacity-80">{i + 1} · {s.tactic}</div>
+              className={clsx("h-full w-full border px-2 py-2 text-left ", tone,
+                selected === s.stage && "outline outline-2 outline-offset-1 outline-accent")}>
+              <div className="font-mono text-[11px] opacity-80">{i + 1} · {s.tactic}</div>
               <div className="mt-0.5 truncate text-xs font-semibold text-ink">{s.name}</div>
-              <div className="mt-0.5 font-mono text-[10px]">
+              <div className="mt-0.5 font-mono text-[11px]">
                 {!reached ? `T+${fmtDuration((s.start - bounds.start) / 1000)}` : s.ttd_ms !== null ? `TTD ${fmtDuration(s.ttd_ms / 1000)}` : s.outcome === "telemetry_only" ? `${s.telemetry_events} events, no alert` : "no data"}
               </div>
             </button>
@@ -182,7 +182,7 @@ function KillChain({ scores, now, bounds, selected, onSelect }: {
 function FeedRow({ e }: { e: Row }) {
   const finding = e.class_uid === 2004 || e.class_uid === 2005;
   return (
-    <li className={clsx("wf-in flex items-start gap-3 py-1.5 text-sm", finding && "rounded bg-bad/5")}>
+    <li className={clsx("flex items-start gap-3 py-1.5 text-sm", finding && "border-l-2 border-bad pl-2")}>
       <span className="w-20 shrink-0 pt-0.5 font-mono text-xs text-muted">{fmtTime(e.time)}</span>
       {finding ? <Severity id={e.severity_id} /> : <span className="w-24 shrink-0 text-[11px] text-muted">{CLASS_NAMES[e.class_uid] ?? e.class_uid}</span>}
       <span className="min-w-0 flex-1">
@@ -218,10 +218,10 @@ function StageDetail({ s }: { s: StageScore }) {
 
 function GapHints({ scores }: { scores: StageScore[] }) {
   const gaps = scores.filter((s) => s.outcome !== "detected");
-  if (!gaps.length) return <p className="mt-4 bg-good/10 p-3 text-sm text-good">Every stage was detected.</p>;
+  if (!gaps.length) return <p className="mt-4 border-l-2 border-good pl-3 text-sm text-good">Every stage was detected.</p>;
   return (
-    <div className="mt-4 border border-warn/40 bg-warn/5 p-3">
-      <div className="mb-1 flex items-center gap-1.5 text-sm font-semibold text-warn"><Lightbulb className="h-4 w-4" /> Detection gaps to close</div>
+    <div className="mt-5 border-l-2 border-warn pl-4">
+      <h3 className="mb-1 text-base font-semibold text-ink">Detection gaps to close</h3>
       <ul className="space-y-1 text-xs text-muted">
         {gaps.map((g) => (
           <li key={g.stage}>
@@ -232,7 +232,7 @@ function GapHints({ scores }: { scores: StageScore[] }) {
           </li>
         ))}
       </ul>
-      <Link to="/rules" className="mt-2 inline-block text-xs text-accent hover:underline">See the rules that close these gaps →</Link>
+      <Link to="/rules" className="mt-2 inline-block text-xs text-accent hover:underline">See the rules that close these gaps</Link>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from "react";
 import { cn } from "../lib/cn";
 import { complete, parseCommand } from "../lib/logic";
-import { HoldToConfirm } from "./HoldToConfirm";
+import { HoldToConfirm, type Tone } from "./HoldToConfirm";
 
 export type LineKind = "ok" | "error" | "info" | "warn" | "input";
 export interface TermLine {
@@ -16,7 +16,7 @@ export interface ConfirmStep {
   /** Shown above the button, e.g. "This asks 02 for human approval." */
   warning?: string;
   duration?: number;
-  tone?: "crimson" | "cyan" | "amber";
+  tone?: Tone;
   run: () => Promise<TermLine[]> | TermLine[];
 }
 
@@ -42,18 +42,15 @@ export const info = (text: string): TermLine => ({ kind: "info", text });
 export const warn = (text: string): TermLine => ({ kind: "warn", text });
 
 const LINE_CLASS: Record<LineKind, string> = {
-  ok: "text-green", error: "text-crimson", info: "text-ink/80", warn: "text-amber", input: "text-cyan",
+  ok: "text-good", error: "text-bad", info: "text-ink", warn: "text-warn", input: "text-accent",
 };
 
 function builtins(all: () => TerminalCommand[], clear: () => void, user: string): TerminalCommand[] {
   return [
     { name: "help", description: "list commands", run: () => all().map((c) => info(`${`/${c.name}`.padEnd(14)} ${c.usage ? `${c.usage}  ` : ""}${c.description}`)) },
     { name: "clear", description: "clear the screen", run: () => { clear(); return []; } },
-    { name: "whoami", description: "print the current user", run: () => [ok(user), info("groups: soc, coffee-dependants")] },
+    { name: "whoami", description: "print the current user", run: () => [ok(user), info("groups: soc-analysts (read-only console)")] },
     { name: "exit", description: "close the terminal", run: () => ({ close: true }) },
-    { name: "sudo", description: "elevate privileges", run: () => [err(`${user} is not in the sudoers file. This incident will be reported.`), info("(to the SOC. which is you. awkward.)")] },
-    { name: "rm", description: "remove files", run: (a) => (a.join(" ").includes("-rf") ? [err("rm: refusing to remove '/': this is a SOC, not a startup")] : [err("rm: read-only console")]) },
-    { name: "hack", description: "hack the planet", run: () => [ok("HACK THE PLANET!"), info("tip: the real hack is ↑ ↑ ↓ ↓ ← → ← → B A")] },
   ];
 }
 
@@ -113,7 +110,7 @@ export function TerminalPalette({ open, onOpenChange, commands, suggestions = []
     const { name, args, flags } = parseCommand(line);
     const cmd = all.find((c) => c.name === name);
     if (!cmd) {
-      print([err(`zsh: command not found: ${name}`), info("try /help. or ↑ ↑ ↓ ↓ ← → ← → B A. no reason.")]);
+      print([err(`command not found: ${name}`), info("Type /help for the list of commands.")]);
       return;
     }
     setBusy(true);
@@ -175,34 +172,33 @@ export function TerminalPalette({ open, onOpenChange, commands, suggestions = []
         {open && (
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild>
-              <motion.div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+              <motion.div className="fixed inset-0 z-50 bg-ink/40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
             </Dialog.Overlay>
             <Dialog.Content asChild aria-describedby={undefined}>
-              <motion.div initial={{ opacity: 0, y: -12, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -8 }}
-                transition={{ type: "spring", stiffness: 420, damping: 32 }}
-                className="ae-glass ae-scanlines fixed left-1/2 top-[10vh] z-50 w-[min(94vw,760px)] -translate-x-1/2 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.8)]">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                transition={{ duration: 0.12, ease: "easeOut" }}
+                className="ae-surface fixed left-1/2 top-[10vh] z-50 w-[min(94vw,760px)] -translate-x-1/2">
                 <div className="flex items-center gap-2 border-b border-line px-3 py-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-crimson/80" /><span className="h-2.5 w-2.5 rounded-full bg-amber/80" /><span className="h-2.5 w-2.5 rounded-full bg-green/80" />
-                  <Dialog.Title className="ml-2 font-mono text-[11px] text-muted">zsh · {user}@{host}</Dialog.Title>
+                  <Dialog.Title className="font-serif text-base font-semibold">Command line <span className="ml-1 font-mono text-[11px] font-normal text-muted">{user}@{host}</span></Dialog.Title>
                   <span className="ml-auto font-mono text-[10px] text-muted">tab completes · ↑ history · esc closes</span>
                 </div>
                 <div ref={scroller} className="max-h-[46vh] min-h-[160px] overflow-y-auto px-4 py-3 font-mono text-[12.5px] leading-relaxed">
                   {lines.map((l, i) => <div key={i} className={cn("whitespace-pre-wrap break-words", LINE_CLASS[l.kind])}>{l.text}</div>)}
                   {confirm && (
-                    <div className="my-2 border border-line bg-black/30 p-3">
-                      {confirm.warning && <p className="mb-2 text-amber">{confirm.warning}</p>}
+                    <div className="my-2 border-l-2 border-warn py-2 pl-3">
+                      {confirm.warning && <p className="mb-2 text-warn">{confirm.warning}</p>}
                       <div className="flex flex-wrap items-center gap-2">
                         <HoldToConfirm label={confirm.label} duration={confirm.duration} tone={confirm.tone}
                           onConfirm={async () => { const step = confirm; setConfirm(null); print(await step.run()); }} />
-                        <button type="button" className="font-mono text-xs text-muted hover:text-ink" onClick={() => { setConfirm(null); print([warn("aborted. the host lives another day.")]); }}>abort</button>
+                        <button type="button" className="font-mono text-xs text-muted hover:text-ink" onClick={() => { setConfirm(null); print([warn("Aborted. No request was sent.")]); }}>abort</button>
                       </div>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
-                    <span className="shrink-0 text-green">{prompt}</span>
+                    <span className="shrink-0 text-accent">{prompt}</span>
                     <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={onKey}
                       disabled={busy} spellCheck={false} autoComplete="off" aria-label="Terminal command"
-                      className="min-w-0 flex-1 bg-transparent text-ink caret-green outline-none focus-visible:shadow-none focus-visible:outline-none" placeholder={busy ? "running…" : "/help"} />
+                      className="min-w-0 flex-1 bg-transparent text-ink caret-accent outline-none focus-visible:shadow-none focus-visible:outline-none" placeholder={busy ? "running…" : "/help"} />
                   </div>
                 </div>
                 {matches.length > 0 && (
@@ -210,7 +206,7 @@ export function TerminalPalette({ open, onOpenChange, commands, suggestions = []
                     {matches.map((m, i) => (
                       <li key={m.to} role="option" aria-selected={i === sel}>
                         <button type="button" onMouseEnter={() => setSel(i)} onClick={() => { navigate(m.to); onOpenChange(false); setInput(""); }}
-                          className={cn("flex w-full items-center gap-3 px-3 py-1.5 text-left font-mono text-xs", i === sel ? "bg-cyan/10 text-cyan" : "text-ink/80")}>
+                          className={cn("flex w-full items-center gap-3 px-3 py-1.5 text-left font-mono text-xs", i === sel ? "bg-ink text-bg" : "text-ink")}>
                           <span className="text-muted">cd</span><span className="flex-1 truncate">{m.label}</span><span className="text-muted">{m.hint}</span>
                         </button>
                       </li>
