@@ -40,8 +40,25 @@
                 Mitre    = @('T1505.003', 'T1059')
             }
         )
+        # Encoded PowerShell is recognised by Get-EdrEncodedCommand, which parses every accepted
+        # abbreviation of -EncodedCommand (-e, -ec, -enc, /enc ...) and decodes the payload. It
+        # reports the marker 'encodedcommand'. Plain substrings such as '-enc' are not used because
+        # they miss '-e'/'-ec' and wrongly match '-Encoding'.
+        EncodedPowerShell = @{
+            Id                = 'EDR-PT-005'
+            Name              = 'Encoded PowerShell command'
+            Severity          = 'medium'
+            Images            = @('powershell.exe', 'pwsh.exe')
+            # Software distribution agents that legitimately run encoded scripts. Matched on image
+            # name only, so a hit from these parents is lowered to 'low', never suppressed.
+            ManagementParents = @('ccmexec.exe', 'agentexecutor.exe')
+            # Remote execution hosts (WMI, WinRM, service creation). Raises severity one level.
+            RemoteExecParents = @('wmiprvse.exe', 'wsmprovhost.exe', 'services.exe')
+            Mitre             = @('T1059.001', 'T1027')
+        }
         # Command-line markers that raise severity one level (obfuscation / download cradles).
-        SuspiciousCommandLine = @('-enc', '-encodedcommand', 'frombase64string', 'downloadstring',
+        # They are also checked against the decoded text of an encoded command.
+        SuspiciousCommandLine = @('frombase64string', 'downloadstring',
                                   'downloadfile', 'invoke-expression', 'iex(', 'iex ', '-w hidden',
                                   '-windowstyle hidden', 'bypass', 'http://', 'https://')
     }
@@ -65,5 +82,8 @@
                            'services.exe', 'lsass.exe', 'lsaiso.exe', 'svchost.exe', 'fontdrvhost.exe',
                            'dwm.exe', 'msmpeng.exe', 'memcompression')
         ProtectedPids  = @(0, 4)
+        # Auto-containment only acts on alerts at or above this severity. Low and medium alerts
+        # (for example an encoded command from a management agent) are reported, not suspended.
+        MinSeverity    = 'high'
     }
 }

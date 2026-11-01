@@ -119,7 +119,7 @@ Describe 'Parent-child anomaly rules' {
             Add-EdrProcess -Table $t -ProcessId 5 -ParentProcessId 2 -ImageName 'powershell.exe' -CommandLine 'powershell -w hidden -enc SQBFAFgA' -StartTime ([datetime]'2026-10-26T09:00:02Z')
             $hit = @(Test-EdrProcessTreeAnomaly -Table $t -ProcessId 5 -Settings $settings)[0]
             $hit.Severity | Should -Be 'critical'
-            $hit.Markers | Should -Contain '-enc'
+            $hit.Markers | Should -Contain 'encodedcommand'
         }
     }
 }

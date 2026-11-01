@@ -16,7 +16,7 @@ Each numbered project lives in its own folder and stays self-contained: its own 
 |---|---|---|---|---|
 | 01 | [Real-time AI-SIEM](01-realtime-ai-siem/) | UDP syslog in real time, ECS 8.11 mapping, streaming brute-force, spraying and privilege detections, Claude summaries of each alert chain | Python, asyncio, Anthropic SDK | 88 |
 | 02 | [Human-in-the-loop SOAR bot](02-hitl-soar-bot/) | Alerts become incidents with an approval card in Slack or Discord; a host is isolated only after a signed analyst approval. Signed decision webhook out. MTTA and MTTR | Python, Flask, SQLite, Docker | 79 |
-| 03 | [EDR canary and process tree](03-edr-canary-process-tree/) | Live process tree from kernel ETW, Office-spawns-shell detection, canary files as ransomware tripwires, guarded containment | PowerShell, C#, TraceEvent, Pester | 75 |
+| 03 | [EDR canary and process tree](03-edr-canary-process-tree/) | Live process tree from kernel ETW, Office-spawns-shell detection, canary files as ransomware tripwires, guarded containment | PowerShell, C#, TraceEvent, Pester | 102 |
 | 04 | [Blast-radius vulnerability scanner](04-blast-radius-vuln-scanner/) | Nmap, NVD, EPSS and CISA KEV into an attack graph; fixes ranked by blast radius and chokepoints; SARIF | Python, NetworkX | 79 |
 | 05 | [Sigma ATT&CK coverage](05-sigma-attack-coverage/) | Scores purple-team log exports with a built-in Sigma engine; detection and telemetry coverage; Navigator layer | Python, Sigma | 68 |
 | 06 | [Alert clustering and FP reducer](06-alert-clustering-fp-reducer/) | TF-IDF and DBSCAN clustering, CMDB enrichment, structural false-positive suppression, guarded Claude triage | Python, scikit-learn, SQLite | 97 |
@@ -33,6 +33,13 @@ Each numbered project lives in its own folder and stays self-contained: its own 
 | [Deploy](deploy/) | One compose file with profiles: core, automation, detect, dfir, ai, batch | |
 | [aegis-ui](packages/aegis-ui/) | The design system shared by the Watchfloor console and Driftwatch | 10 |
 | [Driftwatch](https://github.com/blackdalc7/DriftWatch-Project) | Continuous security validation for a small lab: signed, benign agent tests scored against Elastic, plus configuration drift detection. Self-contained with its own CI; published as its own repository | 70 backend |
+
+## Case studies
+
+How I investigate an alert and improve a detection, written up from the portfolio's own replay data. Each one says up front which parts are real and which are simulated.
+
+- [Macro document to mass file modification on a finance share](docs/case-studies/01-maldoc-to-ransomware-investigation.md): initial alert, raw evidence, timeline, queries, alternative explanations, disposition and response rationale for 03's maldoc replay.
+- [Improving encoded PowerShell detection](docs/case-studies/02-encoded-powershell-detection-improvement.md): a missed behaviour, the rule change (03's EDR-PT-005), benign regression cases, severity reasoning, and what the rule still misses.
 
 ## What is validated, and how
 

@@ -5,10 +5,11 @@
 A PowerShell EDR sensor that consumes **kernel ETW** (process, file I/O and disk I/O), maintains a live **parent-child process tree**, and raises ECS alerts when:
 
 - an Office application spawns a shell or script host, such as `winword.exe → powershell.exe`, directly or through an intermediate process (EDR-PT-001 to 004);
+- PowerShell runs an encoded command (`-e`, `-ec`, `-enc`, `-EncodedCommand` and the other accepted abbreviations), with the payload decoded into the alert and severity set by the parent: low under a management agent, raised under WMI, WinRM or a service (EDR-PT-005);
 - any process writes, renames or deletes a **canary decoy file** (EDR-CN-001);
 - one process modifies 25 or more distinct files within 10 seconds, or drops a ransomware extension or ransom note (EDR-RW-001/002).
 
-It can **suspend** the offending process after taking a metadata-only forensic snapshot. It refuses to touch protected system processes or itself. Every exported and private function is covered by Pester tests.
+It can **suspend** the offending process after taking a metadata-only forensic snapshot. It only does so for high and critical alerts (`Containment.MinSeverity`), and it refuses to touch protected system processes or itself. Every exported and private function is covered by Pester tests.
 
 The design rationale is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
@@ -30,7 +31,7 @@ New-EventLog -LogName Application -Source EdrCanary
 ## Safe simulation
 
 ```powershell
-# Any OS: replay the recorded maldoc → ransomware chain through the full pipeline
+# Any OS: replay the simulated maldoc → ransomware chain through the full pipeline
 .\scripts\Invoke-SafeSimulation.ps1
 ```
 
@@ -48,6 +49,15 @@ EDR-RW-001 Mass file modification (possible encryption)                1       9
 ```
 
 Live mode writes plain text files and appends one line to the canary. It encrypts nothing, deletes nothing outside its own `sim_*.txt` files, and makes no network calls.
+
+## Rule regression
+
+```powershell
+# Any OS: replay labelled malicious and benign cases and print the verdict for each
+.\scripts\Invoke-RuleRegression.ps1 | Format-Table -AutoSize
+```
+
+Run it before and after a change to `config/rules.psd1` to see exactly which cases changed. The worked example, with before-and-after output, is [case study 02](../docs/case-studies/02-encoded-powershell-detection-improvement.md). The investigation of the maldoc replay is [case study 01](../docs/case-studies/01-maldoc-to-ransomware-investigation.md).
 
 ## Event sources
 
@@ -71,10 +81,11 @@ Install-Module Pester -RequiredVersion 5.7.1 -Force -SkipPublisherCheck
 Invoke-Pester ./tests -Output Detailed
 ```
 
-There are 75 tests. On Linux, 73 pass and 2 Windows-only tests are skipped. The suite covers:
+There are 102 tests. On Linux, 2 Windows-only tests are skipped. The suite covers:
 
 - Process-tree mapping, including PID reuse, cycles, pruning and depth-limited ancestry.
 - Every parent-child rule and the severity escalation for command-line markers.
+- Encoded PowerShell: every accepted flag abbreviation, near misses such as `-Encoding`, payload decoding, parent-based severity and the containment floor.
 - Canary matching for DOS paths and `\Device\HarddiskVolumeN` kernel paths.
 - The ransomware sliding window, including no alert storms for repeated writes to one file.
 - The containment guards (protected names and PIDs, self-protection), plus `-WhatIf` and mocked kernel32 calls.
@@ -95,9 +106,9 @@ There are 75 tests. On Linux, 73 pass and 2 Windows-only tests are skipped. The 
 │   ├── Public/                  exported commands (Start-EdrMonitor, Suspend-EdrProcess, ...)
 │   ├── Private/                 process table, rules, event sources, alerting, config
 │   └── Native/EtwKernelConsumer.cs   kernel ETW reader compiled at runtime
-├── scripts/                     launcher, TraceEvent installer, safe simulation
+├── scripts/                     launcher, TraceEvent installer, safe simulation, rule regression
 ├── config/rules.psd1            detection rules (parent/child pairs, thresholds)
-├── tests/                       Pester 5 suite and a recorded attack fixture
+├── tests/                       Pester 5 suite and simulated attack fixtures
 ├── docs/ARCHITECTURE.md
 ├── PSScriptAnalyzerSettings.psd1
 └── .env.example

@@ -36,6 +36,11 @@ function New-EdrAlert {
     if ($Hit['ParentImage']) { $doc.process.parent = @{ name = $Hit['ParentImage']; pid = [int]$Hit['ParentId'] } }
     if ($Hit['FilePath']) { $doc.file = @{ path = $Hit['FilePath'] } }
     if ($Hit['Ancestry']) { $doc.edr = @{ ancestry = $Hit['Ancestry']; depth = $Hit['Depth']; markers = @($Hit['Markers']) } }
+    if ($Hit['Decoded']) {
+        # Decoded -EncodedCommand text, capped so one alert cannot carry a whole script.
+        $text = [string]$Hit['Decoded']
+        $doc.edr.decoded_command = if ($text.Length -gt 1024) { $text.Substring(0, 1024) } else { $text }
+    }
     if ($Hit['DistinctFiles']) { $doc.edr = @{ distinct_files = $Hit['DistinctFiles'] } }
     return $doc
 }

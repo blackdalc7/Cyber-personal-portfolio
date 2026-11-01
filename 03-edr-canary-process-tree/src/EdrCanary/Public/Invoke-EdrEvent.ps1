@@ -73,7 +73,8 @@ function Invoke-EdrEvent {
             if ($entry) { $hit['ImageName'] = $entry.ImageName; $hit['CommandLine'] = $entry.CommandLine }
         }
         $alert = New-EdrAlert -Hit $hit -EdrEvent $EdrEvent
-        if ($s.AutoContain -and $hit['ProcessId'] -gt 0 -and -not $ctx.Contained.Contains([int]$hit['ProcessId'])) {
+        if ($s.AutoContain -and $hit['ProcessId'] -gt 0 -and -not $ctx.Contained.Contains([int]$hit['ProcessId']) -and
+            (Test-EdrContainmentSeverity -Severity $hit['Severity'] -Settings $s)) {
             try {
                 $result = & $ctx.Contain $hit['ProcessId'] $hit['ImageName'] $s
                 [void]$ctx.Contained.Add([int]$hit['ProcessId'])

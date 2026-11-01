@@ -34,7 +34,7 @@ Import-Module (Join-Path $projectRoot 'src/EdrCanary/EdrCanary.psd1') -Force
 if ($Mode -eq 'Replay') {
     $fixture = Join-Path $projectRoot 'tests/fixtures/maldoc_ransomware_chain.ndjson'
     $out = Join-Path $LabPath 'out'
-    # The fixture was recorded on a host whose canary lived at C:\Share\Finance (seen by the kernel
+    # The fixture simulates a host whose canary lived at C:\Share\Finance (seen by the kernel
     # as \Device\HarddiskVolume3\Share\Finance), so that path is registered as the canary here.
     $settings = Get-EdrSettings -Override @{ OutputDir = $out; SiemHost = ''; AutoContain = $false }
     New-Item -ItemType Directory -Force -Path $out | Out-Null

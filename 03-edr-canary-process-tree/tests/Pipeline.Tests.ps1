@@ -25,7 +25,7 @@ Describe 'Invoke-EdrEvent' {
 
         $ps = $alerts | Where-Object { $_.process.name -eq 'powershell.exe' }
         $ps.edr.ancestry | Should -Be 'explorer.exe(1200) -> winword.exe(3100) -> cmd.exe(3150) -> powershell.exe(3160)'
-        $ps.event.severity | Should -Be 99   # -enc / -w hidden escalate high -> critical
+        $ps.event.severity | Should -Be 99   # encoded command / -w hidden escalate high -> critical
         $canary = $alerts | Where-Object { $_.rule.id -eq 'EDR-CN-001' }
         $canary.process.name | Should -Be 'svch0st.exe'
         $canary.process.pid | Should -Be 4100
