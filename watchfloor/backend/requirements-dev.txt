@@ -1,4 +1,4 @@
 -r requirements.txt
 pytest>=8.0,<10
-pytest-cov>=5.0,<8
+pytest-cov>=7.1.0,<8
 fakeredis>=2.26,<3
