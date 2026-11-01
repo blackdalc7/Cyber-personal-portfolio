@@ -1,73 +1,56 @@
+# Grouped monthly so updates arrive as one PR per ecosystem instead of dozens of separate ones.
 version: 2
 updates:
   - package-ecosystem: github-actions
-    directory: /
-    schedule: {interval: weekly}
+    directories:
+      - "/"
+    schedule: {interval: monthly}
+    open-pull-requests-limit: 2
     groups:
-      actions: {patterns: ["*"]}
+      github-actions: {patterns: ["*"]}
   - package-ecosystem: pip
-    directory: /01-realtime-ai-siem
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /02-hitl-soar-bot
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /04-blast-radius-vuln-scanner
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /05-sigma-attack-coverage
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /06-alert-clustering-fp-reducer
-    schedule: {interval: weekly}
+    directories:
+      - "/01-realtime-ai-siem"
+      - "/02-hitl-soar-bot"
+      - "/04-blast-radius-vuln-scanner"
+      - "/05-sigma-attack-coverage"
+      - "/06-alert-clustering-fp-reducer"
+      - "/07-attack-emulator"
+      - "/08-detection-rules"
+      - "/09-evidence-timeline"
+      - "/10-ai-analyst-mcp"
+      - "/watchfloor/backend"
+    schedule: {interval: monthly}
+    open-pull-requests-limit: 2
+    groups:
+      pip: {patterns: ["*"]}
   - package-ecosystem: docker
-    directory: /01-realtime-ai-siem
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /02-hitl-soar-bot
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /04-blast-radius-vuln-scanner
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /06-alert-clustering-fp-reducer
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /07-attack-emulator
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /08-detection-rules
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /09-evidence-timeline
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /10-ai-analyst-mcp
-    schedule: {interval: weekly}
-  - package-ecosystem: pip
-    directory: /watchfloor/backend
-    schedule: {interval: weekly}
+    directories:
+      - "/01-realtime-ai-siem"
+      - "/02-hitl-soar-bot"
+      - "/04-blast-radius-vuln-scanner"
+      - "/06-alert-clustering-fp-reducer"
+      - "/08-detection-rules"
+      - "/09-evidence-timeline"
+      - "/10-ai-analyst-mcp"
+      - "/deploy/watchfloor"
+      - "/deploy/velociraptor"
+    schedule: {interval: monthly}
+    open-pull-requests-limit: 2
+    groups:
+      docker: {patterns: ["*"]}
   - package-ecosystem: npm
-    directory: /watchfloor/frontend
-    schedule: {interval: weekly}
-  - package-ecosystem: npm
-    directory: /packages/aegis-ui
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /08-detection-rules
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /09-evidence-timeline
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /10-ai-analyst-mcp
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /deploy/watchfloor
-    schedule: {interval: weekly}
-  - package-ecosystem: docker
-    directory: /deploy/velociraptor
-    schedule: {interval: weekly}
+    directories:
+      - "/watchfloor/frontend"
+      - "/packages/aegis-ui"
+    schedule: {interval: monthly}
+    open-pull-requests-limit: 2
+    groups:
+      npm: {patterns: ["*"]}
   - package-ecosystem: docker-compose
-    directory: /deploy
-    schedule: {interval: weekly}
+    directories:
+      - "/deploy"
+    schedule: {interval: monthly}
+    open-pull-requests-limit: 2
+    groups:
+      docker-compose: {patterns: ["*"]}
